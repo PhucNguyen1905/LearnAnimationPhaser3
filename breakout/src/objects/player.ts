@@ -3,6 +3,8 @@ import { IRectangleConstructor } from '../interfaces/interfaces';
 export class Player extends Phaser.GameObjects.Rectangle {
   body: Phaser.Physics.Arcade.Body;
 
+  public start: boolean = false;
+
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
 
   constructor(aParams: IRectangleConstructor) {
@@ -43,13 +45,17 @@ export class Player extends Phaser.GameObjects.Rectangle {
 
   private handleInput(): void {
     if (this.cursors.right.isDown) {
-      this.body.setVelocityX(300);
+      this.start = true;
+      this.x += 5;
     } else if (this.cursors.left.isDown) {
-      this.body.setVelocityX(-300);
+      this.start = true;
+      this.x -= 5;
     }
+    // this.body.setVelocityX(0)
   }
 
   public resetToStartPosition(): void {
+    this.start = false;
     this.x = +this.scene.game.config.width / 2 - 20;
     this.y = +this.scene.game.config.height - 50;
   }

@@ -2,6 +2,7 @@ import { IRectangleConstructor } from '../interfaces/interfaces';
 
 export class Brick extends Phaser.GameObjects.Rectangle {
   body: Phaser.Physics.Arcade.Body;
+  color: number;
 
   constructor(aParams: IRectangleConstructor) {
     super(
@@ -13,6 +14,7 @@ export class Brick extends Phaser.GameObjects.Rectangle {
       aParams.fillColor,
       aParams.fillAlpha
     );
+    this.color = aParams.fillColor;
 
     this.initRectangle();
     this.initPhysics();

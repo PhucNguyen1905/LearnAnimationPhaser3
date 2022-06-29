@@ -13,6 +13,9 @@ export class GameScene extends Phaser.Scene {
   private highScoreText: Phaser.GameObjects.BitmapText;
   private livesText: Phaser.GameObjects.BitmapText;
 
+  private particles: Phaser.GameObjects.Particles.ParticleEmitterManager;
+  private emitter: Phaser.GameObjects.Particles.ParticleEmitter;
+
   constructor() {
     super({
       key: 'GameScene'
@@ -26,9 +29,22 @@ export class GameScene extends Phaser.Scene {
   }
 
   create(): void {
-    // game objects
-    // ------------
+    this.createBricks();
 
+    this.createPlayer();
+
+    this.createBall();
+
+    this.createTexts();
+
+    this.createColliders();
+
+    this.createEvents();
+
+    this.setupPhysic(); this.createParticle();
+  }
+
+  createBricks() {
     // bricks
     this.bricks = this.add.group();
 
@@ -52,6 +68,9 @@ export class GameScene extends Phaser.Scene {
       }
     }
 
+  }
+
+  createPlayer() {
     // player
     this.player = new Player({
       scene: this,
@@ -60,10 +79,14 @@ export class GameScene extends Phaser.Scene {
       width: 50,
       height: 10
     });
+  }
 
+  createBall() {
     // ball
     this.ball = new Ball({ scene: this, x: 0, y: 0 }).setVisible(false);
+  }
 
+  createTexts() {
     // score
     this.scoreText = this.add.bitmapText(
       10,
@@ -88,7 +111,9 @@ export class GameScene extends Phaser.Scene {
       `Lives: ${settings.lives}`,
       8
     );
+  }
 
+  createColliders() {
     // collisions
     // ----------
     this.physics.add.collider(this.player, this.ball);
@@ -99,21 +124,41 @@ export class GameScene extends Phaser.Scene {
       null,
       this
     );
+  }
 
+  createEvents() {
     // events
     // ------
     this.events.on('scoreChanged', this.updateScore, this);
     this.events.on('livesChanged', this.updateLives, this);
+  }
 
+  setupPhysic() {
     // physics
     // -------
+    this.physics.world.setBoundsCollision(true, true, true, true);
     this.physics.world.checkCollision.down = false;
+    this.ball.body.onWorldBounds = true;
+    this.physics.world.on('worldbounds', this.ballHitWorldBounds, this)
   }
+
+  createParticle() {
+    this.particles = this.add.particles('snow');
+    this.emitter = this.particles.createEmitter({
+      lifespan: 200,
+      speed: 50,
+      alpha: 0.2,
+      scale: 0.1,
+      visible: false,
+      blendMode: Phaser.BlendModes.COLOR
+    });
+  }
+
 
   update(): void {
     this.player.update();
 
-    if (this.player.body.velocity.x !== 0 && !this.ball.visible) {
+    if (this.player.start && !this.ball.visible) {
       this.ball.setPosition(this.player.x, this.player.y - 200);
       this.ball.applyInitVelocity();
       this.ball.setVisible(true);
@@ -136,13 +181,55 @@ export class GameScene extends Phaser.Scene {
   }
 
   private ballBrickCollision(ball: Ball, brick: Brick): void {
+    // brick.body.checkCollision.none = true;
+    // brick.setAlpha(0.5)
+    let b1 = new Brick({ scene: this, x: brick.x, y: brick.y, width: brick.width / 2, height: brick.height, fillColor: brick.color, fillAlpha: 0.5 })
+    b1.setAngle(-20)
+    let b2 = new Brick({ scene: this, x: brick.x + brick.width / 2 + 5, y: brick.y, width: brick.width / 2, height: brick.height, fillColor: brick.color, fillAlpha: 0.5 })
+    b2.setAngle(20)
     brick.destroy();
-    settings.score += 10;
-    this.events.emit('scoreChanged');
+    this.tweens.add({
+      targets: [b1, b2],
+      y: 500,
+      duration: 3200,
+      ease: 'Power2',
+      onComplete: () => {
+        // brick.destroy();
+        b1.destroy();
+        b2.destroy();
+        settings.score += 10;
+        this.events.emit('scoreChanged');
+      }
+    })
+    // this.tweens.add({
+    //   targets: brick,
+    //   scale: 0.1,
+    //   ease: 'Linear',
+    //   duration: 500,
+    //   onComplete: () => {
+    //     brick.destroy();
+    //     settings.score += 10;
+    //     this.events.emit('scoreChanged');
+    //   }
+    // })
 
     if (this.bricks.countActive() === 0) {
       // all bricks are gone!
     }
+  }
+
+  private ballHitWorldBounds(ballBody: Phaser.Physics.Arcade.Body) {
+    this.emitter.setPosition(ballBody.x, ballBody.y);
+    this.emitter.setVisible(true)
+    this.emitter.start();
+    this.time.addEvent({
+      delay: 250,
+      loop: false,
+      callback: () => {
+        this.emitter.stop();
+      }
+    })
+
   }
 
   private gameOver(): void {

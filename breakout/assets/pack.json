@@ -6,6 +6,11 @@
         "key": "font",
         "textureURL": "./assets/font/font.png",
         "fontDataURL": "./assets/font/font.fnt"
+      },
+      {
+        "type": "image",
+        "key": "snow",
+        "url": "./assets/images/snow.png"
       }
     ]
   }
