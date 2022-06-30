@@ -13,8 +13,10 @@ export class GameScene extends Phaser.Scene {
   private highScoreText: Phaser.GameObjects.BitmapText;
   private livesText: Phaser.GameObjects.BitmapText;
 
-  private particles: Phaser.GameObjects.Particles.ParticleEmitterManager;
-  private emitter: Phaser.GameObjects.Particles.ParticleEmitter;
+  private bounceWallEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
+  private fire: Phaser.GameObjects.Particles.ParticleEmitter;
+  private whiteSmoke: Phaser.GameObjects.Particles.ParticleEmitter;
+  private darkSmoke: Phaser.GameObjects.Particles.ParticleEmitter;
 
   constructor() {
     super({
@@ -145,7 +147,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   createParticle() {
-    this.emitter = this.add.particles('snow').createEmitter({
+    this.bounceWallEmitter = this.add.particles('snow').createEmitter({
       lifespan: 200,
       speed: 50,
       alpha: 0.2,
@@ -153,6 +155,24 @@ export class GameScene extends Phaser.Scene {
       visible: false,
       blendMode: Phaser.BlendModes.COLOR
     });
+
+
+
+    this.fire = this.add.particles('fire').createEmitter({
+      x: 400,
+      y: 300,
+      speed: { min: 100, max: 200 },
+      angle: { min: -85, max: -95 },
+      scale: { start: 0, end: 1, ease: 'Back.easeOut' },
+      alpha: { start: 1, end: 0, ease: 'Quart.easeOut' },
+      blendMode: 'SCREEN',
+      lifespan: 200
+    });
+    this.fire.setScale(0.2)
+    this.fire.visible = false;
+    // this.fire.reserve(1000);
+
+
   }
 
 
@@ -164,9 +184,19 @@ export class GameScene extends Phaser.Scene {
       this.ball.applyInitVelocity();
       this.ball.setVisible(true);
     }
+    if (this.ball.visible) {
+
+      if (this.ball.body.velocity.y < 0) {
+        this.fire.setPosition(this.ball.x + 5, this.ball.y + 8);
+      } else {
+        this.fire.setPosition(this.ball.x + 5, this.ball.y - 2);
+      }
+      this.fire.visible = true;
+    }
 
     if (this.ball.y > this.game.config.height) {
       settings.lives -= 1;
+      this.fire.visible = false;
       this.events.emit('livesChanged');
 
       if (settings.lives === 0) {
@@ -220,14 +250,14 @@ export class GameScene extends Phaser.Scene {
   }
 
   private ballHitWorldBounds(ballBody: Phaser.Physics.Arcade.Body) {
-    this.emitter.setPosition(ballBody.x, ballBody.y);
-    this.emitter.setVisible(true)
-    this.emitter.start();
+    this.bounceWallEmitter.setPosition(ballBody.x, ballBody.y);
+    this.bounceWallEmitter.setVisible(true)
+    this.bounceWallEmitter.start();
     this.time.addEvent({
-      delay: 250,
+      delay: 300,
       loop: false,
       callback: () => {
-        this.emitter.stop();
+        this.bounceWallEmitter.stop();
       }
     })
 
