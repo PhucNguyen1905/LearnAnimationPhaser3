@@ -42,9 +42,8 @@ export class BootScene extends Phaser.Scene {
     // load out package
     this.load.pack('preload', './assets/pack.json', 'preload');
 
-    this.load.image('dark-smoke', 'assets/particles/smoke-puff.png');
-    this.load.image('white-smoke', 'assets/particles/smoke0.png');
     this.load.image('fire', 'assets/particles/muzzleflash3.png');
+    this.load.atlas('flares', 'assets/particles/flares.png', 'assets/particles/flares.json');
 
   }
 

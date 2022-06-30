@@ -156,19 +156,19 @@ export class GameScene extends Phaser.Scene {
       blendMode: Phaser.BlendModes.COLOR
     });
 
-    this.fire = this.add.particles('fire').createEmitter({
-      x: 400,
+    this.fire = this.add.particles('flares').createEmitter({
+      frame: 'yellow',
+      x: 100,
       y: 300,
-      speed: { min: 100, max: 200 },
-      angle: { min: -85, max: -95 },
-      scale: { start: 0, end: 1, ease: 'Back.easeOut' },
-      alpha: { start: 1, end: 0, ease: 'Quart.easeOut' },
-      blendMode: 'SCREEN',
-      lifespan: 200
+      lifespan: 200,
+      speedY: { min: -100, max: 100 },
+      scale: { start: 0.7, end: 0.2 },
+      blendMode: 'ADD'
+
     });
     this.fire.setScale(0.2)
     this.fire.visible = false;
-    // this.fire.reserve(1000);
+    this.fire.reserve(1000);
 
 
   }
@@ -210,28 +210,35 @@ export class GameScene extends Phaser.Scene {
   }
 
   private ballBrickCollision(ball: Ball, brick: Brick): void {
-    let b1 = new Brick({ scene: this, x: brick.x, y: brick.y, width: brick.width / 2, height: brick.height, fillColor: brick.color, fillAlpha: 0.5 })
+    let b1 = new Brick({ scene: this, x: brick.x, y: brick.y, width: brick.width / 2, height: brick.height, fillColor: brick.color })
     b1.setAngle(-20)
-    let b2 = new Brick({ scene: this, x: brick.x + brick.width / 2 + 5, y: brick.y, width: brick.width / 2, height: brick.height, fillColor: brick.color, fillAlpha: 0.5 })
+    let b2 = new Brick({ scene: this, x: brick.x + brick.width / 2 + 5, y: brick.y, width: brick.width / 2, height: brick.height, fillColor: brick.color })
     b2.setAngle(20)
+    let y = brick.y;
+    let x = brick.x;
     brick.destroy();
-    this.tweens.add({
-      targets: [b1, b2],
-      props: {
-        y: { value: '600', duration: 2500, ease: 'Bounce.easeOut' }
-      },
-      onComplete: () => {
-        // brick.destroy();
-        b1.destroy();
-        b2.destroy();
-        settings.score += 10;
-        this.events.emit('scoreChanged');
-      }
-    })
+    for (const b of [b1, b2]) {
+      this.tweens.add({
+        targets: b,
+        x: x + Phaser.Math.RND.between(-1, 1) * Math.random() * 40,
+        y: y + Math.random() * 40,
+        duration: 1000,
+        scale: { from: 1, to: 0.25, ease: 'Quad.easeOut' },
+        alpha: { from: 1, to: 0, ease: 'Quad.easeIn' },
+        onComplete: () => {
+          // brick.destroy();
+          b.destroy();
+          settings.score += 5;
+          this.events.emit('scoreChanged');
+        }
+      })
+    }
+
 
 
     if (this.bricks.countActive() === 0) {
       // all bricks are gone!
+      this.scene.restart();
     }
   }
 

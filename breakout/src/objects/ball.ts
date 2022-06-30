@@ -33,7 +33,7 @@ export class Ball extends Phaser.GameObjects.Rectangle {
   }
 
   public applyInitVelocity(): void {
-    this.body.setVelocity(Phaser.Math.RND.between(-200, 200), 200);
-    this.body.speed = 800;
+    this.body.setVelocity(Phaser.Math.RND.between(-300, 300), 300);
+    this.body.speed = 1000;
   }
 }
