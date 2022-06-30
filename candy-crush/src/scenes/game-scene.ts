@@ -47,11 +47,12 @@ export class GameScene extends Phaser.Scene {
 
     // Check if matches on the start
     this.checkMatches();
+
   }
 
   create() {
     this.createParticles();
-
+    this.createCandyWave();
   }
 
   createParticles() {
@@ -81,6 +82,28 @@ export class GameScene extends Phaser.Scene {
       this.lightEmitter.setPosition(pointer.x, pointer.y);
     });
 
+  }
+
+  createCandyWave() {
+    this.time.addEvent({
+      delay: 5000,
+      callback: () => {
+        for (let y = 0; y < this.tileGrid.length; y++) {
+          for (let x = 0; x < this.tileGrid[y].length; x++) {
+            this.tweens.add({
+              targets: this.tileGrid[y][x],
+              scaleX: 1.2,
+              scaleY: 1.2,
+              ease: 'Sine.easeInOut',
+              duration: 400,
+              delay: x * 50,
+              yoyo: true
+            })
+          }
+        }
+      },
+      loop: true
+    })
   }
 
   /**
