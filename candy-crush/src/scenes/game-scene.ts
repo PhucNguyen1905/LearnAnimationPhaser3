@@ -12,6 +12,10 @@ export class GameScene extends Phaser.Scene {
   private firstSelectedTile: Tile;
   private secondSelectedTile: Tile;
 
+  private particles: Phaser.GameObjects.Particles.ParticleEmitterManager;
+  private circle1: Phaser.GameObjects.Particles.ParticleEmitter;
+  private circle2: Phaser.GameObjects.Particles.ParticleEmitter;
+
   constructor() {
     super({
       key: 'GameScene'
@@ -45,6 +49,34 @@ export class GameScene extends Phaser.Scene {
     this.checkMatches();
   }
 
+  create() {
+    this.createParticles();
+
+  }
+
+  createParticles() {
+    // Create paricles;
+    this.particles = this.add.particles('flares');
+
+    let path = new Phaser.Curves.Path(0, 0).circleTo(35);
+    this.circle1 = this.particles.createEmitter({
+      frame: { frames: ['red', 'green', 'blue'], cycle: true },
+      scale: { start: 0.1, end: 0 },
+      blendMode: 'ADD',
+      emitZone: { type: 'edge', source: path, quantity: 48, yoyo: false }
+    });
+    this.circle1.stop();
+
+    this.circle2 = this.particles.createEmitter({
+      frame: { frames: ['red', 'green', 'blue'], cycle: true },
+      scale: { start: 0.1, end: 0 },
+      blendMode: 'ADD',
+      emitZone: { type: 'edge', source: path, quantity: 48, yoyo: false }
+    });
+    this.circle2.stop();
+
+  }
+
   /**
    * Add a new random tile at the specified position.
    * @param x
@@ -74,8 +106,10 @@ export class GameScene extends Phaser.Scene {
    */
   private tileDown(pointer: any, gameobject: any, event: any): void {
     if (this.canMove) {
+
       if (!this.firstSelectedTile) {
         this.firstSelectedTile = gameobject;
+        this.emitCirclePar(gameobject, this.circle1)
       } else {
         // So if we are here, we must have selected a second tile
         this.secondSelectedTile = gameobject;
@@ -90,11 +124,37 @@ export class GameScene extends Phaser.Scene {
         // Check if the selected tiles are both in range to make a move
         if ((dx === 1 && dy === 0) || (dx === 0 && dy === 1)) {
           this.canMove = false;
+          this.emitCirclePar(gameobject, this.circle2)
           this.swapTiles();
+        }
+        else {
+          this.secondSelectedTile = undefined;
+          this.firstSelectedTile = gameobject;
+          this.canMove = true;
+          this.emitCirclePar(gameobject, this.circle1)
         }
       }
     }
   }
+
+  private emitCirclePar(gameobject: any, circle: Phaser.GameObjects.Particles.ParticleEmitter) {
+    // emit particle
+    let x = gameobject.x + gameobject.width;
+    let y = gameobject.y + gameobject.height / 2
+    if (gameobject.type == 'cookie2') {
+      x += 5;
+      y += 3;
+    }
+    circle.setPosition(x, y)
+    circle.start();
+
+  }
+
+  private setUnVisibleBothCir() {
+    this.circle1.stop();
+    this.circle2.stop();
+  }
+
 
   /**
    * This function will take care of the swapping of the two selected tiles.
@@ -120,6 +180,7 @@ export class GameScene extends Phaser.Scene {
       this.tileGrid[secondTilePosition.y / CONST.tileHeight][
         secondTilePosition.x / CONST.tileWidth
       ] = this.firstSelectedTile;
+
 
       // Move them on the screen with tweens
       this.add.tween({
@@ -161,6 +222,14 @@ export class GameScene extends Phaser.Scene {
 
     //If there are matches, remove them
     if (matches.length > 0) {
+      this.time.addEvent({
+        delay: 300,
+        callback: () => {
+          this.setUnVisibleBothCir();
+        },
+        loop: false
+      })
+
       //Remove the tiles
       this.removeTileGroup(matches);
       // Move the tiles currently on the board into their new positions
@@ -174,6 +243,14 @@ export class GameScene extends Phaser.Scene {
       this.swapTiles();
       this.tileUp();
       this.canMove = true;
+
+      this.time.addEvent({
+        delay: 1000,
+        callback: () => {
+          this.setUnVisibleBothCir();
+        },
+        loop: false
+      })
     }
   }
 
