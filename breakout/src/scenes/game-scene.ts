@@ -80,7 +80,7 @@ export class GameScene extends Phaser.Scene {
       scene: this,
       x: +this.game.config.width / 2 - 20,
       y: +this.game.config.height - 50,
-      width: 50,
+      width: 400,
       height: 10
     });
   }
@@ -156,8 +156,6 @@ export class GameScene extends Phaser.Scene {
       blendMode: Phaser.BlendModes.COLOR
     });
 
-
-
     this.fire = this.add.particles('fire').createEmitter({
       x: 400,
       y: 300,
@@ -212,8 +210,6 @@ export class GameScene extends Phaser.Scene {
   }
 
   private ballBrickCollision(ball: Ball, brick: Brick): void {
-    // brick.body.checkCollision.none = true;
-    // brick.setAlpha(0.5)
     let b1 = new Brick({ scene: this, x: brick.x, y: brick.y, width: brick.width / 2, height: brick.height, fillColor: brick.color, fillAlpha: 0.5 })
     b1.setAngle(-20)
     let b2 = new Brick({ scene: this, x: brick.x + brick.width / 2 + 5, y: brick.y, width: brick.width / 2, height: brick.height, fillColor: brick.color, fillAlpha: 0.5 })
@@ -221,9 +217,9 @@ export class GameScene extends Phaser.Scene {
     brick.destroy();
     this.tweens.add({
       targets: [b1, b2],
-      y: 500,
-      duration: 3200,
-      ease: 'Power2',
+      props: {
+        y: { value: '600', duration: 2500, ease: 'Bounce.easeOut' }
+      },
       onComplete: () => {
         // brick.destroy();
         b1.destroy();
@@ -232,17 +228,7 @@ export class GameScene extends Phaser.Scene {
         this.events.emit('scoreChanged');
       }
     })
-    // this.tweens.add({
-    //   targets: brick,
-    //   scale: 0.1,
-    //   ease: 'Linear',
-    //   duration: 500,
-    //   onComplete: () => {
-    //     brick.destroy();
-    //     settings.score += 10;
-    //     this.events.emit('scoreChanged');
-    //   }
-    // })
+
 
     if (this.bricks.countActive() === 0) {
       // all bricks are gone!
