@@ -224,7 +224,7 @@ export class GameScene extends Phaser.Scene {
         y: y + Math.random() * 40,
         duration: 1000,
         scale: { from: 1, to: 0.25, ease: 'Quad.easeOut' },
-        alpha: { from: 1, to: 0, ease: 'Quad.easeIn' },
+        alpha: { from: 0.8, to: 0, ease: 'Quad.easeIn' },
         onComplete: () => {
           // brick.destroy();
           b.destroy();
