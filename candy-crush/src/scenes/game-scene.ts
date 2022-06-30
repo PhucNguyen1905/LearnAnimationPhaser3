@@ -320,8 +320,19 @@ export class GameScene extends Phaser.Scene {
 
         // Remove the tile from the theoretical grid
         if (tilePos.x !== -1 && tilePos.y !== -1) {
-          tile.destroy();
+          tile.setDepth(5);
+          this.tweens.add({
+            targets: tile,
+            props: {
+              y: { value: '600', duration: 2000, ease: 'Bounce.easeOut' }
+            },
+            onComplete: () => {
+              tile.destroy();
+
+            }
+          })
           this.tileGrid[tilePos.y][tilePos.x] = undefined;
+
         }
       }
     }
