@@ -13,8 +13,8 @@ export class GameScene extends Phaser.Scene {
   private secondSelectedTile: Tile;
 
   private particles: Phaser.GameObjects.Particles.ParticleEmitterManager;
-  private circle1: Phaser.GameObjects.Particles.ParticleEmitter;
-  private circle2: Phaser.GameObjects.Particles.ParticleEmitter;
+  private circleEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
+  private lightEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
   constructor() {
     super({
@@ -59,21 +59,27 @@ export class GameScene extends Phaser.Scene {
     this.particles = this.add.particles('flares');
 
     let path = new Phaser.Curves.Path(0, 0).circleTo(35);
-    this.circle1 = this.particles.createEmitter({
+    this.circleEmitter = this.particles.createEmitter({
       frame: { frames: ['red', 'green', 'blue'], cycle: true },
       scale: { start: 0.1, end: 0 },
       blendMode: 'ADD',
       emitZone: { type: 'edge', source: path, quantity: 48, yoyo: false }
     });
-    this.circle1.stop();
+    this.circleEmitter.stop();
 
-    this.circle2 = this.particles.createEmitter({
-      frame: { frames: ['red', 'green', 'blue'], cycle: true },
-      scale: { start: 0.1, end: 0 },
-      blendMode: 'ADD',
-      emitZone: { type: 'edge', source: path, quantity: 48, yoyo: false }
+    this.lightEmitter = this.add.particles('spark').createEmitter({
+      speed: 100,
+      lifespan: 100,
+      blendMode: Phaser.BlendModes.ADD,
+      x: -100,
+      y: -100,
+      alpha: 0.4,
+      scale: 0.2
+    })
+    this.input.on('pointermove', (pointer: any) => {
+      this.lightEmitter.setPosition(pointer.x, pointer.y);
+      this.lightEmitter.setPosition(pointer.x, pointer.y);
     });
-    this.circle2.stop();
 
   }
 
@@ -109,7 +115,7 @@ export class GameScene extends Phaser.Scene {
 
       if (!this.firstSelectedTile) {
         this.firstSelectedTile = gameobject;
-        this.emitCirclePar(gameobject, this.circle1)
+        this.emitCirclePar(gameobject)
       } else {
         // So if we are here, we must have selected a second tile
         this.secondSelectedTile = gameobject;
@@ -124,20 +130,19 @@ export class GameScene extends Phaser.Scene {
         // Check if the selected tiles are both in range to make a move
         if ((dx === 1 && dy === 0) || (dx === 0 && dy === 1)) {
           this.canMove = false;
-          this.emitCirclePar(gameobject, this.circle2)
           this.swapTiles();
         }
         else {
           this.secondSelectedTile = undefined;
           this.firstSelectedTile = gameobject;
           this.canMove = true;
-          this.emitCirclePar(gameobject, this.circle1)
+          this.emitCirclePar(gameobject)
         }
       }
     }
   }
 
-  private emitCirclePar(gameobject: any, circle: Phaser.GameObjects.Particles.ParticleEmitter) {
+  private emitCirclePar(gameobject: any) {
     // emit particle
     let x = gameobject.x + gameobject.width;
     let y = gameobject.y + gameobject.height / 2
@@ -145,14 +150,9 @@ export class GameScene extends Phaser.Scene {
       x += 5;
       y += 3;
     }
-    circle.setPosition(x, y)
-    circle.start();
+    this.circleEmitter.setPosition(x, y)
+    this.circleEmitter.start();
 
-  }
-
-  private setUnVisibleBothCir() {
-    this.circle1.stop();
-    this.circle2.stop();
   }
 
 
@@ -225,7 +225,7 @@ export class GameScene extends Phaser.Scene {
       this.time.addEvent({
         delay: 300,
         callback: () => {
-          this.setUnVisibleBothCir();
+          this.circleEmitter.stop()
         },
         loop: false
       })
@@ -244,13 +244,13 @@ export class GameScene extends Phaser.Scene {
       this.tileUp();
       this.canMove = true;
 
-      this.time.addEvent({
-        delay: 1000,
-        callback: () => {
-          this.setUnVisibleBothCir();
-        },
-        loop: false
-      })
+      // this.time.addEvent({
+      //   delay: 800,
+      //   callback: () => {
+      //     this.circleEmitter.stop()
+      //   },
+      //   loop: false
+      // })
     }
   }
 

@@ -41,7 +41,9 @@ export class GameScene extends Phaser.Scene {
 
     this.createEvents();
 
-    this.setupPhysic(); this.createParticle();
+    this.setupPhysic();
+
+    this.createParticle();
   }
 
   createBricks() {
@@ -143,8 +145,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   createParticle() {
-    this.particles = this.add.particles('snow');
-    this.emitter = this.particles.createEmitter({
+    this.emitter = this.add.particles('snow').createEmitter({
       lifespan: 200,
       speed: 50,
       alpha: 0.2,
