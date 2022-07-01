@@ -153,7 +153,7 @@ export class GameScene extends Phaser.Scene {
       speedY: { min: 0, max: 100 },
       gravityX: 0,
       gravityY: 200,
-      follow: this.player,
+      // follow: this.player,
       scale: { start: 0.4, end: 0.2 },
       blendMode: 'ADD'
     });
@@ -187,7 +187,7 @@ export class GameScene extends Phaser.Scene {
   }
   updateEmitter() {
     if (this.isPlayerJumping) {
-      // this.tailEmitter.setPosition(this.player.x - 5, this.player.y + this.player.width / 2)
+      this.tailEmitter.setPosition(this.player.x - 5, this.player.y + this.player.width / 2)
       this.tailEmitter.visible = true;
     } else {
       this.tailEmitter.visible = false;
@@ -248,9 +248,13 @@ export class GameScene extends Phaser.Scene {
         player.body.setAllowGravity(false)
         this.isBouncing = true;
         if (this.currentVeloc > 100) {
+          let yPos = tower.y - this.currentVeloc * 0.15
+          if (yPos < 30) {
+            yPos = 80;
+          }
           this.tweens.add({
             targets: player,
-            y: tower.y - this.currentVeloc * 0.15,
+            y: yPos,
             duration: 400,
             ease: 'Power1',
             onComplete: () => {
@@ -260,8 +264,8 @@ export class GameScene extends Phaser.Scene {
                   y: { value: tower.y - player.width, duration: 1500, ease: 'Bounce.easeOut' }
                 },
                 onUpdate: () => {
-                  if (player.y + player.width <= tower.y - 1 && player.y + player.width >= tower.y - 2) {
-                    this.bounceColEmitter.explode(5, tower.x + settings.BLOCK_WIDTH / 2, tower.y)
+                  if (player.y + player.width <= tower.y - 0.5 && player.y + player.width >= tower.y - 3) {
+                    this.bounceColEmitter.explode(1, tower.x + settings.BLOCK_WIDTH / 2, tower.y)
                   }
                 },
                 onComplete: () => {
