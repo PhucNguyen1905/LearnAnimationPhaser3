@@ -16,8 +16,6 @@ export class GameScene extends Phaser.Scene {
   private bounceWallEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
   private bounceBrickEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
   private fire: Phaser.GameObjects.Particles.ParticleEmitter;
-  private whiteSmoke: Phaser.GameObjects.Particles.ParticleEmitter;
-  private darkSmoke: Phaser.GameObjects.Particles.ParticleEmitter;
 
   constructor() {
     super({
