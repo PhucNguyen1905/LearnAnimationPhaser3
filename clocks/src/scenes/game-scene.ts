@@ -27,6 +27,19 @@ export class GameScene extends Phaser.Scene {
   }
 
   create(): void {
+    this.createClockGroup();
+
+    this.activeClock = Phaser.Utils.Array.GetRandom(this.clocksArray);
+    this.activeClock.setActiveAppearance();
+
+    this.createBall();
+
+    this.input.on('pointerdown', this.throwBall, this);
+
+    this.createColliders();
+  }
+
+  createClockGroup() {
     this.clocksArray = [];
     this.clockGroup = this.add.group();
 
@@ -63,10 +76,9 @@ export class GameScene extends Phaser.Scene {
           break;
       }
     }
+  }
 
-    this.activeClock = Phaser.Utils.Array.GetRandom(this.clocksArray);
-    this.activeClock.setActiveAppearance();
-
+  createBall() {
     this.ball = new Ball({
       scene: this,
       x: +this.game.config.width / 2,
@@ -81,9 +93,9 @@ export class GameScene extends Phaser.Scene {
       },
       this
     );
+  }
 
-    this.input.on('pointerdown', this.throwBall, this);
-
+  createColliders() {
     this.physics.add.overlap(
       this.ball,
       this.clockGroup,
