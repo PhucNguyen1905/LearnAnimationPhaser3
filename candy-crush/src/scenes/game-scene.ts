@@ -12,7 +12,6 @@ export class GameScene extends Phaser.Scene {
   private firstSelectedTile: Tile;
   private secondSelectedTile: Tile;
 
-  private particles: Phaser.GameObjects.Particles.ParticleEmitterManager;
   private circleEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
   private lightEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
@@ -56,11 +55,9 @@ export class GameScene extends Phaser.Scene {
   }
 
   createParticles() {
-    // Create paricles;
-    this.particles = this.add.particles('flares');
 
     let path = new Phaser.Curves.Path(0, 0).circleTo(35);
-    this.circleEmitter = this.particles.createEmitter({
+    this.circleEmitter = this.add.particles('flares').createEmitter({
       frame: { frames: ['red', 'green', 'blue'], cycle: true },
       scale: { start: 0.1, end: 0 },
       blendMode: 'ADD',

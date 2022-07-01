@@ -7,7 +7,9 @@ export class GameScene extends Phaser.Scene {
   private coinsCollectedText: Phaser.GameObjects.Text;
   private collectedCoins: number;
   private player: Player;
+
   private touchEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
+  private circleEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
   constructor() {
     super({
@@ -91,6 +93,16 @@ export class GameScene extends Phaser.Scene {
       blendMode: 'ADD',
       lifespan: 500,
       gravityY: 800
+    });
+
+    let path = new Phaser.Curves.Path(0, 0).circleTo(35);
+    this.circleEmitter = this.add.particles('flares').createEmitter({
+      frame: { frames: ['red', 'green', 'blue'], cycle: true },
+      scale: { start: 0.1, end: 0 },
+      blendMode: 'ADD',
+      emitZone: { type: 'edge', source: path, quantity: 48, yoyo: false },
+      follow: this.coin,
+      followOffset: { x: 35 }
     });
   }
 
