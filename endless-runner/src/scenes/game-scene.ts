@@ -4,6 +4,8 @@ export class GameScene extends Phaser.Scene {
   private player: Phaser.GameObjects.Rectangle;
   private towers: Phaser.GameObjects.Group;
   private isPlayerJumping: boolean;
+  private isBouncing: boolean;
+  private currentVeloc: number;
   private loadingBar: Phaser.GameObjects.Rectangle;
   private loadingBarTween: Phaser.Tweens.Tween;
 
@@ -15,10 +17,24 @@ export class GameScene extends Phaser.Scene {
 
   init(): void {
     this.isPlayerJumping = false;
+    this.isBouncing = false;
+    this.currentVeloc = 0;
     settings.createTowerXPosition = 0;
   }
 
   create(): void {
+    this.createLoadingBar();
+
+    this.createTowers();
+
+    this.createColliders();
+
+    this.createInput();
+
+    this.createCamera();
+  }
+
+  createLoadingBar() {
     this.loadingBar = this.add
       .rectangle(
         0,
@@ -44,6 +60,9 @@ export class GameScene extends Phaser.Scene {
       })
       .pause();
 
+  }
+
+  createTowers() {
     this.towers = this.add.group();
 
     for (let i = 0; i < settings.MAX_ACTIVE_TOWERS; i++) {
@@ -64,6 +83,9 @@ export class GameScene extends Phaser.Scene {
       }
     }
 
+  }
+
+  createColliders() {
     // add colliders
     this.physics.add.collider(
       this.player,
@@ -73,11 +95,14 @@ export class GameScene extends Phaser.Scene {
       this
     );
 
+  }
+
+  createInput() {
     // setup input
     this.input.on(
       'pointerdown',
       () => {
-        if (!this.isPlayerJumping) {
+        if (!this.isPlayerJumping && !this.isBouncing) {
           this.loadingBarTween.restart();
         }
       },
@@ -85,6 +110,9 @@ export class GameScene extends Phaser.Scene {
     );
     this.input.on('pointerup', this.playerJump, this);
 
+  }
+
+  createCamera() {
     // setup camera
     this.cameras.main.setBounds(
       0,
@@ -113,6 +141,9 @@ export class GameScene extends Phaser.Scene {
     if (this.player.y > this.game.config.height) {
       this.scene.start('GameScene');
     }
+    if (this.currentVeloc < this.player.body.velocity.y) {
+      this.currentVeloc = this.player.body.velocity.y
+    }
   }
 
   private spawnNewTower(): void {
@@ -132,7 +163,7 @@ export class GameScene extends Phaser.Scene {
       .rectangle(
         settings.createTowerXPosition,
         +this.game.config.height - towerHeight,
-        settings.BLOCK_WIDTH,
+        settings.BLOCK_WIDTH * 1.5,
         towerHeight,
         settings.TOWER_PROPERTIES.COLOR
       )
@@ -149,7 +180,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private playerJump(): void {
-    if (!this.isPlayerJumping) {
+    if (!this.isPlayerJumping && !this.isBouncing) {
       const playerBody = this.player.body as Phaser.Physics.Arcade.Body;
       playerBody.setVelocityY(-this.loadingBar.width);
       this.isPlayerJumping = true;
@@ -161,7 +192,37 @@ export class GameScene extends Phaser.Scene {
   private playerTowerCollision(player: any, tower: any): void {
     if (tower.body.touching.up) {
       player.body.setVelocity(0);
-      this.isPlayerJumping = false;
+      if (this.isPlayerJumping) {
+        console.log(this.currentVeloc)
+        this.isPlayerJumping = false;
+        player.body.setAllowGravity(false)
+        this.isBouncing = true;
+        if (this.currentVeloc > 100) {
+          this.tweens.add({
+            targets: player,
+            y: tower.y - this.currentVeloc * 0.15,
+            duration: 400,
+            ease: 'Power1',
+            onComplete: () => {
+              this.tweens.add({
+                targets: player,
+                props: {
+                  y: { value: tower.y - player.width, duration: 1500, ease: 'Bounce.easeOut' }
+                },
+                onComplete: () => {
+                  player.body.setAllowGravity(true)
+                  this.isBouncing = false;
+                  this.currentVeloc = 0;
+                }
+              })
+            }
+          })
+        } else {
+          player.body.setAllowGravity(true)
+          this.isBouncing = false;
+          this.currentVeloc = 0;
+        }
+      }
     }
   }
 }
