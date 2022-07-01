@@ -14,6 +14,7 @@ export class GameScene extends Phaser.Scene {
   private livesText: Phaser.GameObjects.BitmapText;
 
   private bounceWallEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
+  private bounceBrickEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
   private fire: Phaser.GameObjects.Particles.ParticleEmitter;
   private whiteSmoke: Phaser.GameObjects.Particles.ParticleEmitter;
   private darkSmoke: Phaser.GameObjects.Particles.ParticleEmitter;
@@ -120,7 +121,12 @@ export class GameScene extends Phaser.Scene {
   createColliders() {
     // collisions
     // ----------
-    this.physics.add.collider(this.player, this.ball);
+    this.physics.add.collider(
+      this.ball,
+      this.player,
+      this.ballPlayerCollision,
+      null,
+      this);
     this.physics.add.collider(
       this.ball,
       this.bricks,
@@ -148,25 +154,40 @@ export class GameScene extends Phaser.Scene {
 
   createParticle() {
     this.bounceWallEmitter = this.add.particles('snow').createEmitter({
+      x: -100,
+      y: -100,
       lifespan: 200,
       speed: 50,
       alpha: 0.2,
       scale: 0.1,
-      visible: false,
       blendMode: Phaser.BlendModes.COLOR
     });
 
+    this.bounceBrickEmitter = this.add.particles('flares').createEmitter({
+      x: -100,
+      y: -100,
+      frame: 'red',
+      speed: { min: -200, max: 200 },
+      angle: { min: 0, max: 360 },
+      scale: { start: 0.2, end: 0 },
+      blendMode: 'ADD',
+      lifespan: 500,
+      gravityY: 800
+    });
+
     this.fire = this.add.particles('flares').createEmitter({
-      frame: 'yellow',
+      frame: { frames: ['green', 'yellow'], cycle: true },
       x: 100,
       y: 300,
       lifespan: 200,
+      speedX: 0,
       speedY: { min: -100, max: 100 },
-      scale: { start: 0.7, end: 0.2 },
-      blendMode: 'ADD'
+      scale: { start: 0.2, end: 0 },
+      blendMode: 'ADD',
+      follow: this.ball,
+      followOffset: { x: 5, y: 5 }
 
     });
-    this.fire.setScale(0.2)
     this.fire.visible = false;
     this.fire.reserve(1000);
 
@@ -183,12 +204,6 @@ export class GameScene extends Phaser.Scene {
       this.ball.setVisible(true);
     }
     if (this.ball.visible) {
-
-      if (this.ball.body.velocity.y < 0) {
-        this.fire.setPosition(this.ball.x + 5, this.ball.y + 8);
-      } else {
-        this.fire.setPosition(this.ball.x + 5, this.ball.y - 2);
-      }
       this.fire.visible = true;
     }
 
@@ -216,6 +231,7 @@ export class GameScene extends Phaser.Scene {
     b2.setAngle(20)
     let y = brick.y;
     let x = brick.x;
+    this.bounceBrickEmitter.explode(5, x, y);
     brick.destroy();
     for (const b of [b1, b2]) {
       this.tweens.add({
@@ -243,16 +259,11 @@ export class GameScene extends Phaser.Scene {
   }
 
   private ballHitWorldBounds(ballBody: Phaser.Physics.Arcade.Body) {
-    this.bounceWallEmitter.setPosition(ballBody.x, ballBody.y);
-    this.bounceWallEmitter.setVisible(true)
-    this.bounceWallEmitter.start();
-    this.time.addEvent({
-      delay: 300,
-      loop: false,
-      callback: () => {
-        this.bounceWallEmitter.stop();
-      }
-    })
+    this.bounceWallEmitter.explode(35, ballBody.x, ballBody.y)
+
+  }
+  private ballPlayerCollision(ball: Ball, player: Player) {
+    this.bounceWallEmitter.explode(35, ball.x, ball.y)
 
   }
 
