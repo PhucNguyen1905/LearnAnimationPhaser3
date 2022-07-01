@@ -6,6 +6,9 @@ export class GameScene extends Phaser.Scene {
   private enemies: Phaser.GameObjects.Group;
   private player: Player;
 
+  private fireEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
+  private touchEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
+
   constructor() {
     super({
       key: 'GameScene'
@@ -21,6 +24,8 @@ export class GameScene extends Phaser.Scene {
     this.createPlayer();
 
     this.createEnemies();
+
+    this.createParticles();
   }
 
   createPlayer() {
@@ -57,6 +62,35 @@ export class GameScene extends Phaser.Scene {
         );
       }
     }
+  }
+
+  createParticles() {
+    this.fireEmitter = this.add.particles('fire').createEmitter({
+      // alpha: { start: 1, end: 0 },
+      scale: { start: 0.05, end: 0.25 },
+      speed: 20,
+      accelerationY: 300,
+      angle: { min: -85, max: -95 },
+      rotate: { min: -180, max: 180 },
+      lifespan: { min: 300, max: 400 },
+      blendMode: 'ADD',
+      frequency: 50,
+      follow: this.player,
+      followOffset: { x: 0.3, y: 7 }
+    });
+
+    this.touchEmitter = this.add.particles('flares').createEmitter({
+      x: -100,
+      y: -100,
+      frame: 'red',
+      speed: { min: -200, max: 200 },
+      angle: { min: 0, max: 360 },
+      scale: { start: 0.05, end: 0 },
+      blendMode: 'ADD',
+      lifespan: 500,
+      gravityY: 800
+    });
+
   }
 
   update(): void {
@@ -96,12 +130,33 @@ export class GameScene extends Phaser.Scene {
   }
 
   private bulletHitEnemy(bullet: Bullet, enemy: Enemy): void {
+    this.touchEmitter.explode(5, enemy.x, enemy.y)
     bullet.destroy();
     enemy.gotHurt();
+    let scoreText = this.add.text(
+      this.player.x,
+      this.player.y,
+      enemy.valueKill.toString(),
+      { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif', fontSize: '10px' }
+    )
+    this.tweens.add(
+      {
+        targets: scoreText,
+        props: { y: scoreText.y - 25 },
+        duration: 800,
+        ease: 'Power0',
+        yoyo: false,
+        onComplete: () => {
+          scoreText.destroy();
+        }
+      }
+    )
   }
 
   private bulletHitPlayer(bullet: Bullet, player: Player): void {
-    bullet.destroy();
-    player.gotHurt();
+    if (this.player.alpha == 1) {
+      bullet.destroy();
+      player.gotHurt();
+    }
   }
 }

@@ -13,7 +13,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
   private lives: number;
   private moveTween: Phaser.Tweens.Tween;
   private reloadTime: number;
-  private valueKill: number;
+  public valueKill: number;
 
   public getBullets(): Phaser.GameObjects.Group {
     return this.bullets;

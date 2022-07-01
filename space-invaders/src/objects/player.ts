@@ -95,6 +95,25 @@ export class Player extends Phaser.GameObjects.Image {
 
     // reset position
     this.x = this.scene.sys.canvas.width / 2;
-    this.y = this.scene.sys.canvas.height - 40;
+    this.alpha = 0.5;
+    this.y = this.scene.sys.canvas.height + 5;
+
+    if (this.scene.registry.get('lives') >= 0) {
+      this.scene.tweens.add({
+        targets: this,
+        y: this.scene.sys.canvas.height - 40,
+        ease: 'Power1',
+        duration: 1500,
+        repeat: 0,
+        onComplete: () => {
+          this.alpha = 1;
+        },
+        delay: 500
+
+      })
+    } else {
+      this.y = this.scene.sys.canvas.height - 40;
+      this.alpha = 1;
+    }
   }
 }
