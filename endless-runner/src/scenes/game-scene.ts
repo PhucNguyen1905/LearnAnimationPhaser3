@@ -9,10 +9,16 @@ export class GameScene extends Phaser.Scene {
   private loadingBar: Phaser.GameObjects.Rectangle;
   private loadingBarTween: Phaser.Tweens.Tween;
 
+  private tailEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
+  private bounceColEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
+
   constructor() {
     super({
       key: 'GameScene'
     });
+  }
+  preload() {
+    this.load.atlas('flares', 'assets/particles/flares.png', 'assets/particles/flares.json');
   }
 
   init(): void {
@@ -32,6 +38,8 @@ export class GameScene extends Phaser.Scene {
     this.createInput();
 
     this.createCamera();
+
+    this.createParEmitter();
   }
 
   createLoadingBar() {
@@ -123,6 +131,35 @@ export class GameScene extends Phaser.Scene {
     this.cameras.main.startFollow(this.player);
   }
 
+  createParEmitter() {
+    this.bounceColEmitter = this.add.particles('flares').createEmitter({
+      x: -100,
+      y: -100,
+      frame: 'red',
+      speed: { min: -200, max: 200 },
+      angle: { min: 0, max: 360 },
+      scale: { start: 0.4, end: 0 },
+      blendMode: 'ADD',
+      lifespan: 500,
+      gravityY: 800
+    });
+
+    this.tailEmitter = this.add.particles('flares').createEmitter({
+      frame: 'yellow',
+      lifespan: 400,
+      x: -100,
+      y: -100,
+      speedX: { start: -100, end: -400, steps: -1 },
+      speedY: { min: 0, max: 100 },
+      gravityX: 0,
+      gravityY: 200,
+      follow: this.player,
+      scale: { start: 0.4, end: 0.2 },
+      blendMode: 'ADD'
+    });
+    this.tailEmitter.visible = false;
+  }
+
   update(): void {
     this.towers.getChildren().forEach((tower) => {
       const towerBody = tower.body as Phaser.Physics.Arcade.Body;
@@ -144,6 +181,18 @@ export class GameScene extends Phaser.Scene {
     if (this.currentVeloc < this.player.body.velocity.y) {
       this.currentVeloc = this.player.body.velocity.y
     }
+
+    this.updateEmitter()
+
+  }
+  updateEmitter() {
+    if (this.isPlayerJumping) {
+      // this.tailEmitter.setPosition(this.player.x - 5, this.player.y + this.player.width / 2)
+      this.tailEmitter.visible = true;
+    } else {
+      this.tailEmitter.visible = false;
+    }
+
   }
 
   private spawnNewTower(): void {
@@ -163,7 +212,7 @@ export class GameScene extends Phaser.Scene {
       .rectangle(
         settings.createTowerXPosition,
         +this.game.config.height - towerHeight,
-        settings.BLOCK_WIDTH * 1.5,
+        settings.BLOCK_WIDTH,
         towerHeight,
         settings.TOWER_PROPERTIES.COLOR
       )
@@ -195,6 +244,7 @@ export class GameScene extends Phaser.Scene {
       if (this.isPlayerJumping) {
         console.log(this.currentVeloc)
         this.isPlayerJumping = false;
+        this.bounceColEmitter.explode(5, tower.x + settings.BLOCK_WIDTH / 2, tower.y)
         player.body.setAllowGravity(false)
         this.isBouncing = true;
         if (this.currentVeloc > 100) {
@@ -208,6 +258,11 @@ export class GameScene extends Phaser.Scene {
                 targets: player,
                 props: {
                   y: { value: tower.y - player.width, duration: 1500, ease: 'Bounce.easeOut' }
+                },
+                onUpdate: () => {
+                  if (player.y + player.width <= tower.y - 1 && player.y + player.width >= tower.y - 2) {
+                    this.bounceColEmitter.explode(5, tower.x + settings.BLOCK_WIDTH / 2, tower.y)
+                  }
                 },
                 onComplete: () => {
                   player.body.setAllowGravity(true)
