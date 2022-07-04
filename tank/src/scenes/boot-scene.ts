@@ -49,6 +49,12 @@ export class BootScene extends Phaser.Scene {
     this.load.image('soundtrue', 'assets/images/mute.png');
     this.load.image('back', 'assets/images/back.png');
 
+
+    this.load.audio('shoot', 'assets/sounds/shoot.mp3');
+    this.load.audio('hit', 'assets/sounds/hit.mp3');
+    this.load.audio('hit_enemy', 'assets/sounds/hit_enemy.mp3');
+    this.load.audio('boom', 'assets/sounds/boom.mp3');
+
   }
 
   update(): void {
