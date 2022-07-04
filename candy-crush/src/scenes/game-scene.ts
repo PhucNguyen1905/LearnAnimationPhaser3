@@ -15,6 +15,9 @@ export class GameScene extends Phaser.Scene {
   private circleEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
   private lightEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
+  private glowEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
+  private zone: Phaser.GameObjects.Zone;
+
   constructor() {
     super({
       key: 'GameScene'
@@ -77,6 +80,27 @@ export class GameScene extends Phaser.Scene {
     this.input.on('pointermove', (pointer: any) => {
       this.lightEmitter.setPosition(pointer.x, pointer.y);
       this.lightEmitter.setPosition(pointer.x, pointer.y);
+    });
+
+
+    let logoSource = {
+      getRandomPoint: (vec: any) => {
+        let x = Phaser.Math.Between(0, this.sys.canvas.width - 1);
+        let y = Phaser.Math.Between(0, this.sys.canvas.height - 150);
+
+        return vec.setTo(x, y);
+      }
+    };
+
+    this.glowEmitter = this.add.particles('flares').createEmitter({
+      x: 0,
+      y: 0,
+      lifespan: 1000,
+      gravityY: 10,
+      scale: { start: 0, end: 0.25, ease: 'Quad.easeOut' },
+      alpha: { start: 1, end: 0, ease: 'Quad.easeIn' },
+      blendMode: 'ADD',
+      emitZone: { type: 'random', source: logoSource }
     });
 
   }
