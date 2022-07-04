@@ -88,7 +88,7 @@ export class GameScene extends Phaser.Scene {
     // Phaser.Display.Align.To.BottomRight(this.pauseBtn, this.scene.)
 
     this.pauseBtn.on('pointerover', () => {
-      this.pauseBtn.setTint(0xff0000);
+      this.pauseBtn.setTint(0x76BA99);
     });
     this.pauseBtn.on('pointerout', () => {
       this.pauseBtn.clearTint();
