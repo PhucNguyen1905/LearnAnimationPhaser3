@@ -317,14 +317,16 @@ export class GameScene extends Phaser.Scene {
             targets: tempTile,
             y: CONST.tileHeight * y,
             ease: 'Linear',
-            duration: 200,
+            duration: 400,
             repeat: 0,
             yoyo: false
           });
 
+
           //The positions have changed so start this process again from the bottom
           //NOTE: This is not set to me.tileGrid[i].length - 1 because it will immediately be decremented as
           //we are at the end of the loop.
+          y = this.tileGrid.length - 1;
           x = this.tileGrid[y].length;
         }
       }
@@ -338,6 +340,18 @@ export class GameScene extends Phaser.Scene {
         if (this.tileGrid[y][x] === undefined) {
           //Found a blank spot so lets add animate a tile there
           let tile = this.addTile(x, y);
+          let t = this.tweens.add({
+            targets: tile,
+            scale: {
+              from: 0,
+              to: 1
+            },
+            duration: 500,
+            ease: 'Linear',
+            onComplete: () => {
+              t.remove()
+            }
+          })
 
           //And also update our "theoretical" grid
           this.tileGrid[y][x] = tile;
