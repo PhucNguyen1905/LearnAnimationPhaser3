@@ -143,6 +143,7 @@ export class Player extends Phaser.GameObjects.Image {
       });
 
       if (this.bullets.getLength() < 10) {
+        this.scene.sound.play('shoot')
         this.bullets.add(
           new Bullet({
             scene: this.scene,
@@ -174,6 +175,7 @@ export class Player extends Phaser.GameObjects.Image {
 
   public updateHealth(): void {
     if (this.health > 0) {
+      this.scene.sound.play('hit')
       this.health -= 0.0005;
       this.redrawLifebar();
     } else {

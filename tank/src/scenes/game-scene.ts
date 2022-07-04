@@ -14,11 +14,6 @@ export class GameScene extends Phaser.Scene {
 
   private pauseBtn: Phaser.GameObjects.Image;
 
-  private hitSound: Phaser.Sound.BaseSound;
-  private hitEnemySound: Phaser.Sound.BaseSound;
-  private shootSound: Phaser.Sound.BaseSound;
-  private boomSound: Phaser.Sound.BaseSound;
-
   private target: Phaser.Math.Vector2;
 
   constructor() {
@@ -71,7 +66,6 @@ export class GameScene extends Phaser.Scene {
 
     this.createButtons();
 
-    this.createSounds();
 
     this.createEvents();
 
@@ -108,12 +102,6 @@ export class GameScene extends Phaser.Scene {
 
   }
 
-  createSounds() {
-    this.hitSound = this.sound.add('hit')
-    this.hitEnemySound = this.sound.add('hit_enemy')
-    this.shootSound = this.sound.add('shoot')
-    this.boomSound = this.sound.add('boom')
-  }
 
   createEvents() {
     this.events.on('pause', function () {
