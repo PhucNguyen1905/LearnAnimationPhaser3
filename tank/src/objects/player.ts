@@ -173,12 +173,24 @@ export class Player extends Phaser.GameObjects.Image {
     this.lifeBar.setDepth(1);
   }
 
+  private updateHighScore() {
+    let highScore = this.scene.registry.get('highScore');
+    let score = this.scene.registry.get('score');
+    if (!highScore || score > highScore) {
+      highScore = score
+    }
+    this.scene.registry.set('highScore', highScore)
+  }
+
   public updateHealth(): void {
     if (this.health > 0) {
       this.scene.sound.play('hit')
       this.health -= 0.0005;
       this.redrawLifebar();
     } else {
+      this.scene.sound.play('boom')
+      this.updateHighScore();
+
       this.health = 0;
       this.active = false;
       this.scene.scene.start('MenuScene');

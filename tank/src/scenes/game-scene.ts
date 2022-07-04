@@ -14,6 +14,8 @@ export class GameScene extends Phaser.Scene {
 
   private pauseBtn: Phaser.GameObjects.Image;
 
+  private scoreText: Phaser.GameObjects.Text;
+
   private target: Phaser.Math.Vector2;
 
   constructor() {
@@ -22,7 +24,9 @@ export class GameScene extends Phaser.Scene {
     });
   }
 
-  init(): void { }
+  init(): void {
+    this.registry.set('score', 0);
+  }
 
   create(): void {
     this.createTilemap();
@@ -69,6 +73,8 @@ export class GameScene extends Phaser.Scene {
 
     this.createEvents();
 
+    this.createScoreText();
+
   }
 
   createTilemap() {
@@ -111,6 +117,10 @@ export class GameScene extends Phaser.Scene {
     this.events.on('resume', function () {
       console.log('Game Scene resumed');
     })
+  }
+  createScoreText() {
+    this.scoreText = this.add.text(10, 10, 'Score: 0').setScrollFactor(0);
+    this.scoreText.setFontSize(50);
   }
 
   createGameObjects() {
@@ -159,6 +169,8 @@ export class GameScene extends Phaser.Scene {
 
   update(): void {
     this.player.update();
+
+    this.scoreText.setText('Score: ' + this.registry.get('score'))
 
     this.enemies.children.each((enemy: Enemy) => {
       enemy.update();

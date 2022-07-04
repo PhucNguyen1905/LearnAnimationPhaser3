@@ -126,6 +126,9 @@ export class Enemy extends Phaser.GameObjects.Image {
       this.redrawLifebar();
     } else {
       this.scene.sound.play('boom')
+
+      // Update score
+      this.scene.registry.set('score', this.scene.registry.get('score') + 1);
       this.health = 0;
       this.active = false;
     }
