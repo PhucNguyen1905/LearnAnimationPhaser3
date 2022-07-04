@@ -28,7 +28,20 @@ export class PauseMenu extends Phaser.Scene {
     }
 
     createContainer() {
-        this.add.container(this.sys.canvas.width / 2 - 100, this.sys.canvas.height / 2, [this.background, this.contBtn, this.restartBtn, this.soundBtn])
+        this.container = this.add.container(
+            this.sys.canvas.width / 2 - 100,
+            this.sys.canvas.height / 2,
+            [this.background, this.contBtn, this.restartBtn, this.soundBtn]);
+
+        this.tweens.add({
+            targets: this.container,
+            scale: {
+                from: 0,
+                to: 1
+            },
+            duration: 300,
+            ease: 'Linear'
+        })
     }
 
     createInputHandler() {
@@ -53,12 +66,36 @@ export class PauseMenu extends Phaser.Scene {
         });
 
         this.contBtn.on('pointerup', () => {
-            this.scene.resume('GameScene');
-            this.scene.stop();
+            this.tweens.add({
+                targets: this.container,
+                scale: {
+                    from: 1,
+                    to: 0
+                },
+                duration: 250,
+                ease: 'Linear',
+                onComplete: () => {
+                    this.scene.resume('GameScene');
+                    this.scene.stop();
+                }
+            })
+
         })
         this.restartBtn.on('pointerup', () => {
-            this.scene.start('GameScene');
-            this.scene.stop();
+            this.tweens.add({
+                targets: this.container,
+                scale: {
+                    from: 1,
+                    to: 0
+                },
+                duration: 250,
+                ease: 'Linear',
+                onComplete: () => {
+                    this.scene.start('GameScene');
+                    this.scene.stop();
+                }
+            })
+
         })
         this.soundBtn.on('pointerup', () => {
             if (this.sound.mute) {
