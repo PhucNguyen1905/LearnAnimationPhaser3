@@ -24,7 +24,7 @@ export class PauseMenu extends Phaser.Scene {
         this.background = this.add.image(150, 0, 'back').setScale(2.5, 1.6);
         this.contBtn = this.add.sprite(0, 0, 'continue').setInteractive();
         this.restartBtn = this.add.sprite(150, 0, 'restart').setInteractive();
-        this.soundBtn = this.add.sprite(300, 0, 'sound').setInteractive();
+        this.soundBtn = this.add.sprite(300, 0, 'sound' + this.sound.mute).setInteractive();
     }
 
     createContainer() {
@@ -51,19 +51,19 @@ export class PauseMenu extends Phaser.Scene {
             this.soundBtn.clearTint();
         });
 
-
-
         this.contBtn.on('pointerup', () => {
             this.scene.resume('GameScene');
             this.scene.stop();
         })
         this.restartBtn.on('pointerup', () => {
-            // this.scene.pause();
-            // this.scene.launch('PauseMenu');
+            this.scene.start('GameScene');
+            this.scene.stop();
         })
         this.soundBtn.on('pointerup', () => {
-            // this.scene.pause();
-            // this.scene.launch('PauseMenu');
+            this.sound.mute = !this.sound.mute;
         })
+    }
+    update(time: number, delta: number): void {
+        this.soundBtn.setTexture('sound' + this.sound.mute)
     }
 }
