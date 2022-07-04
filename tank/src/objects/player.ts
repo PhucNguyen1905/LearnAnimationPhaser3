@@ -185,7 +185,7 @@ export class Player extends Phaser.GameObjects.Image {
   public updateHealth(): void {
     if (this.health > 0) {
       this.scene.sound.play('hit')
-      this.health -= 0.0005;
+      this.health -= 0.05;
       this.redrawLifebar();
     } else {
       this.scene.sound.play('boom')
@@ -193,7 +193,8 @@ export class Player extends Phaser.GameObjects.Image {
 
       this.health = 0;
       this.active = false;
-      this.scene.scene.start('MenuScene');
+      this.scene.scene.pause();
+      this.scene.scene.launch('OverMenu');
     }
   }
 }
