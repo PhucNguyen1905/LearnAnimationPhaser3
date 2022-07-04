@@ -1,6 +1,7 @@
 import { BootScene } from './scenes/boot-scene';
 import { GameScene } from './scenes/game-scene';
 import { MenuScene } from './scenes/menu-scene';
+import { PauseMenu } from './scenes/pause-menu';
 
 export const GameConfig: Phaser.Types.Core.GameConfig = {
   title: 'Tank',
@@ -11,7 +12,7 @@ export const GameConfig: Phaser.Types.Core.GameConfig = {
   zoom: 0.6,
   type: Phaser.AUTO,
   parent: 'game',
-  scene: [BootScene, MenuScene, GameScene],
+  scene: [BootScene, MenuScene, GameScene, PauseMenu],
   input: {
     keyboard: true
   },
@@ -19,7 +20,7 @@ export const GameConfig: Phaser.Types.Core.GameConfig = {
     default: 'arcade',
     arcade: {
       gravity: { y: 0 },
-      debug: false
+      debug: true
     }
   },
   backgroundColor: '#000000',

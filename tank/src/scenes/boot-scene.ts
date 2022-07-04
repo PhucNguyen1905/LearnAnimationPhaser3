@@ -41,6 +41,9 @@ export class BootScene extends Phaser.Scene {
 
     // load our package
     this.load.pack('preload', './assets/pack.json', 'preload');
+
+    this.load.image('pauseBtn', 'assets/images/pause.png');
+
   }
 
   update(): void {

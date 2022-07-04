@@ -12,6 +12,8 @@ export class GameScene extends Phaser.Scene {
   private enemies: Phaser.GameObjects.Group;
   private obstacles: Phaser.GameObjects.Group;
 
+  private pauseBtn: Phaser.GameObjects.Image;
+
   private target: Phaser.Math.Vector2;
 
   constructor() {
@@ -61,6 +63,11 @@ export class GameScene extends Phaser.Scene {
     }, this);
 
     this.createCamera();
+
+    this.createButtons();
+
+    this.createEvents();
+
   }
 
   createTilemap() {
@@ -70,6 +77,38 @@ export class GameScene extends Phaser.Scene {
     this.tileset = this.map.addTilesetImage('tiles');
     this.layer = this.map.createLayer('tileLayer', this.tileset, 0, 0);
     this.layer.setCollisionByProperty({ collide: true });
+  }
+
+  createButtons() {
+    this.pauseBtn = this.add.sprite(this.cameras.main.width - 70, this.cameras.main.height - 65, 'pauseBtn').setInteractive();
+
+    // Fixed to camera view
+    this.pauseBtn.setScrollFactor(0)
+
+    // Phaser.Display.Align.To.BottomRight(this.pauseBtn, this.scene.)
+
+    this.pauseBtn.on('pointerover', () => {
+      this.pauseBtn.setTint(0xff0000);
+    });
+    this.pauseBtn.on('pointerout', () => {
+      this.pauseBtn.clearTint();
+    });
+
+    this.pauseBtn.on('pointerup', () => {
+      this.scene.pause();
+      this.scene.launch('PauseMenu');
+    })
+
+  }
+
+  createEvents() {
+    this.events.on('pause', function () {
+      console.log('Game Scene paused');
+    })
+
+    this.events.on('resume', function () {
+      console.log('Game Scene resumed');
+    })
   }
 
   createGameObjects() {
