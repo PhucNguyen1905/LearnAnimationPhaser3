@@ -46,6 +46,7 @@ export class PauseMenu extends Phaser.Scene {
         });
         this.soundBtn.on('pointerover', () => {
             this.soundBtn.setTint(0x76BA99);
+            this.soundBtn.setTexture('sound' + this.sound.mute)
         });
         this.soundBtn.on('pointerout', () => {
             this.soundBtn.clearTint();
@@ -60,10 +61,13 @@ export class PauseMenu extends Phaser.Scene {
             this.scene.stop();
         })
         this.soundBtn.on('pointerup', () => {
-            this.sound.mute = !this.sound.mute;
+            if (this.sound.mute) {
+                this.sound.mute = false;
+                this.soundBtn.setTexture('soundfalse');
+            } else {
+                this.sound.mute = true;
+                this.soundBtn.setTexture('soundtrue');
+            }
         })
-    }
-    update(time: number, delta: number): void {
-        this.soundBtn.setTexture('sound' + this.sound.mute)
     }
 }
