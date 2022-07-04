@@ -47,25 +47,28 @@ export class PauseMenu extends Phaser.Scene {
     createInputHandler() {
         this.contBtn.on('pointerover', () => {
             this.contBtn.setTint(0x76BA99);
+            this.sound.play('mouseover')
         });
         this.contBtn.on('pointerout', () => {
             this.contBtn.clearTint();
         });
         this.restartBtn.on('pointerover', () => {
             this.restartBtn.setTint(0x76BA99);
+            this.sound.play('mouseover')
         });
         this.restartBtn.on('pointerout', () => {
             this.restartBtn.clearTint();
         });
         this.soundBtn.on('pointerover', () => {
+            this.sound.play('mouseover')
             this.soundBtn.setTint(0x76BA99);
-            this.soundBtn.setTexture('sound' + this.sound.mute)
         });
         this.soundBtn.on('pointerout', () => {
             this.soundBtn.clearTint();
         });
 
         this.contBtn.on('pointerup', () => {
+            this.sound.play('click')
             this.tweens.add({
                 targets: this.container,
                 scale: {
@@ -82,6 +85,7 @@ export class PauseMenu extends Phaser.Scene {
 
         })
         this.restartBtn.on('pointerup', () => {
+            this.sound.play('click')
             this.tweens.add({
                 targets: this.container,
                 scale: {
@@ -98,6 +102,7 @@ export class PauseMenu extends Phaser.Scene {
 
         })
         this.soundBtn.on('pointerup', () => {
+            this.sound.play('click')
             if (this.sound.mute) {
                 this.sound.mute = false;
                 this.soundBtn.setTexture('soundfalse');

@@ -57,6 +57,8 @@ export class BootScene extends Phaser.Scene {
     this.load.audio('hit', 'assets/sounds/hit.mp3');
     this.load.audio('hit_enemy', 'assets/sounds/hit_enemy.mp3');
     this.load.audio('boom', 'assets/sounds/boom.mp3');
+    this.load.audio('click', 'assets/sounds/click.mp3');
+    this.load.audio('mouseover', 'assets/sounds/mouseover.mp3');
 
   }
 

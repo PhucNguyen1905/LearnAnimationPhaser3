@@ -95,6 +95,7 @@ export class GameScene extends Phaser.Scene {
     // Phaser.Display.Align.To.BottomRight(this.pauseBtn, this.scene.)
 
     this.pauseBtn.on('pointerover', () => {
+      this.sound.play('mouseover')
       this.pauseBtn.setTint(0x76BA99);
     });
     this.pauseBtn.on('pointerout', () => {
@@ -102,6 +103,7 @@ export class GameScene extends Phaser.Scene {
     });
 
     this.pauseBtn.on('pointerup', () => {
+      this.sound.play('click')
       this.scene.pause();
       this.scene.launch('PauseMenu');
     })

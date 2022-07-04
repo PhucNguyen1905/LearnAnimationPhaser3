@@ -53,6 +53,7 @@ export class OverMenu extends Phaser.Scene {
 
     createInputHandler() {
         this.restartBtn.on('pointerover', () => {
+            this.sound.play('mouseover')
             this.restartBtn.setTint(0x76BA99);
         });
 
@@ -61,6 +62,7 @@ export class OverMenu extends Phaser.Scene {
         });
 
         this.restartBtn.on('pointerup', () => {
+            this.sound.play('click')
             this.tweens.add({
                 targets: this.container,
                 scale: {
