@@ -129,6 +129,27 @@ export class Enemy extends Phaser.GameObjects.Image {
 
       // Update score
       this.scene.registry.set('score', this.scene.registry.get('score') + 1);
+
+      // Tween score
+      let scoreText = this.scene.add.text(
+        this.x,
+        this.y,
+        '1',
+        { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif', fontSize: '50px' }
+      )
+      this.scene.tweens.add(
+        {
+          targets: scoreText,
+          props: { y: scoreText.y - 50 },
+          duration: 1000,
+          ease: 'Power0',
+          yoyo: false,
+          onComplete: () => {
+            scoreText.destroy();
+          }
+        }
+      )
+
       this.health = 0;
       this.active = false;
     }
