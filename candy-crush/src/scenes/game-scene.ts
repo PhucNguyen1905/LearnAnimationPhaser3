@@ -118,7 +118,10 @@ export class GameScene extends Phaser.Scene {
               ease: 'Sine.easeInOut',
               duration: 400,
               delay: x * 50,
-              yoyo: true
+              yoyo: true,
+              onComplete: () => {
+                this.tileGrid[y][x].setScale(1)
+              }
             })
           }
         }
@@ -350,7 +353,9 @@ export class GameScene extends Phaser.Scene {
             ease: 'Linear',
             onComplete: () => {
               t.remove()
-            }
+              tile.setScale(1)
+            },
+            loop: 0
           })
 
           //And also update our "theoretical" grid
