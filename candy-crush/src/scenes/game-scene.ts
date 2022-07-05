@@ -353,7 +353,6 @@ export class GameScene extends Phaser.Scene {
             ease: 'Linear',
             onComplete: () => {
               t.remove()
-              tile.setScale(1)
             },
             loop: 0
           })
@@ -384,14 +383,26 @@ export class GameScene extends Phaser.Scene {
         // Remove the tile from the theoretical grid
         if (tilePos.x !== -1 && tilePos.y !== -1) {
           tile.setDepth(5);
+          tile.setOrigin(0.5);
+          tile.x += tile.width / 2;
+          let rotate = this.tweens.addCounter({
+            from: 0,
+            to: 360,
+            duration: 1000,
+            repeat: -1,
+            onUpdate: () => {
+              tile.setAngle(rotate.getValue());
+            }
+          })
           this.tweens.add({
             targets: tile,
             props: {
+              // x: { value: tile.x + Phaser.Math.Between(30, 60) * Phaser.Math.Between(-1, 1), duration: 1000, ease: 'Power2' },
               y: { value: '600', duration: 2000, ease: 'Bounce.easeOut' }
             },
             onComplete: () => {
+              rotate.remove();
               tile.destroy();
-
             }
           })
           this.tileGrid[tilePos.y][tilePos.x] = undefined;
