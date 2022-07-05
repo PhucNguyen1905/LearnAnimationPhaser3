@@ -119,9 +119,57 @@ export class Enemy extends Phaser.GameObjects.Image {
     this.lifeBar.setDepth(1);
   }
 
+  private tweenHealthText() {
+    // Tween health
+    let healthText = this.scene.add.text(
+      this.x - Phaser.Math.Between(30, 70),
+      this.y - 50,
+      '1',
+      { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif', fontSize: '50px' }
+    )
+    healthText.setColor('#F32424')
+    this.scene.tweens.add(
+      {
+        targets: healthText,
+        props: { y: healthText.y - 150 },
+        duration: 500,
+        ease: 'Power0',
+        yoyo: false,
+        onComplete: () => {
+          healthText.destroy();
+        }
+      }
+    )
+  }
+
+  private tweenScoreText() {
+    // Tween score
+    let scoreText = this.scene.add.text(
+      this.x,
+      this.y,
+      '1',
+      { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif', fontSize: '50px' }
+    )
+    this.scene.tweens.add(
+      {
+        targets: scoreText,
+        props: { y: scoreText.y - 50 },
+        duration: 1000,
+        ease: 'Power0',
+        yoyo: false,
+        onComplete: () => {
+          scoreText.destroy();
+        }
+      }
+    )
+  }
+
+
+
   public updateHealth(): void {
     if (this.health > 0) {
       this.scene.sound.play('hit_enemy')
+      this.tweenHealthText();
       this.health -= 0.05;
       this.redrawLifebar();
     } else {
@@ -131,24 +179,7 @@ export class Enemy extends Phaser.GameObjects.Image {
       this.scene.registry.set('score', this.scene.registry.get('score') + 1);
 
       // Tween score
-      let scoreText = this.scene.add.text(
-        this.x,
-        this.y,
-        '1',
-        { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif', fontSize: '50px' }
-      )
-      this.scene.tweens.add(
-        {
-          targets: scoreText,
-          props: { y: scoreText.y - 50 },
-          duration: 1000,
-          ease: 'Power0',
-          yoyo: false,
-          onComplete: () => {
-            scoreText.destroy();
-          }
-        }
-      )
+      this.tweenScoreText();
 
       this.health = 0;
       this.active = false;
