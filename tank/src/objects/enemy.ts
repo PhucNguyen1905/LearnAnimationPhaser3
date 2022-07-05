@@ -16,6 +16,9 @@ export class Enemy extends Phaser.GameObjects.Image {
   // game objects
   private bullets: Phaser.GameObjects.Group;
 
+  private exploEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
+
+
   public getBarrel(): Phaser.GameObjects.Image {
     return this.barrel;
   }
@@ -69,8 +72,23 @@ export class Enemy extends Phaser.GameObjects.Image {
       yoyo: true
     });
 
+    this.createEmitters();
+
     // physics
     this.scene.physics.world.enable(this);
+  }
+
+
+  createEmitters() {
+    this.exploEmitter = this.scene.add.particles('flares').createEmitter({
+      frame: 'yellow',
+      x: -100,
+      y: -100,
+      speed: 200,
+      scale: { min: 0, max: 1 },
+      blendMode: 'ADD',
+      lifespan: 300
+    });
   }
 
   update(): void {
@@ -145,20 +163,23 @@ export class Enemy extends Phaser.GameObjects.Image {
   private tweenScoreText() {
     // Tween score
     let scoreText = this.scene.add.text(
-      this.x,
-      this.y,
+      this.x - 100,
+      this.y - 50,
       '1',
       { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif', fontSize: '50px' }
     )
+
+    this.exploEmitter.setPosition(this.x, this.y);
     this.scene.tweens.add(
       {
         targets: scoreText,
         props: { y: scoreText.y - 50 },
-        duration: 1000,
+        duration: 800,
         ease: 'Power0',
         yoyo: false,
         onComplete: () => {
           scoreText.destroy();
+          this.exploEmitter.remove();
         }
       }
     )

@@ -182,11 +182,25 @@ export class Player extends Phaser.GameObjects.Image {
     this.scene.registry.set('highScore', highScore)
   }
 
+  // private tweenGetHit() {
+  //   this.scene.tweens.add({
+  //     targets: this,
+  //     props: {
+  //       x: { value: this.x + Phaser.Math.Between(-2, 1), duration: 300, ease: 'Power2' },
+  //       y: { value: this.y + Phaser.Math.Between(-2, 1), duration: 300, ease: 'Power2' }
+  //     }
+  //   })
+  // }
+
   public updateHealth(): void {
     if (this.health > 0) {
       this.scene.sound.play('hit')
-      this.health -= 0.05;
+      this.health -= 0.0005;
       this.redrawLifebar();
+
+      // this.tweenGetHit();
+
+
     } else {
       this.scene.sound.play('boom')
       this.updateHighScore();

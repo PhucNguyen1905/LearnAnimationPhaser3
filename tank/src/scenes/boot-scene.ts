@@ -60,6 +60,9 @@ export class BootScene extends Phaser.Scene {
     this.load.audio('click', 'assets/sounds/click.mp3');
     this.load.audio('mouseover', 'assets/sounds/mouseover.mp3');
 
+
+    this.load.atlas('flares', 'assets/particles/flares.png', 'assets/particles/flares.json');
+
   }
 
   update(): void {

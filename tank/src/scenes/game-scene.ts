@@ -120,6 +120,7 @@ export class GameScene extends Phaser.Scene {
       console.log('Game Scene resumed');
     })
   }
+
   createScoreText() {
     this.scoreText = this.add.text(10, 10, 'Score: 0').setScrollFactor(0);
     this.scoreText.setFontSize(50);
