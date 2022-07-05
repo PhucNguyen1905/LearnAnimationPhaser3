@@ -401,8 +401,15 @@ export class GameScene extends Phaser.Scene {
               y: { value: '600', duration: 2000, ease: 'Bounce.easeOut' }
             },
             onComplete: () => {
-              rotate.remove();
-              tile.destroy();
+              this.tweens.add({
+                targets: tile,
+                alpha: { from: 1, to: 0 },
+                duration: 800,
+                onComplete: () => {
+                  rotate.remove();
+                  tile.destroy();
+                }
+              })
             }
           })
           this.tileGrid[tilePos.y][tilePos.x] = undefined;
