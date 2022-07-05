@@ -12,6 +12,8 @@ export class GameScene extends Phaser.Scene {
   private tailEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
   private bounceColEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
+  private rotateTween: Phaser.Tweens.Tween;
+
   constructor() {
     super({
       key: 'GameScene'
@@ -79,13 +81,27 @@ export class GameScene extends Phaser.Scene {
       if (i == 0) {
         this.player = this.add
           .rectangle(
-            settings.createTowerXPosition,
+            settings.createTowerXPosition + settings.BLOCK_WIDTH / 2,
             0,
             settings.BLOCK_WIDTH,
             settings.BLOCK_WIDTH,
             0xff2463
           )
-          .setOrigin(0);
+          .setOrigin(0.5);
+
+        this.rotateTween = this.tweens.addCounter({
+          from: 0,
+          to: 360,
+          duration: 1000,
+          repeat: -1,
+          onUpdate: () => {
+            //  tween.getValue = range between 0 and 360
+
+            this.player.setAngle(this.rotateTween.getValue());
+          }
+        })
+
+        this.rotateTween.stop();
 
         this.physics.world.enable(this.player);
       }
@@ -153,7 +169,8 @@ export class GameScene extends Phaser.Scene {
       speedY: { min: 0, max: 100 },
       gravityX: 0,
       gravityY: 200,
-      // follow: this.player,
+      follow: this.player,
+      followOffset: { x: -25 },
       scale: { start: 0.4, end: 0.2 },
       blendMode: 'ADD'
     });
@@ -166,6 +183,8 @@ export class GameScene extends Phaser.Scene {
       if (this.isPlayerJumping) {
         towerBody.setVelocityX(settings.SCROLLING_SPEED_X_AXIS);
       } else {
+        this.rotateTween.stop();
+        this.player.setAngle(0)
         towerBody.setVelocityX(0);
       }
 
@@ -187,7 +206,6 @@ export class GameScene extends Phaser.Scene {
   }
   updateEmitter() {
     if (this.isPlayerJumping) {
-      this.tailEmitter.setPosition(this.player.x - 5, this.player.y + this.player.width / 2)
       this.tailEmitter.visible = true;
     } else {
       this.tailEmitter.visible = false;
@@ -233,6 +251,7 @@ export class GameScene extends Phaser.Scene {
       const playerBody = this.player.body as Phaser.Physics.Arcade.Body;
       playerBody.setVelocityY(-this.loadingBar.width);
       this.isPlayerJumping = true;
+      this.rotateTween.restart();
       this.loadingBarTween.stop();
       this.loadingBar.width = 0;
     }
@@ -261,10 +280,10 @@ export class GameScene extends Phaser.Scene {
               this.tweens.add({
                 targets: player,
                 props: {
-                  y: { value: tower.y - player.width, duration: 1500, ease: 'Bounce.easeOut' }
+                  y: { value: tower.y - player.width / 2, duration: 1500, ease: 'Bounce.easeOut' }
                 },
                 onUpdate: () => {
-                  if (player.y + player.width <= tower.y - 0.5 && player.y + player.width >= tower.y - 3) {
+                  if (player.y + player.width / 2 <= tower.y - 0.5 && player.y + player.width / 2 >= tower.y - 3) {
                     this.bounceColEmitter.explode(1, tower.x + settings.BLOCK_WIDTH / 2, tower.y)
                   }
                 },
