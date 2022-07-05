@@ -13,6 +13,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
   private lives: number;
   private moveTween: Phaser.Tweens.Tween;
   private reloadTime: number;
+  private delayTime: number;
   public valueKill: number;
 
   public getBullets(): Phaser.GameObjects.Group {
@@ -48,6 +49,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         this.lives = 1;
         this.reloadTime = 9000;
         this.valueKill = 20;
+        this.delayTime = 0;
         break;
 
       case 'crab':
@@ -56,6 +58,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         this.lives = 2;
         this.reloadTime = 10000;
         this.valueKill = 40;
+        this.delayTime = 1500;
         break;
 
       case 'squid':
@@ -64,7 +67,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         this.lives = 2;
         this.reloadTime = 12000;
         this.valueKill = 60;
-
+        this.delayTime = 3000;
         break;
     }
   }
@@ -87,7 +90,8 @@ export class Enemy extends Phaser.GameObjects.Sprite {
       ease: 'Power0',
       duration: 6000,
       yoyo: true,
-      repeat: -1
+      repeat: -1,
+      delay: this.delayTime
     });
   }
 

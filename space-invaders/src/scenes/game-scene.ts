@@ -66,7 +66,7 @@ export class GameScene extends Phaser.Scene {
 
   createParticles() {
     this.fireEmitter = this.add.particles('fire').createEmitter({
-      // alpha: { start: 1, end: 0 },
+      alpha: { start: 1, end: 0 },
       scale: { start: 0.05, end: 0.25 },
       speed: 20,
       accelerationY: 300,
@@ -76,7 +76,7 @@ export class GameScene extends Phaser.Scene {
       blendMode: 'ADD',
       frequency: 50,
       follow: this.player,
-      followOffset: { x: 0.3, y: 7 }
+      followOffset: { x: 0.25, y: 7 }
     });
 
     this.touchEmitter = this.add.particles('flares').createEmitter({
@@ -131,6 +131,7 @@ export class GameScene extends Phaser.Scene {
 
   private bulletHitEnemy(bullet: Bullet, enemy: Enemy): void {
     this.touchEmitter.explode(5, enemy.x, enemy.y)
+
     bullet.destroy();
     enemy.gotHurt();
     let scoreText = this.add.text(
