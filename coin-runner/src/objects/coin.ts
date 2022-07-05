@@ -6,6 +6,8 @@ export class Coin extends Phaser.GameObjects.Image {
   private lastPosition: string;
   public isMoving: boolean = false;
 
+  private rotateTween: Phaser.Tweens.Tween;
+
   constructor(aParams: IImageConstructor) {
     super(aParams.scene, aParams.x, aParams.y, aParams.texture);
 
@@ -50,6 +52,18 @@ export class Coin extends Phaser.GameObjects.Image {
       callbackScope: this,
       loop: true
     });
+
+    this.rotateTween = this.scene.tweens.addCounter({
+      from: 0,
+      to: 360,
+      duration: 2000,
+      repeat: -1,
+      onUpdate: () => {
+        //  tween.getValue = range between 0 and 360
+
+        this.setAngle(this.rotateTween.getValue());
+      }
+    })
   }
 
   update(): void { }
