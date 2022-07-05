@@ -22,6 +22,8 @@ export class Player extends Phaser.GameObjects.Image {
   private rotateKeyRight: Phaser.Input.Keyboard.Key;
   private shootingKey: Phaser.Input.Keyboard.Key;
 
+  private bounceColEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
+
   public getBullets(): Phaser.GameObjects.Group {
     return this.bullets;
   }
@@ -74,6 +76,22 @@ export class Player extends Phaser.GameObjects.Image {
 
     // physics
     this.scene.physics.world.enable(this);
+
+    this.createEmitters();
+  }
+
+  createEmitters() {
+    this.bounceColEmitter = this.scene.add.particles('flares').createEmitter({
+      x: -100,
+      y: -100,
+      frame: 'red',
+      speed: { min: -200, max: 200 },
+      angle: { min: 0, max: 360 },
+      scale: { start: 0.4, end: 0 },
+      blendMode: 'ADD',
+      lifespan: 500,
+      gravityY: 800
+    });
   }
 
   update(): void {
@@ -199,6 +217,8 @@ export class Player extends Phaser.GameObjects.Image {
       this.redrawLifebar();
 
       // this.tweenGetHit();
+
+      this.bounceColEmitter.explode(5, this.x, this.y)
 
 
     } else {
