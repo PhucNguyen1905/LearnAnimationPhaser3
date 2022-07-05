@@ -22,7 +22,7 @@ export class Player extends Phaser.GameObjects.Image {
   private rotateKeyRight: Phaser.Input.Keyboard.Key;
   private shootingKey: Phaser.Input.Keyboard.Key;
 
-  private bounceColEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
+  private hitEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
   public getBullets(): Phaser.GameObjects.Group {
     return this.bullets;
@@ -81,7 +81,7 @@ export class Player extends Phaser.GameObjects.Image {
   }
 
   createEmitters() {
-    this.bounceColEmitter = this.scene.add.particles('flares').createEmitter({
+    this.hitEmitter = this.scene.add.particles('flares').createEmitter({
       x: -100,
       y: -100,
       frame: 'red',
@@ -141,6 +141,10 @@ export class Player extends Phaser.GameObjects.Image {
     } else if (this.rotateKeyRight.isDown) {
       this.barrel.rotation += 0.05;
     }
+    // this.scene.input.on('pointermove', (pointer: any) => {
+    //   let angle = Phaser.Math.RAD_TO_DEG * Phaser.Math.Angle.BetweenPoints(this.barrel, pointer);;
+    //   this.barrel.rotation = angle;
+    // })
   }
 
   private handleShooting(): void {
@@ -213,12 +217,12 @@ export class Player extends Phaser.GameObjects.Image {
   public updateHealth(): void {
     if (this.health > 0) {
       this.scene.sound.play('hit')
-      this.health -= 0.0005;
+      this.health -= 0.05;
       this.redrawLifebar();
 
       // this.tweenGetHit();
 
-      this.bounceColEmitter.explode(5, this.x, this.y)
+      this.hitEmitter.explode(5, this.x, this.y)
 
 
     } else {

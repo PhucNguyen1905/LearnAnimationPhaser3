@@ -17,6 +17,7 @@ export class Enemy extends Phaser.GameObjects.Image {
   private bullets: Phaser.GameObjects.Group;
 
   private exploEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
+  private hitEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
 
   public getBarrel(): Phaser.GameObjects.Image {
@@ -88,6 +89,18 @@ export class Enemy extends Phaser.GameObjects.Image {
       scale: { min: 0, max: 1 },
       blendMode: 'ADD',
       lifespan: 300
+    });
+
+    this.hitEmitter = this.scene.add.particles('flares').createEmitter({
+      x: -100,
+      y: -100,
+      frame: 'red',
+      speed: { min: -200, max: 200 },
+      angle: { min: 0, max: 360 },
+      scale: { start: 0.4, end: 0 },
+      blendMode: 'ADD',
+      lifespan: 500,
+      gravityY: 800
     });
   }
 
@@ -193,6 +206,9 @@ export class Enemy extends Phaser.GameObjects.Image {
       this.tweenHealthText();
       this.health -= 0.05;
       this.redrawLifebar();
+
+
+      this.hitEmitter.explode(3, this.x, this.y)
     } else {
       this.scene.sound.play('boom')
 
