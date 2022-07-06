@@ -80,6 +80,8 @@ export class GameScene extends Phaser.Scene {
 
     this.createScoreText();
 
+    this.createVariables();
+
     this.inputHandler();
 
   }
@@ -91,6 +93,14 @@ export class GameScene extends Phaser.Scene {
     this.tileset = this.map.addTilesetImage('tiles');
     this.layer = this.map.createLayer('tileLayer', this.tileset, 0, 0);
     this.layer.setCollisionByProperty({ collide: true });
+  }
+
+  createVariables() {
+    this.pauseClick = false;
+    this.countDownText = null;
+    this.countDown = 3;
+    this.countTimeEvent = null;
+    this.eventPause = null;
   }
 
   createButtons() {
