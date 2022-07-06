@@ -13,6 +13,11 @@ export class GameScene extends Phaser.Scene {
   private obstacles: Phaser.GameObjects.Group;
 
   private pauseBtn: Phaser.GameObjects.Image;
+  private pauseClick: boolean = false;
+  private countDownText: Phaser.GameObjects.Text;
+  private countTimeEvent: Phaser.Time.TimerEvent;
+  private eventPause: Phaser.Events.EventEmitter;
+  private countDown: number = 3;
 
   private scoreText: Phaser.GameObjects.Text;
 
@@ -75,6 +80,8 @@ export class GameScene extends Phaser.Scene {
 
     this.createScoreText();
 
+    this.inputHandler();
+
   }
 
   createTilemap() {
@@ -102,23 +109,62 @@ export class GameScene extends Phaser.Scene {
       this.pauseBtn.clearTint();
     });
 
-    this.pauseBtn.on('pointerup', () => {
+    this.pauseBtn.on('pointerdown', () => {
+      this.pauseClick = true;
       this.sound.play('click')
+      this.physics.pause();
       this.scene.pause();
+      this.tweens.pauseAll();
       this.scene.launch('PauseMenu');
     })
 
   }
 
+  inputHandler() {
+    this.input.keyboard.on('keydown-SPACE', this.playerShoot, this);
+    this.input.on('pointerdown', this.playerShoot, this);
+
+    this.input.keyboard.on('keyup-P', () => {
+      this.pauseClick = true;
+      this.sound.play('click')
+      this.physics.pause();
+      this.scene.pause();
+      this.tweens.pauseAll();
+      this.scene.launch('PauseMenu');
+    })
+  }
+
+  playerShoot() {
+    if (!this.pauseClick) {
+      console.log(this.pauseClick)
+      this.player.handleShooting();
+    }
+  }
 
   createEvents() {
-    this.events.on('pause', function () {
-      console.log('Game Scene paused');
-    })
+    if (this.eventPause) return;
+    this.eventPause = this.events.on('resume', () => {
+      this.countDown = 3;
+      this.countDownText = this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2, 'Continue in ' + this.countDown, { fontSize: '60px', color: '#1363DF' }).setOrigin(0.5)
+      this.countTimeEvent = this.time.addEvent({
+        delay: 1000,
+        callback: this.countDownTime,
+        callbackScope: this,
+        loop: true
+      })
 
-    this.events.on('resume', function () {
-      console.log('Game Scene resumed');
     })
+  }
+  countDownTime() {
+    this.countDown -= 1;
+    this.countDownText.setText('Continue in ' + this.countDown);
+    if (this.countDown <= 0) {
+      this.countDownText.setText('');
+      this.physics.resume();
+      this.tweens.resumeAll();
+      this.pauseClick = false;
+      this.countTimeEvent.remove();
+    }
   }
 
   createScoreText() {

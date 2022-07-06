@@ -78,8 +78,8 @@ export class PauseMenu extends Phaser.Scene {
                 duration: 250,
                 ease: 'Linear',
                 onComplete: () => {
-                    this.scene.resume('GameScene');
                     this.scene.stop();
+                    this.scene.resume('GameScene');
                 }
             })
 

@@ -80,7 +80,7 @@ export class Player extends Phaser.GameObjects.Image {
     this.createEmitters();
 
 
-    this.createInput();
+    // this.createInput();
   }
 
   createEmitters() {
@@ -97,11 +97,11 @@ export class Player extends Phaser.GameObjects.Image {
     });
   }
 
-  createInput() {
-    this.scene.input.on('pointerdown', () => {
-      this.handleShooting();
-    })
-  }
+  // createInput() {
+  //   this.scene.input.on('pointerdown', () => {
+  //     this.handleShooting();
+  //   })
+  // }
 
   update(): void {
     if (this.active) {
