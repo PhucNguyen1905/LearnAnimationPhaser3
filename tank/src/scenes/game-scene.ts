@@ -136,7 +136,6 @@ export class GameScene extends Phaser.Scene {
 
   playerShoot() {
     if (!this.pauseClick) {
-      console.log(this.pauseClick)
       this.player.handleShooting();
     }
   }
@@ -272,10 +271,12 @@ export class GameScene extends Phaser.Scene {
   }
 
   private bulletHitLayer(bullet: Bullet): void {
+    bullet.explodeEmiiter();
     bullet.destroy();
   }
 
   private bulletHitObstacles(bullet: Bullet, obstacle: Obstacle): void {
+    bullet.explodeEmiiter();
     bullet.destroy();
   }
 
