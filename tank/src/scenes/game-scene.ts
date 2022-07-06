@@ -222,7 +222,7 @@ export class GameScene extends Phaser.Scene {
     this.scoreText.setText('Score: ' + this.registry.get('score'))
 
     this.enemies.children.each((enemy: Enemy) => {
-      enemy.update();
+      if (!this.pauseClick) enemy.update();
       if (this.player.active && enemy.active) {
         var angle = Phaser.Math.Angle.Between(
           enemy.body.x,
