@@ -43,15 +43,6 @@ export class Coin extends Phaser.GameObjects.Image {
       repeat: -1,
       yoyo: true
     })
-  }
-
-  private initEvents(): void {
-    this.changePositionTimer = this.scene.time.addEvent({
-      delay: 5000,
-      callback: this.changePosition,
-      callbackScope: this,
-      loop: true
-    });
 
     this.rotateTween = this.scene.tweens.addCounter({
       from: 0,
@@ -64,6 +55,15 @@ export class Coin extends Phaser.GameObjects.Image {
         this.setAngle(this.rotateTween.getValue());
       }
     })
+  }
+
+  private initEvents(): void {
+    this.changePositionTimer = this.scene.time.addEvent({
+      delay: 5000,
+      callback: this.changePosition,
+      callbackScope: this,
+      loop: true
+    });
   }
 
   update(): void { }
