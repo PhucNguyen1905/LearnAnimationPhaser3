@@ -79,8 +79,6 @@ export class Player extends Phaser.GameObjects.Image {
 
     this.createEmitters();
 
-
-    // this.createInput();
   }
 
   createEmitters() {
@@ -96,12 +94,6 @@ export class Player extends Phaser.GameObjects.Image {
       gravityY: 800
     });
   }
-
-  // createInput() {
-  //   this.scene.input.on('pointerdown', () => {
-  //     this.handleShooting();
-  //   })
-  // }
 
   update(): void {
     if (this.active) {
@@ -144,13 +136,8 @@ export class Player extends Phaser.GameObjects.Image {
     }
 
     // rotate barrel
-    // if (this.rotateKeyLeft.isDown) {
-    //   this.barrel.rotation -= 0.05;
-    // } else if (this.rotateKeyRight.isDown) {
-    //   this.barrel.rotation += 0.05;
-    // }
     this.scene.input.on('pointermove', (pointer: any) => {
-      let angle = Phaser.Math.Angle.BetweenPoints(this.barrel, pointer);;
+      let angle = Phaser.Math.Angle.Between(this.barrel.x, this.barrel.y, pointer.x + this.scene.cameras.main.scrollX, pointer.y + this.scene.cameras.main.scrollY);;
       this.barrel.rotation = angle + Math.PI / 2;
     })
   }
@@ -225,7 +212,7 @@ export class Player extends Phaser.GameObjects.Image {
   public updateHealth(): void {
     if (this.health > 0) {
       this.scene.sound.play('hit')
-      this.health -= 0.05;
+      this.health -= 0.0005;
       this.redrawLifebar();
 
       // this.tweenGetHit();
