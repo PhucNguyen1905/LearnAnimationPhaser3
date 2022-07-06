@@ -18,9 +18,6 @@ export class Player extends Phaser.GameObjects.Image {
 
   // input
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
-  private rotateKeyLeft: Phaser.Input.Keyboard.Key;
-  private rotateKeyRight: Phaser.Input.Keyboard.Key;
-  private shootingKey: Phaser.Input.Keyboard.Key;
 
   private hitEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
@@ -61,18 +58,6 @@ export class Player extends Phaser.GameObjects.Image {
       maxSize: 10,
       runChildUpdate: true
     });
-
-    // input
-    this.cursors = this.scene.input.keyboard.createCursorKeys();
-    this.rotateKeyLeft = this.scene.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.A
-    );
-    this.rotateKeyRight = this.scene.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.D
-    );
-    this.shootingKey = this.scene.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.SPACE
-    );
 
     // physics
     this.scene.physics.world.enable(this);
