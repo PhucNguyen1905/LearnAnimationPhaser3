@@ -100,7 +100,6 @@ export class GameScene extends Phaser.Scene {
     this.countDownText = null;
     this.countDown = 3;
     this.countTimeEvent = null;
-    this.eventPause = null;
   }
 
   createButtons() {
