@@ -78,6 +78,9 @@ export class Player extends Phaser.GameObjects.Image {
     this.scene.physics.world.enable(this);
 
     this.createEmitters();
+
+
+    this.createInput();
   }
 
   createEmitters() {
@@ -94,6 +97,12 @@ export class Player extends Phaser.GameObjects.Image {
     });
   }
 
+  createInput() {
+    this.scene.input.on('pointerdown', () => {
+      this.handleShooting();
+    })
+  }
+
   update(): void {
     if (this.active) {
       this.barrel.x = this.x;
@@ -101,7 +110,6 @@ export class Player extends Phaser.GameObjects.Image {
       this.lifeBar.x = this.x;
       this.lifeBar.y = this.y;
       this.handleInput();
-      this.handleShooting();
     } else {
       this.destroy();
       this.barrel.destroy();
@@ -136,19 +144,19 @@ export class Player extends Phaser.GameObjects.Image {
     }
 
     // rotate barrel
-    if (this.rotateKeyLeft.isDown) {
-      this.barrel.rotation -= 0.05;
-    } else if (this.rotateKeyRight.isDown) {
-      this.barrel.rotation += 0.05;
-    }
-    // this.scene.input.on('pointermove', (pointer: any) => {
-    //   let angle = Phaser.Math.RAD_TO_DEG * Phaser.Math.Angle.BetweenPoints(this.barrel, pointer);;
-    //   this.barrel.rotation = angle;
-    // })
+    // if (this.rotateKeyLeft.isDown) {
+    //   this.barrel.rotation -= 0.05;
+    // } else if (this.rotateKeyRight.isDown) {
+    //   this.barrel.rotation += 0.05;
+    // }
+    this.scene.input.on('pointermove', (pointer: any) => {
+      let angle = Phaser.Math.Angle.BetweenPoints(this.barrel, pointer);;
+      this.barrel.rotation = angle + Math.PI / 2;
+    })
   }
 
-  private handleShooting(): void {
-    if (this.shootingKey.isDown && this.scene.time.now > this.lastShoot) {
+  public handleShooting(): void {
+    if (this.active && this.scene.time.now > this.lastShoot) {
       this.scene.cameras.main.shake(20, 0.005);
       this.scene.tweens.add({
         targets: this,
