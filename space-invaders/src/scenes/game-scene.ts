@@ -26,6 +26,29 @@ export class GameScene extends Phaser.Scene {
     this.createEnemies();
 
     this.createParticles();
+
+    this.createCircle();
+
+  }
+
+  createCircle() {
+    var circle = new Phaser.Geom.Circle(this.sys.canvas.width / 2, this.sys.canvas.height / 2, 50);
+
+    Phaser.Actions.PlaceOnCircle(this.enemies.getChildren(), circle);
+
+    this.tweens.add({
+      targets: circle,
+      radius: 70,
+      ease: 'Quintic.easeInOut',
+      duration: 1500,
+      yoyo: true,
+      repeat: -1,
+      onUpdate: () => {
+        Phaser.Actions.RotateAroundDistance(this.enemies.getChildren(), { x: this.sys.canvas.width / 2, y: this.sys.canvas.height / 2 }, 0.02, circle.radius);
+        console.log(circle.radius)
+      }
+    });
+    console.log(circle.radius)
   }
 
   createPlayer() {
@@ -66,17 +89,20 @@ export class GameScene extends Phaser.Scene {
 
   createParticles() {
     this.fireEmitter = this.add.particles('fire').createEmitter({
-      alpha: { start: 1, end: 0 },
-      scale: { start: 0.05, end: 0.25 },
-      speed: 20,
-      accelerationY: 300,
-      angle: { min: -85, max: -95 },
+      quantity: 10,
+      speedX: { min: -10, max: 10 },
+      speedY: { min: 20, max: 50 },
+      alpha: { start: 0.5, end: 0, ease: 'Sine.easeIn' },
+      scale: { start: 0.065, end: 0.002 },
+
+      accelerationY: 350,
+      angle: { min: 30, max: 110 },
       rotate: { min: -180, max: 180 },
-      lifespan: { min: 300, max: 400 },
+      lifespan: { min: 100, max: 300 },
       blendMode: 'ADD',
-      frequency: 50,
+      frequency: 15,
       follow: this.player,
-      followOffset: { x: 0.25, y: 7 }
+      followOffset: { x: 0.2, y: 7 }
     });
 
     this.touchEmitter = this.add.particles('flares').createEmitter({

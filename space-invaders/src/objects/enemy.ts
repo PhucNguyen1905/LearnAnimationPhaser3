@@ -27,7 +27,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     this.initImage();
     this.initPhysics();
 
-    this.initTweens();
+    // this.initTweens();
 
     this.scene.add.existing(this);
   }
