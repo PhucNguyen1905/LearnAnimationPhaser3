@@ -27,28 +27,123 @@ export class GameScene extends Phaser.Scene {
 
     this.createParticles();
 
-    this.createCircle();
+    this.time.delayedCall(4000, () => {
+      // this.tweens.destroy();
+      this.enemies.getChildren().forEach((e: Enemy) => {
+        e.moveTween.remove();
+      })
+      this.createTweenCircle();
+    })
 
   }
 
-  createCircle() {
-    var circle = new Phaser.Geom.Circle(this.sys.canvas.width / 2, this.sys.canvas.height / 2, 50);
+  createTweenCircle() {
+    let whiteEnemy: Enemy[] = [];
+    let blueEnemy: Enemy[] = [];
+    let blackEnemy: Enemy[] = [];
 
-    Phaser.Actions.PlaceOnCircle(this.enemies.getChildren(), circle);
+    this.enemies.getChildren().forEach((e: Enemy) => {
+      if (e.enemyType == 'octopus') {
+        whiteEnemy.push(e);
+      } else if (e.enemyType == 'crab') {
+        blueEnemy.push(e);
+      } else {
+        blackEnemy.push(e);
+      }
+    })
 
+    const whileXPos = [162, 159.55528599677476, 152.4602090494016, 141.40858651656876, 127.48114065285121, 112.03981633553666, 96.59459843610037, 82.65585257380704, 71.5866286365345, 64.46937009485421, 62.000063413623025, 64.42017853771544, 71.49305589380005, 82.52704898925622, 96.44315952680589, 111.88055109438592, 127.32962339845494, 141.27963390306908, 152.36643116719753, 159.50585324993892]
+    const whileYPos = [95, 110.44327600494661, 124.37637628569459, 135.4368030276565, 142.5429730253235, 144.99998414659171, 142.56756881169142, 135.48358941385823, 124.44077809838976, 110.51899548360208, 95.07963264582435, 79.63248264627218, 65.68810004149863, 54.61008592831254, 47.48174335593119, 45.000142680614104, 47.40795605921571, 54.46972688838319, 65.49489476677122, 79.40532440237162]
+
+    const blueXPos = [147, 145.28870019774232, 140.32214633458113, 132.58601056159813, 122.83679845699585, 112.02787143487566, 101.21621890527027, 91.45909680166493, 83.71064004557415, 78.72855906639796, 77.00004438953611, 78.69412497640081, 83.64513912566002, 91.36893429247935, 101.11021166876412, 111.91638576607015, 122.73073637891846, 132.49574373214836, 140.25650181703827, 145.25409727495725];
+    const blueYPos = [95, 105.81029320346262, 115.56346339998622, 123.30576211935956, 128.28008111772644, 129.9999889026142, 128.297298168184, 123.33851258970074, 115.60854466887284, 105.86329683852146, 95.05574285207705, 84.24273785239052, 74.48167002904904, 66.72706014981878, 61.73722034915183, 60.00009987642987, 61.685569241451, 66.62880882186823, 74.34642633673985, 84.08372708166013];
+
+    const blackXPos = [137, 132.2301045247008, 119.74057032642561, 104.29729921805018, 91.79331431826725, 87.00003170681151, 91.74652794690002, 104.22157976340294, 119.66481169922747, 132.18321558359875];
+    const blackYPos = [95, 109.6881881428473, 118.77148651266175, 118.78378440584572, 109.72038904919488, 95.03981632291217, 80.34405002074931, 71.2408716779656, 71.20397802960785, 80.2474473833856];
+
+    for (let i = 0; i < whiteEnemy.length; i++) {
+      this.tweens.add({
+        targets: whiteEnemy[i],
+        x: whileXPos[i],
+        y: whileYPos[i],
+        ease: 'Power0',
+        duration: 2500,
+        onComplete: () => {
+          this.createCircle(whiteEnemy, blueEnemy, blackEnemy)
+        }
+      })
+    }
+    for (let i = 0; i < blueEnemy.length; i++) {
+      this.tweens.add({
+        targets: blueEnemy[i],
+        x: blueXPos[i],
+        y: blueYPos[i],
+        ease: 'Power0',
+        duration: 2000
+      })
+    }
+    for (let i = 0; i < blackEnemy.length; i++) {
+      this.tweens.add({
+        targets: blackEnemy[i],
+        x: blackXPos[i],
+        y: blackYPos[i],
+        ease: 'Power0',
+        duration: 1500
+      })
+    }
+
+
+
+  }
+
+  createCircle(whiteEnemy: Enemy[], blueEnemy: Enemy[], blackEnemy: Enemy[]) {
+    let circle = new Phaser.Geom.Circle(this.sys.canvas.width / 2, this.sys.canvas.height / 2 - 25, 50);
+    let circle1 = new Phaser.Geom.Circle(this.sys.canvas.width / 2, this.sys.canvas.height / 2 - 25, 35);
+    let circle2 = new Phaser.Geom.Circle(this.sys.canvas.width / 2, this.sys.canvas.height / 2 - 25, 25);
+
+    Phaser.Actions.PlaceOnCircle(whiteEnemy, circle);
+    Phaser.Actions.PlaceOnCircle(blueEnemy, circle1);
+    Phaser.Actions.PlaceOnCircle(blackEnemy, circle2);
+
+    // Circle for white enemy
     this.tweens.add({
       targets: circle,
-      radius: 70,
+      radius: 80,
       ease: 'Quintic.easeInOut',
       duration: 1500,
       yoyo: true,
       repeat: -1,
       onUpdate: () => {
-        Phaser.Actions.RotateAroundDistance(this.enemies.getChildren(), { x: this.sys.canvas.width / 2, y: this.sys.canvas.height / 2 }, 0.02, circle.radius);
-        console.log(circle.radius)
+        Phaser.Actions.RotateAroundDistance(whiteEnemy, { x: this.sys.canvas.width / 2, y: this.sys.canvas.height / 2 - 25 }, 0.0002, circle.radius);
       }
     });
-    console.log(circle.radius)
+
+    // Circle for blue enemy
+    this.tweens.add({
+      targets: circle1,
+      radius: 60,
+      ease: 'Quintic.easeInOut',
+      duration: 1500,
+      yoyo: true,
+      repeat: -1,
+      onUpdate: () => {
+        Phaser.Actions.RotateAroundDistance(blueEnemy, { x: this.sys.canvas.width / 2, y: this.sys.canvas.height / 2 - 25 }, 0.0004, circle1.radius);
+      }
+    });
+
+    // Circle for black enemy
+    this.tweens.add({
+      targets: circle1,
+      radius: 50,
+      ease: 'Quintic.easeInOut',
+      duration: 1500,
+      yoyo: true,
+      repeat: -1,
+      onUpdate: () => {
+        Phaser.Actions.RotateAroundDistance(blackEnemy, { x: this.sys.canvas.width / 2, y: this.sys.canvas.height / 2 - 25 }, 0.0005, circle2.radius);
+      }
+    });
+
   }
 
   createPlayer() {

@@ -7,11 +7,11 @@ export class Enemy extends Phaser.GameObjects.Sprite {
   private bullets: Phaser.GameObjects.Group;
   private dyingTime: number;
   private enemyTint: number;
-  private enemyType: string;
+  public enemyType: string;
   private hurtingTime: number;
   private isHurt: boolean;
   private lives: number;
-  private moveTween: Phaser.Tweens.Tween;
+  public moveTween: Phaser.Tweens.Tween;
   private reloadTime: number;
   private delayTime: number;
   public valueKill: number;
@@ -27,7 +27,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     this.initImage();
     this.initPhysics();
 
-    // this.initTweens();
+    this.initTweens();
 
     this.scene.add.existing(this);
   }
