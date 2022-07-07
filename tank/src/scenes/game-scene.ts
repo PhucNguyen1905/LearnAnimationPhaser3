@@ -109,7 +109,6 @@ export class GameScene extends Phaser.Scene {
     this.countDown = 3;
     this.countTimeEvent = null;
 
-
   }
 
   createButtons() {
@@ -118,9 +117,7 @@ export class GameScene extends Phaser.Scene {
     Phaser.Display.Align.In.BottomRight(this.pauseBtn, this.zone)
 
     // Fixed to camera view
-    this.pauseBtn.setScrollFactor(0)
-
-    // Phaser.Display.Align.To.BottomRight(this.pauseBtn, this.scene.)
+    this.pauseBtn.setScrollFactor(0);
 
     this.pauseBtn.on('pointerover', () => {
       this.sound.play('mouseover')

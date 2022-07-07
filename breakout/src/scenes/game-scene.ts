@@ -17,6 +17,8 @@ export class GameScene extends Phaser.Scene {
   private bounceBrickEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
   private fire: Phaser.GameObjects.Particles.ParticleEmitter;
 
+  private isDoneBrick: boolean = false;
+
   constructor() {
     super({
       key: 'GameScene'
@@ -54,23 +56,45 @@ export class GameScene extends Phaser.Scene {
     const BRICKS = settings.LEVELS[settings.currentLevel].BRICKS;
     const WIDTH = settings.LEVELS[settings.currentLevel].WIDTH;
     const HEIGHT = settings.LEVELS[settings.currentLevel].HEIGHT;
+
     for (let y = 0; y < HEIGHT; y++) {
       for (let x = 0; x < WIDTH; x++) {
-        this.bricks.add(
-          new Brick({
-            scene: this,
-            x: (settings.BRICK.WIDTH + settings.BRICK.SPACING) * x,
-            y:
-              settings.BRICK.MARGIN_TOP +
-              y * (settings.BRICK.HEIGHT + settings.BRICK.SPACING),
-            width: settings.BRICK.WIDTH,
-            height: settings.BRICK.HEIGHT,
-            fillColor: BRICK_COLORS[BRICKS[y * 14 + x]]
-          })
-        );
+        let xPos = (settings.BRICK.WIDTH + settings.BRICK.SPACING) * x;
+        let yPos = settings.BRICK.MARGIN_TOP + y * (settings.BRICK.HEIGHT + settings.BRICK.SPACING);
+
+        const b = new Brick({
+          scene: this,
+          x: xPos,
+          y: yPos - (y + 1) * 100,
+          width: settings.BRICK.WIDTH,
+          height: settings.BRICK.HEIGHT,
+          fillColor: BRICK_COLORS[BRICKS[y * 14 + x]]
+        })
+
+        this.tweens.add({
+          targets: b,
+          props: {
+            y: { value: yPos, duration: 2000, ease: 'Power2' }
+          },
+          delay: (8 - y + x) * 200
+        })
+        this.tweens.add({
+          targets: b,
+          scaleX: 1.2,
+          scaleY: 1.4,
+          delay: 22.5 * 200 + x * 50,
+          ease: 'Sine.easeInOut',
+          duration: 1000,
+          repeat: 1,
+          yoyo: true,
+          onComplete: () => {
+            this.isDoneBrick = true;
+          }
+        })
+
+        this.bricks.add(b);
       }
     }
-
   }
 
   createPlayer() {
@@ -86,7 +110,7 @@ export class GameScene extends Phaser.Scene {
 
   createBall() {
     // ball
-    this.ball = new Ball({ scene: this, x: 0, y: 0 }).setVisible(false);
+    this.ball = new Ball({ scene: this, x: -500, y: 500 }).setVisible(false);
   }
 
   createTexts() {
@@ -196,7 +220,7 @@ export class GameScene extends Phaser.Scene {
   update(): void {
     this.player.update();
 
-    if (this.player.start && !this.ball.visible) {
+    if (this.player.start && !this.ball.visible && this.isDoneBrick) {
       this.ball.setPosition(this.player.x, this.player.y - 200);
       this.ball.applyInitVelocity();
       this.ball.setVisible(true);
