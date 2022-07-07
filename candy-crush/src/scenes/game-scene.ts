@@ -107,14 +107,14 @@ export class GameScene extends Phaser.Scene {
 
   createCandyWave() {
     this.time.addEvent({
-      delay: 5000,
+      delay: 5500,
       callback: () => {
         for (let y = 0; y < this.tileGrid.length; y++) {
           for (let x = 0; x < this.tileGrid[y].length; x++) {
             this.tweens.add({
               targets: this.tileGrid[y][x],
-              scaleX: 1.2,
-              scaleY: 1.2,
+              scaleX: { from: 1, to: 1.2 },
+              scaleY: { from: 1, to: 1.2 },
               ease: 'Sine.easeInOut',
               duration: 400,
               delay: x * 50,
@@ -305,7 +305,7 @@ export class GameScene extends Phaser.Scene {
     // Loop through each column starting from the left
     for (let y = this.tileGrid.length - 1; y > 0; y--) {
       // Loop through each tile in column from bottom to top
-      for (let x = this.tileGrid[y].length - 1; x > 0; x--) {
+      for (let x = this.tileGrid[y].length - 1; x >= 0; x--) {
         // If this space is blank, but the one above it is not, move the one above down
         if (
           this.tileGrid[y][x] === undefined &&
