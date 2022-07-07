@@ -152,6 +152,10 @@ export class GameScene extends Phaser.Scene {
   createEvents() {
     if (this.eventPause) return;
     this.eventPause = this.events.on('resume', () => {
+      // Disable pause menu
+      this.input.disable(this.pauseBtn);
+      this.input.keyboard.enabled = false;
+
       this.countDown = 3;
       this.countDownText = this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2, 'Continue in ' + this.countDown, { fontSize: '60px', color: '#1363DF' }).setOrigin(0.5)
       this.countTimeEvent = this.time.addEvent({
@@ -167,6 +171,10 @@ export class GameScene extends Phaser.Scene {
     this.countDown -= 1;
     this.countDownText.setText('Continue in ' + this.countDown);
     if (this.countDown <= 0) {
+      // Enable pause menu
+      this.input.enable(this.pauseBtn)
+      this.input.keyboard.enabled = true;
+
       this.countDownText.setText('');
       this.physics.resume();
       this.tweens.resumeAll();
