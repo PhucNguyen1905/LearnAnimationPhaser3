@@ -52,6 +52,7 @@ export class GameScene extends Phaser.Scene {
   createBricks() {
     // bricks
     this.bricks = this.add.group();
+    this.isDoneBrick = false;
 
     const BRICKS = settings.LEVELS[settings.currentLevel].BRICKS;
     const WIDTH = settings.LEVELS[settings.currentLevel].WIDTH;
