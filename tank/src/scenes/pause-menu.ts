@@ -6,6 +6,9 @@ export class PauseMenu extends Phaser.Scene {
     private soundBtn: Phaser.GameObjects.Image;
 
     private container: Phaser.GameObjects.Container;
+
+    private zone: Phaser.GameObjects.Zone;
+
     constructor() {
         super({
             key: 'PauseMenu'
@@ -13,6 +16,8 @@ export class PauseMenu extends Phaser.Scene {
     }
 
     create(): void {
+        this.createZone();
+
         this.createButtons();
 
         this.createContainer();
@@ -20,18 +25,22 @@ export class PauseMenu extends Phaser.Scene {
         this.createInputHandler();
     }
 
+    createZone() {
+        this.zone = this.add.zone(0, 0, this.sys.canvas.width, this.sys.canvas.height).setOrigin(0, 0);
+    }
+
     createButtons() {
-        this.background = this.add.image(150, 0, 'back').setScale(2.5, 1.6);
-        this.contBtn = this.add.sprite(0, 0, 'continue').setInteractive();
-        this.restartBtn = this.add.sprite(150, 0, 'restart').setInteractive();
-        this.soundBtn = this.add.sprite(300, 0, 'sound' + this.sound.mute).setInteractive();
+        this.background = this.add.image(0, 0, 'back').setScale(2.2, 1.6);
+        this.contBtn = this.add.sprite(-150, 0, 'continue').setInteractive();
+        this.restartBtn = this.add.sprite(0, 0, 'restart').setInteractive();
+        this.soundBtn = this.add.sprite(150, 0, 'sound' + this.sound.mute).setInteractive();
     }
 
     createContainer() {
         this.container = this.add.container(
-            this.sys.canvas.width / 2 - 100,
-            this.sys.canvas.height / 2,
+            0, 0,
             [this.background, this.contBtn, this.restartBtn, this.soundBtn]);
+        Phaser.Display.Align.In.Center(this.container, this.zone);
 
         this.tweens.add({
             targets: this.container,

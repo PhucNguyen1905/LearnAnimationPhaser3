@@ -101,7 +101,6 @@ export class GameScene extends Phaser.Scene {
 
   createZone() {
     this.zone = this.add.zone(0, 0, this.sys.canvas.width, this.sys.canvas.height).setOrigin(0, 0);
-    // this.zone.setScrollFactor(0);
   }
 
   createPauseVariables() {

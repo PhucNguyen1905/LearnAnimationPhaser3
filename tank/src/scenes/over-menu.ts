@@ -8,6 +8,9 @@ export class OverMenu extends Phaser.Scene {
     private highScoreText: Phaser.GameObjects.Text;
 
     private container: Phaser.GameObjects.Container;
+
+    private zone: Phaser.GameObjects.Zone;
+
     constructor() {
         super({
             key: 'OverMenu'
@@ -15,6 +18,8 @@ export class OverMenu extends Phaser.Scene {
     }
 
     create(): void {
+        this.createZone();
+
         this.createMenu();
 
         this.createContainer();
@@ -22,23 +27,28 @@ export class OverMenu extends Phaser.Scene {
         this.createInputHandler();
     }
 
+    createZone() {
+        this.zone = this.add.zone(0, 0, this.sys.canvas.width, this.sys.canvas.height).setOrigin(0, 0);
+    }
+
+
     createMenu() {
-        this.background = this.add.image(150, 0, 'back').setScale(2, 4.75);
+        this.background = this.add.image(0, 0, 'back').setScale(2.2, 3.6);
 
-        this.scoreImg = this.add.image(0, -145, 'score')
-        this.scoreText = this.add.text(200, -165, this.registry.get('score') || 0).setFontSize(80);
+        this.scoreImg = this.add.image(-150, -65, 'score')
+        this.scoreText = this.add.text(-35, -90, this.registry.get('score') || 0).setFontSize(80);
 
-        this.highScoreImg = this.add.image(0, 5, 'high')
-        this.highScoreText = this.add.text(200, -20, this.registry.get('highScore') || 0).setFontSize(80);
+        this.highScoreImg = this.add.image(-150, 80, 'high')
+        this.highScoreText = this.add.text(-35, 55, this.registry.get('highScore') || 0).setFontSize(80);
 
-        this.restartBtn = this.add.sprite(150, 150, 'newgame').setInteractive();
+        this.restartBtn = this.add.sprite(150, 15, 'newgame').setInteractive();
     }
 
     createContainer() {
         this.container = this.add.container(
-            this.sys.canvas.width / 2 - 100,
-            this.sys.canvas.height / 2,
+            0, 0,
             [this.background, this.scoreImg, this.scoreText, this.highScoreImg, this.highScoreText, this.restartBtn]);
+        Phaser.Display.Align.In.Center(this.container, this.zone);
 
         this.tweens.add({
             targets: this.container,
