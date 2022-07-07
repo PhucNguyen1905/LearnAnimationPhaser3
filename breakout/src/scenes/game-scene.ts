@@ -103,14 +103,14 @@ export class GameScene extends Phaser.Scene {
       scene: this,
       x: +this.game.config.width / 2 - 20,
       y: +this.game.config.height - 50,
-      width: 400,
+      width: 200,
       height: 10
     });
   }
 
   createBall() {
     // ball
-    this.ball = new Ball({ scene: this, x: -500, y: 500 }).setVisible(false);
+    this.ball = new Ball({ scene: this, x: -500, y: 640 }).setVisible(false);
   }
 
   createTexts() {
