@@ -27,8 +27,7 @@ export class GameScene extends Phaser.Scene {
 
     this.createParticles();
 
-    this.time.delayedCall(4000, () => {
-      // this.tweens.destroy();
+    this.time.delayedCall(5000, () => {
       this.enemies.getChildren().forEach((e: Enemy) => {
         e.moveTween.remove();
       })
@@ -127,7 +126,7 @@ export class GameScene extends Phaser.Scene {
       yoyo: true,
       repeat: -1,
       onUpdate: () => {
-        Phaser.Actions.RotateAroundDistance(blueEnemy, { x: this.sys.canvas.width / 2, y: this.sys.canvas.height / 2 - 25 }, 0.0004, circle1.radius);
+        Phaser.Actions.RotateAroundDistance(blueEnemy, { x: this.sys.canvas.width / 2, y: this.sys.canvas.height / 2 - 25 }, -0.0004, circle1.radius);
       }
     });
 

@@ -47,7 +47,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         this.dyingTime = 100;
         this.enemyTint = 0xffffff;
         this.lives = 1;
-        this.reloadTime = 9000;
+        this.reloadTime = 6000;
         this.valueKill = 20;
         this.delayTime = 0;
         break;
@@ -56,18 +56,18 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         this.dyingTime = 120;
         this.enemyTint = 0x42a4aa;
         this.lives = 2;
-        this.reloadTime = 10000;
+        this.reloadTime = 9000;
         this.valueKill = 40;
-        this.delayTime = 1500;
+        this.delayTime = 1000;
         break;
 
       case 'squid':
         this.dyingTime = 140;
         this.enemyTint = 0x4a4e4d;
-        this.lives = 2;
+        this.lives = 3;
         this.reloadTime = 12000;
         this.valueKill = 60;
-        this.delayTime = 3000;
+        this.delayTime = 2000;
         break;
     }
   }
@@ -88,7 +88,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
       targets: this,
       x: this.x + 50,
       ease: 'Power0',
-      duration: 6000,
+      duration: 2500,
       yoyo: true,
       repeat: -1,
       delay: this.delayTime
