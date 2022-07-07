@@ -188,6 +188,16 @@ export class GameScene extends Phaser.Scene {
         towerBody.setVelocityX(0);
       }
 
+      if (towerBody.position.x < this.player.x - this.player.width * 1.7) {
+        this.tweens.add({
+          targets: tower,
+          y: 900,
+          alpha: { from: 0.7, to: 0.1 },
+          duration: 2000,
+          ease: 'Power2'
+        })
+      }
+
       if (towerBody.position.x < 0) {
         this.spawnNewTower();
         tower.destroy();
