@@ -84,4 +84,12 @@ export class Player extends Phaser.GameObjects.Image {
       this.y += this.walkingSpeed;
     }
   }
+
+  public rotatePlayer(time: number) {
+    this.rotateTween.restart();
+    this.scene.time.delayedCall(time, () => {
+      this.rotateTween.stop();
+      this.setAngle(0)
+    })
+  }
 }

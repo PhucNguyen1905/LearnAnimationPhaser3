@@ -118,6 +118,7 @@ export class GameScene extends Phaser.Scene {
         this.coin.getBounds()
       ) && !this.coin.isMoving
     ) {
+      this.player.rotatePlayer(800)
       this.touchEmitter.explode(20, this.coin.x, this.coin.y);
       this.updateCoinStatus();
     }
