@@ -23,6 +23,8 @@ export class GameScene extends Phaser.Scene {
 
   private target: Phaser.Math.Vector2;
 
+  private zone: Phaser.GameObjects.Zone;
+
   constructor() {
     super({
       key: 'GameScene'
@@ -35,6 +37,8 @@ export class GameScene extends Phaser.Scene {
 
   create(): void {
     this.createTilemap();
+
+    this.createZone();
 
     this.createGameObjects();
 
@@ -80,7 +84,7 @@ export class GameScene extends Phaser.Scene {
 
     this.createScoreText();
 
-    this.createVariables();
+    this.createPauseVariables();
 
     this.inputHandler();
 
@@ -95,15 +99,24 @@ export class GameScene extends Phaser.Scene {
     this.layer.setCollisionByProperty({ collide: true });
   }
 
-  createVariables() {
+  createZone() {
+    this.zone = this.add.zone(0, 0, this.sys.canvas.width, this.sys.canvas.height).setOrigin(0, 0);
+    // this.zone.setScrollFactor(0);
+  }
+
+  createPauseVariables() {
     this.pauseClick = false;
     this.countDownText = null;
     this.countDown = 3;
     this.countTimeEvent = null;
+
+
   }
 
   createButtons() {
-    this.pauseBtn = this.add.sprite(this.cameras.main.width - 70, this.cameras.main.height - 65, 'pauseBtn').setInteractive();
+    this.pauseBtn = this.add.sprite(0, 0, 'pauseBtn').setInteractive();
+
+    Phaser.Display.Align.In.BottomRight(this.pauseBtn, this.zone)
 
     // Fixed to camera view
     this.pauseBtn.setScrollFactor(0)
