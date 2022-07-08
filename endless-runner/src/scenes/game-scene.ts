@@ -14,6 +14,9 @@ export class GameScene extends Phaser.Scene {
 
   private rotateTween: Phaser.Tweens.Tween;
 
+  private scoreText: Phaser.GameObjects.Text;
+  private highText: Phaser.GameObjects.Text;
+
   constructor() {
     super({
       key: 'GameScene'
@@ -28,6 +31,8 @@ export class GameScene extends Phaser.Scene {
     this.isBouncing = false;
     this.currentVeloc = 0;
     settings.createTowerXPosition = 0;
+
+    this.registry.set('score', 0)
   }
 
   create(): void {
@@ -42,6 +47,8 @@ export class GameScene extends Phaser.Scene {
     this.createCamera();
 
     this.createParEmitter();
+
+    this.createScoreText();
   }
 
   createLoadingBar() {
@@ -70,6 +77,13 @@ export class GameScene extends Phaser.Scene {
       })
       .pause();
 
+  }
+
+  createScoreText() {
+    this.scoreText = this.add.text(10, 10, 'Score: 0').setScrollFactor(0);
+    this.scoreText.setFontSize(30);
+    this.highText = this.add.text(10, 40, 'High Score: ' + (this.registry.get('high') || 0)).setScrollFactor(0);
+    this.highText.setFontSize(30);
   }
 
   createTowers() {
@@ -196,11 +210,13 @@ export class GameScene extends Phaser.Scene {
           duration: 2000,
           ease: 'Power2'
         })
+
       }
 
       if (towerBody.position.x < 0) {
         this.spawnNewTower();
         tower.destroy();
+        this.incScore()
       }
     }, this);
 
@@ -214,6 +230,21 @@ export class GameScene extends Phaser.Scene {
     this.updateEmitter()
 
   }
+
+  incScore() {
+    let curScore = this.registry.get('score') || 0;
+    curScore += 1;
+    this.registry.set('score', curScore)
+    this.scoreText.setText('Score: ' + curScore)
+    let highScore = this.registry.get('high') || 0;
+    if (highScore < curScore) {
+      highScore = curScore;
+      this.highText.setText('High Score: ' + highScore)
+      this.registry.set('high', highScore)
+    }
+
+  }
+
   updateEmitter() {
     if (this.isPlayerJumping) {
       this.tailEmitter.visible = true;
@@ -230,6 +261,9 @@ export class GameScene extends Phaser.Scene {
     );
 
     settings.createTowerXPosition += spacingBeforeTower * settings.BLOCK_WIDTH;
+    // if (settings.createTowerXPosition >= this.sys.canvas.width * 2) {
+    //   settings.createTowerXPosition /= 1.5;
+    // }
 
     const towerHeight = Phaser.Math.RND.between(
       settings.TOWER_PROPERTIES.HEIGHT.MIN,
