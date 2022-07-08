@@ -63,6 +63,8 @@ export class BootScene extends Phaser.Scene {
 
     this.load.atlas('flares', 'assets/particles/flares.png', 'assets/particles/flares.json');
 
+    this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
+
   }
 
   update(): void {

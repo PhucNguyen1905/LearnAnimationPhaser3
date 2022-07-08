@@ -26,6 +26,8 @@ export class PauseMenu extends Phaser.Scene {
     }
 
     createZone() {
+        const rec = this.add.rectangle(0, 0, this.sys.canvas.width, this.sys.canvas.height, 0x000000, 0.7).setOrigin(0, 0)
+
         this.zone = this.add.zone(0, 0, this.sys.canvas.width, this.sys.canvas.height).setOrigin(0, 0);
     }
 
@@ -60,6 +62,7 @@ export class PauseMenu extends Phaser.Scene {
         });
         this.contBtn.on('pointerout', () => {
             this.contBtn.clearTint();
+            this.contBtn.setScale(1)
         });
         this.restartBtn.on('pointerover', () => {
             this.restartBtn.setTint(0x76BA99);
@@ -67,16 +70,23 @@ export class PauseMenu extends Phaser.Scene {
         });
         this.restartBtn.on('pointerout', () => {
             this.restartBtn.clearTint();
+            this.restartBtn.setScale(1)
         });
         this.soundBtn.on('pointerover', () => {
             this.sound.play('mouseover')
             this.soundBtn.setTint(0x76BA99);
         });
         this.soundBtn.on('pointerout', () => {
+            this.soundBtn.setScale(1)
             this.soundBtn.clearTint();
         });
 
+
+        this.contBtn.on('pointerdown', () => {
+            this.contBtn.setScale(1.1);
+        })
         this.contBtn.on('pointerup', () => {
+            this.contBtn.setScale(1);
             this.sound.play('click')
             this.tweens.add({
                 targets: this.container,
@@ -89,11 +99,17 @@ export class PauseMenu extends Phaser.Scene {
                 onComplete: () => {
                     this.scene.stop();
                     this.scene.resume('GameScene');
-                }
+                },
+                delay: 100
             })
 
         })
+
+        this.restartBtn.on('pointerdown', () => {
+            this.restartBtn.setScale(1.1);
+        })
         this.restartBtn.on('pointerup', () => {
+            this.restartBtn.setScale(1);
             this.sound.play('click')
             this.tweens.add({
                 targets: this.container,
@@ -106,11 +122,17 @@ export class PauseMenu extends Phaser.Scene {
                 onComplete: () => {
                     this.scene.start('GameScene')
                     this.scene.stop();
-                }
+                },
+                delay: 100
             })
 
         })
+
+        this.soundBtn.on('pointerdown', () => {
+            this.soundBtn.setScale(1.1);
+        })
         this.soundBtn.on('pointerup', () => {
+            this.soundBtn.setScale(1)
             this.sound.play('click')
             if (this.sound.mute) {
                 this.sound.mute = false;

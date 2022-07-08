@@ -14,6 +14,7 @@ export class GameScene extends Phaser.Scene {
 
   private pauseBtn: Phaser.GameObjects.Image;
   private pauseClick: boolean = false;
+  private fireAble: boolean = true;
   private countDownText: Phaser.GameObjects.Text;
   private countTimeEvent: Phaser.Time.TimerEvent;
   private eventPause: Phaser.Events.EventEmitter;
@@ -105,6 +106,7 @@ export class GameScene extends Phaser.Scene {
 
   createPauseVariables() {
     this.pauseClick = false;
+    this.fireAble = true;
     this.countDownText = null;
     this.countDown = 3;
     this.countTimeEvent = null;
@@ -125,15 +127,28 @@ export class GameScene extends Phaser.Scene {
     });
     this.pauseBtn.on('pointerout', () => {
       this.pauseBtn.clearTint();
+      this.fireAble = true;
     });
 
     this.pauseBtn.on('pointerdown', () => {
+      this.fireAble = false;
+    })
+
+    this.pauseBtn.on('pointerup', () => {
+      this.pauseBtn.setScale(1.1);
+      this.time.delayedCall(100, () => {
+        this.pauseBtn.setScale(1)
+      })
+      this.input.disable(this.pauseBtn);
       this.pauseClick = true;
-      this.sound.play('click')
-      this.physics.pause();
-      this.scene.pause();
-      this.tweens.pauseAll();
-      this.scene.launch('PauseMenu');
+      this.time.delayedCall(200, () => {
+        this.sound.play('click')
+        this.physics.pause();
+        this.tweens.pauseAll();
+        this.scene.pause();
+        this.scene.launch('PauseMenu');
+      })
+
     })
 
   }
@@ -153,7 +168,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   playerShoot() {
-    if (!this.pauseClick) {
+    if (!this.pauseClick && this.fireAble) {
       this.player.handleShooting();
     }
   }
@@ -166,7 +181,7 @@ export class GameScene extends Phaser.Scene {
       this.input.keyboard.enabled = false;
 
       this.countDown = 3;
-      this.countDownText = this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2, 'Continue in ' + this.countDown, { fontSize: '60px', color: '#1363DF' }).setOrigin(0.5)
+      this.countDownText = this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2, 'Continue in ' + this.countDown, { fontSize: '60px', color: '#1363DF' }).setOrigin(0.5).setDepth(5)
       this.countTimeEvent = this.time.addEvent({
         delay: 1000,
         callback: this.countDownTime,
@@ -195,6 +210,8 @@ export class GameScene extends Phaser.Scene {
   createScoreText() {
     this.scoreText = this.add.text(10, 10, 'Score: 0').setScrollFactor(0);
     this.scoreText.setFontSize(50);
+    this.scoreText.setColor('#1363DF')
+    this.scoreText.setFontFamily('Revalia')
   }
 
   createGameObjects() {
