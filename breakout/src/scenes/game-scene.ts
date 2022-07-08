@@ -75,22 +75,26 @@ export class GameScene extends Phaser.Scene {
         this.tweens.add({
           targets: b,
           props: {
-            y: { value: yPos, duration: 2000, ease: 'Power2' }
+            y: { value: yPos, duration: 1500, ease: 'Power2' }
           },
           delay: (8 - y + x) * 200
         })
+
+        // Wave tweens
         this.tweens.add({
           targets: b,
           scaleX: 1.2,
           scaleY: 1.4,
-          delay: 22.5 * 200 + x * 50,
+          delay: 22.5 * 200 + (x - y) * 50,
           ease: 'Sine.easeInOut',
           duration: 1000,
-          repeat: 1,
+          repeat: -1,
           yoyo: true,
-          onComplete: () => {
-            this.isDoneBrick = true;
-          }
+          repeatDelay: 10000
+        })
+
+        this.time.delayedCall(5500, () => {
+          this.isDoneBrick = true;
         })
 
         this.bricks.add(b);
