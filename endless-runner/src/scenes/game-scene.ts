@@ -213,7 +213,7 @@ export class GameScene extends Phaser.Scene {
 
       }
 
-      if (towerBody.position.x < 0) {
+      if (towerBody.position.y > this.sys.canvas.height) {
         this.spawnNewTower();
         tower.destroy();
         this.incScore()
