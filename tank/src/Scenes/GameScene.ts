@@ -98,9 +98,11 @@ export class GameScene extends Phaser.Scene {
         this.pauseBtn.on('pointerout', () => {
             this.pauseBtn.clearTint();
             this.fireAble = true;
+            this.pauseBtn.setScale(1);
         });
 
         this.pauseBtn.on('pointerdown', () => {
+            this.pauseBtn.setScale(1.1);
             this.fireAble = false;
         })
 
@@ -187,7 +189,6 @@ export class GameScene extends Phaser.Scene {
         this.lastScore = 0;
         this.scoreText = this.add.text(10, 10, 'Score: 0').setScrollFactor(0);
         this.scoreText.setFontSize(60);
-        // this.scoreText.setColor('#1363DF')
         this.scoreText.setFontFamily('Revalia')
         this.scoreText.setAlign('center');
         this.scoreText.setStroke('#000000', 2);
