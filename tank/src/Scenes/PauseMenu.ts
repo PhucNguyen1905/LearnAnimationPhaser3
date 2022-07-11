@@ -38,6 +38,14 @@ export class PauseMenu extends Phaser.Scene {
     createButtons() {
         this.background = this.add.image(0, 0, 'back').setScale(2.6, 1.7);
         this.pauseImg = this.add.image(0, -220, 'pauseimg').setScale(1.2);
+        this.tweens.add({
+            targets: this.pauseImg,
+            scaleX: 1.4,
+            scaleY: 1.4,
+            yoyo: true,
+            repeat: -1,
+            duration: 1500
+        })
         this.contBtn = new Button({ scene: this, x: -220, y: 0, texture: 'continue' })
         this.restartBtn = new Button({ scene: this, x: -70, y: 0, texture: 'restart' })
         this.soundBtn = new Button({ scene: this, x: 80, y: 0, texture: 'sound' + this.sound.mute })
