@@ -1,4 +1,4 @@
-import { IImageConstructor } from '../../interfaces/image.interface';
+import { IImageConstructor } from '../../interfaces/ImageInterface';
 
 export class Obstacle extends Phaser.GameObjects.Image {
   body: Phaser.Physics.Arcade.Body;
@@ -19,5 +19,5 @@ export class Obstacle extends Phaser.GameObjects.Image {
     this.body.setImmovable(true);
   }
 
-  update(): void {}
+  update(): void { }
 }
