@@ -347,23 +347,19 @@ export class GameScene extends Phaser.Scene {
 
     private bulletHitLayer(bullet: Bullet): void {
         bullet.explodeEmiiter(2);
-        bullet.destroy();
     }
 
     private bulletHitObstacles(bullet: Bullet, obstacle: Obstacle): void {
         bullet.explodeEmiiter(2);
-        bullet.destroy();
     }
 
     private enemyBulletHitPlayer(bullet: Bullet, player: Player): void {
         bullet.explodeEmiiter(5);
-        bullet.destroy();
         player.updateHealth();
     }
 
     private playerBulletHitEnemy(bullet: Bullet, enemy: Enemy): void {
         bullet.explodeEmiiter(3);
-        bullet.destroy();
         enemy.updateHealth();
     }
 }
