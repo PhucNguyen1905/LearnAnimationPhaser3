@@ -44,6 +44,7 @@ export class BootScene extends Phaser.Scene {
 
     this.load.image('bg', 'assets/images/tank.png');
     this.load.image('overimg', 'assets/images/over.png');
+    this.load.image('pauseimg', 'assets/images/pauseimg.png');
     this.load.image('pauseBtn', 'assets/images/pause.png');
     this.load.image('continue', 'assets/images/continue.png');
     this.load.image('restart', 'assets/images/restart.png');

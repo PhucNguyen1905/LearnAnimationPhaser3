@@ -1,6 +1,7 @@
 export class PauseMenu extends Phaser.Scene {
 
     private background: Phaser.GameObjects.Image;
+    private pauseImg: Phaser.GameObjects.Image;
     private contBtn: Phaser.GameObjects.Image;
     private restartBtn: Phaser.GameObjects.Image;
     private soundBtn: Phaser.GameObjects.Image;
@@ -33,6 +34,7 @@ export class PauseMenu extends Phaser.Scene {
 
     createButtons() {
         this.background = this.add.image(0, 0, 'back').setScale(2.2, 1.6);
+        this.pauseImg = this.add.image(0, -220, 'pauseimg').setScale(1.2);
         this.contBtn = this.add.sprite(-150, 0, 'continue').setInteractive();
         this.restartBtn = this.add.sprite(0, 0, 'restart').setInteractive();
         this.soundBtn = this.add.sprite(150, 0, 'sound' + this.sound.mute).setInteractive();
@@ -41,7 +43,7 @@ export class PauseMenu extends Phaser.Scene {
     createContainer() {
         this.container = this.add.container(
             0, 0,
-            [this.background, this.contBtn, this.restartBtn, this.soundBtn]);
+            [this.pauseImg, this.background, this.contBtn, this.restartBtn, this.soundBtn]);
         Phaser.Display.Align.In.Center(this.container, this.zone);
 
         this.tweens.add({
