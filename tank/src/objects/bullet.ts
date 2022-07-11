@@ -4,6 +4,7 @@ export class Bullet extends Phaser.GameObjects.Image {
   body: Phaser.Physics.Arcade.Body;
 
   private hitEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
+  public fireEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
   private bulletSpeed: number;
 
@@ -46,10 +47,31 @@ export class Bullet extends Phaser.GameObjects.Image {
       lifespan: 400,
       gravityY: 600
     });
+
+    this.fireEmitter = this.scene.add.particles('flares').createEmitter({
+      quantity: 10,
+      speedX: { min: -10, max: 10 },
+      speedY: { min: 20, max: 50 },
+      alpha: { start: 0.5, end: 0, ease: 'Sine.easeIn' },
+      scale: { start: 0.065, end: 0.002 },
+
+      accelerationY: 350,
+      angle: { min: 30, max: 110 },
+      rotate: { min: -180, max: 180 },
+      lifespan: { min: 100, max: 300 },
+      blendMode: 'ADD',
+      frequency: 15,
+      follow: this
+    });
+  }
+
+  public removeEmitter() {
+    this.fireEmitter.remove()
   }
 
   public explodeEmiiter() {
     this.hitEmitter.explode(2, this.x, this.y)
+    this.fireEmitter.remove()
   }
 
   update(): void { }

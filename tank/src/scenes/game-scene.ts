@@ -360,11 +360,13 @@ export class GameScene extends Phaser.Scene {
   }
 
   private enemyBulletHitPlayer(bullet: Bullet, player: Player): void {
+    bullet.removeEmitter();
     bullet.destroy();
     player.updateHealth();
   }
 
   private playerBulletHitEnemy(bullet: Bullet, enemy: Enemy): void {
+    bullet.removeEmitter();
     bullet.destroy();
     enemy.updateHealth();
   }

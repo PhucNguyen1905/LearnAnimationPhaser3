@@ -28,6 +28,8 @@ export class OverMenu extends Phaser.Scene {
     }
 
     createZone() {
+        const rec = this.add.rectangle(0, 0, this.sys.canvas.width, this.sys.canvas.height, 0x000000, 0.7).setOrigin(0, 0)
+
         this.zone = this.add.zone(0, 0, this.sys.canvas.width, this.sys.canvas.height).setOrigin(0, 0);
     }
 
@@ -69,9 +71,15 @@ export class OverMenu extends Phaser.Scene {
 
         this.restartBtn.on('pointerout', () => {
             this.restartBtn.clearTint();
+            this.restartBtn.setScale(1)
         });
 
+        this.restartBtn.on('pointerdown', () => {
+            this.restartBtn.setScale(1.1);
+        })
+
         this.restartBtn.on('pointerup', () => {
+            this.restartBtn.setScale(1)
             this.sound.play('click')
             this.tweens.add({
                 targets: this.container,

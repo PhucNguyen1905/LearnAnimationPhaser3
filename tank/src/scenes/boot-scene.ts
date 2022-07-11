@@ -68,7 +68,7 @@ export class BootScene extends Phaser.Scene {
   }
 
   update(): void {
-    this.scene.start('MenuScene');
+    this.scene.start('OverMenu');
   }
 
   private createLoadingGraphics(): void {
