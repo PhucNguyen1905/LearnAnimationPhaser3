@@ -1,5 +1,7 @@
 export class MenuScene extends Phaser.Scene {
     private startKey: Phaser.Input.Keyboard.Key;
+    private bg: Phaser.GameObjects.Sprite;
+    private intro: Phaser.GameObjects.BitmapText;
     private bitmapTexts: Phaser.GameObjects.BitmapText[] = [];
 
     constructor() {
@@ -18,17 +20,17 @@ export class MenuScene extends Phaser.Scene {
     create(): void {
         this.createBackground();
 
-        const intro = this.add.bitmapText(
+        this.intro = this.add.bitmapText(
             this.sys.canvas.width / 2,
             this.sys.canvas.height / 2,
             'font',
             'PRESS S TO PLAY',
             30
         ).setOrigin(0.5, 0.5);
-        this.bitmapTexts.push(intro);
+        this.bitmapTexts.push(this.intro);
 
         this.tweens.add({
-            targets: intro,
+            targets: this.intro,
             scaleX: 1.4,
             scaleY: 1.4,
             duration: 1000,
@@ -38,13 +40,22 @@ export class MenuScene extends Phaser.Scene {
 
     }
     createBackground() {
-        const bg = this.add.sprite(0, 0, 'bg').setOrigin(0, 0);
-        bg.setDisplaySize(this.sys.canvas.width, this.sys.canvas.height)
+        this.bg = this.add.sprite(this.sys.canvas.width / 2, this.sys.canvas.height / 2, 'bg').setOrigin(0.5, 0.5);
+        this.bg.setDisplaySize(this.sys.canvas.width, this.sys.canvas.height)
     }
 
     update(): void {
         if (this.startKey.isDown) {
-            this.scene.start('GameScene');
+            this.tweens.add({
+                targets: [this.bg, this.intro],
+                scaleX: 0.4,
+                scaleY: 0.5,
+                alpha: { start: 1, end: 0.2 },
+                duration: 500,
+                onComplete: () => {
+                    this.scene.start('GameScene');
+                }
+            })
         }
     }
 }
