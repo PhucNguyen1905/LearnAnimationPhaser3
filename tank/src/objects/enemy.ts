@@ -8,6 +8,7 @@ export class Enemy extends Phaser.GameObjects.Image {
   private health: number;
   private lastShoot: number;
   private speed: number;
+  private dyingValue: number;
 
   // children
   private barrel: Phaser.GameObjects.Image;
@@ -40,6 +41,8 @@ export class Enemy extends Phaser.GameObjects.Image {
     this.health = 1;
     this.lastShoot = 0;
     this.speed = 100;
+    this.dyingValue = Phaser.Math.Between(10, 20);
+
 
     // image
     this.setDepth(0);
@@ -152,11 +155,12 @@ export class Enemy extends Phaser.GameObjects.Image {
 
   private tweenHealthText() {
     // Tween health
+    let h = Phaser.Math.Between(1, 3);
     let healthText = this.scene.add.text(
       this.x - Phaser.Math.Between(30, 70),
       this.y - 50,
-      '1',
-      { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif', fontSize: '50px' }
+      h.toString(),
+      { fontSize: '50px', fontFamily: 'Revalia', align: 'center', stroke: '#000000', strokeThickness: 2 }
     )
     healthText.setColor('#F32424')
     this.scene.tweens.add(
@@ -178,9 +182,10 @@ export class Enemy extends Phaser.GameObjects.Image {
     let scoreText = this.scene.add.text(
       this.x - 100,
       this.y - 50,
-      '1',
-      { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif', fontSize: '50px' }
+      this.dyingValue.toString(),
+      { fontSize: '50px', fontFamily: 'Revalia', align: 'center', stroke: '#000000', strokeThickness: 2 }
     )
+
 
     this.exploEmitter.setPosition(this.x, this.y);
     this.scene.tweens.add(
@@ -213,7 +218,7 @@ export class Enemy extends Phaser.GameObjects.Image {
       this.scene.sound.play('boom')
 
       // Update score
-      this.scene.registry.set('score', this.scene.registry.get('score') + 1);
+      this.scene.registry.set('score', this.scene.registry.get('score') + this.dyingValue);
 
       // Tween score
       this.tweenScoreText();

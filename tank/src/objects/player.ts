@@ -200,7 +200,7 @@ export class Player extends Phaser.GameObjects.Image {
   public updateHealth(): void {
     if (this.health > 0) {
       this.scene.sound.play('hit')
-      this.health -= 0.0005;
+      this.health -= 0.05;
       this.redrawLifebar();
 
       // this.tweenGetHit();

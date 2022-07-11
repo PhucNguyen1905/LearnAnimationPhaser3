@@ -21,6 +21,7 @@ export class GameScene extends Phaser.Scene {
   private countDown: number = 3;
 
   private scoreText: Phaser.GameObjects.Text;
+  private curScore: number;
 
   private target: Phaser.Math.Vector2;
 
@@ -181,7 +182,13 @@ export class GameScene extends Phaser.Scene {
       this.input.keyboard.enabled = false;
 
       this.countDown = 3;
-      this.countDownText = this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2, 'Continue in ' + this.countDown, { fontSize: '60px', color: '#1363DF' }).setOrigin(0.5).setDepth(5)
+      this.countDownText = this.add.text(
+        this.cameras.main.width / 2,
+        this.cameras.main.height / 2,
+        'Continue in ' + this.countDown,
+        { fontSize: '60px', fontFamily: 'Revalia', align: 'center', stroke: '#000000', strokeThickness: 2 })
+        .setOrigin(0.5)
+        .setDepth(5)
       this.countTimeEvent = this.time.addEvent({
         delay: 1000,
         callback: this.countDownTime,
@@ -208,10 +215,14 @@ export class GameScene extends Phaser.Scene {
   }
 
   createScoreText() {
+    this.curScore = 0;
     this.scoreText = this.add.text(10, 10, 'Score: 0').setScrollFactor(0);
-    this.scoreText.setFontSize(50);
-    this.scoreText.setColor('#1363DF')
+    this.scoreText.setFontSize(60);
+    // this.scoreText.setColor('#1363DF')
     this.scoreText.setFontFamily('Revalia')
+    this.scoreText.setAlign('center');
+    this.scoreText.setStroke('#000000', 2);
+    this.scoreText.setShadow(5, 5, 'rgba(0,0,0,0.5)', 5);
   }
 
   createGameObjects() {
@@ -261,7 +272,9 @@ export class GameScene extends Phaser.Scene {
   update(): void {
     this.player.update();
 
-    this.scoreText.setText('Score: ' + this.registry.get('score'))
+    if (this.curScore != this.registry.get('score')) {
+      this.tweenText(this.registry.get('score'));
+    }
 
     this.enemies.children.each((enemy: Enemy) => {
       if (!this.pauseClick) enemy.update();
@@ -277,6 +290,29 @@ export class GameScene extends Phaser.Scene {
           (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
       }
     }, this);
+  }
+
+  public tweenText(p: number) {
+    let c = this.curScore;
+    const scaTween = this.tweens.add({
+      targets: this.scoreText,
+      scaleX: 1.2,
+      scaleY: 1.2,
+      yoyo: true,
+      duration: 400
+    })
+    this.curScore = p;
+    this.tweens.addCounter({
+      from: c,
+      to: p,
+      duration: 700,
+      onUpdate: (tween) => {
+        this.scoreText.setText('Score: ' + Math.floor(tween.getValue()));
+      },
+      onComplete: () => [
+        scaTween.remove()
+      ]
+    })
   }
 
   private convertObjects(): void {
