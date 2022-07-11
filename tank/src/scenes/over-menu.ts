@@ -1,6 +1,7 @@
 export class OverMenu extends Phaser.Scene {
 
     private background: Phaser.GameObjects.Image;
+    private over: Phaser.GameObjects.Image;
     private restartBtn: Phaser.GameObjects.Image;
     private scoreImg: Phaser.GameObjects.Image;
     private scoreText: Phaser.GameObjects.Text;
@@ -36,6 +37,7 @@ export class OverMenu extends Phaser.Scene {
 
     createMenu() {
         this.background = this.add.image(0, 0, 'back').setScale(2.2, 3.8);
+        this.over = this.add.image(0, -400, 'overimg');
 
         this.scoreImg = this.add.image(-150, -65, 'score')
         this.scoreText = this.add.text(-35, -100, '', { fontSize: '50px', fontFamily: 'Revalia', align: 'center', stroke: '#000000', strokeThickness: 2 }).setFontSize(80);
@@ -49,7 +51,7 @@ export class OverMenu extends Phaser.Scene {
     createContainer() {
         this.container = this.add.container(
             0, 0,
-            [this.background, this.scoreImg, this.scoreText, this.highScoreImg, this.highScoreText, this.restartBtn]);
+            [this.over, this.background, this.scoreImg, this.scoreText, this.highScoreImg, this.highScoreText, this.restartBtn]);
         Phaser.Display.Align.In.Center(this.container, this.zone);
 
         this.tweens.add({
@@ -67,7 +69,6 @@ export class OverMenu extends Phaser.Scene {
     }
 
     createScoreText() {
-        // let score = this.registry.get('score') || 0;
         let score = this.registry.get('score') || 0;
         this.tweens.add({
             targets: this.scoreText,
@@ -103,7 +104,7 @@ export class OverMenu extends Phaser.Scene {
         })
 
         this.time.delayedCall(1250, () => {
-            if (score == highScore) {
+            if (score == highScore && score != 0) {
                 this.sound.play('yeah')
                 let logoSource = {
                     getRandomPoint: (vec: any) => {

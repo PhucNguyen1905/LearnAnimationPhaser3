@@ -42,6 +42,8 @@ export class BootScene extends Phaser.Scene {
     // load our package
     this.load.pack('preload', './assets/pack.json', 'preload');
 
+    this.load.image('bg', 'assets/images/tank.png');
+    this.load.image('overimg', 'assets/images/over.png');
     this.load.image('pauseBtn', 'assets/images/pause.png');
     this.load.image('continue', 'assets/images/continue.png');
     this.load.image('restart', 'assets/images/restart.png');
@@ -70,7 +72,7 @@ export class BootScene extends Phaser.Scene {
   }
 
   update(): void {
-    this.scene.start('OverMenu');
+    this.scene.start('MenuScene');
   }
 
   private createLoadingGraphics(): void {
