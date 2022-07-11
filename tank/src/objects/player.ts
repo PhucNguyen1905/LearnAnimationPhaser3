@@ -107,8 +107,10 @@ export class Player extends Phaser.GameObjects.Image {
 
         // rotate barrel
         this.scene.input.on('pointermove', (pointer: any) => {
-            let angle = Phaser.Math.Angle.Between(this.barrel.x, this.barrel.y, pointer.x + this.scene.cameras.main.scrollX, pointer.y + this.scene.cameras.main.scrollY);;
-            this.barrel.rotation = angle + Math.PI / 2;
+            if (this.active) {
+                let angle = Phaser.Math.Angle.Between(this.barrel.x, this.barrel.y, pointer.x + this.scene.cameras.main.scrollX, pointer.y + this.scene.cameras.main.scrollY);;
+                this.barrel.rotation = angle + Math.PI / 2;
+            }
         })
     }
 

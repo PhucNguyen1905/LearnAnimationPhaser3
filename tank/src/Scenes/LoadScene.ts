@@ -46,6 +46,7 @@ export class LoadScene extends Phaser.Scene {
         this.load.image('overimg', 'assets/images/over.png');
         this.load.image('pauseimg', 'assets/images/pauseimg.png');
         this.load.image('pauseBtn', 'assets/images/pause.png');
+        this.load.image('exit', 'assets/images/exit.png');
         this.load.image('continue', 'assets/images/continue.png');
         this.load.image('restart', 'assets/images/restart.png');
         this.load.image('soundfalse', 'assets/images/sound.png');

@@ -21,7 +21,7 @@ export class GameScene extends Phaser.Scene {
     private countDown: number = 3;
 
     private scoreText: Phaser.GameObjects.Text;
-    private curScore: number;
+    private lastScore: number;
 
     private zone: Phaser.GameObjects.Zone;
 
@@ -184,7 +184,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     createScoreText() {
-        this.curScore = 0;
+        this.lastScore = 0;
         this.scoreText = this.add.text(10, 10, 'Score: 0').setScrollFactor(0);
         this.scoreText.setFontSize(60);
         // this.scoreText.setColor('#1363DF')
@@ -271,10 +271,34 @@ export class GameScene extends Phaser.Scene {
     update(): void {
         this.player.update();
 
-        if (this.curScore != this.registry.get('score')) {
-            this.tweenText(this.registry.get('score'));
-        }
+        this.updateScore();
 
+        this.updateEnemies();
+    }
+
+    private updateScore() {
+        if (this.lastScore == this.registry.get('score')) return;
+        let lastScore = this.lastScore;
+        let curScore = this.registry.get('score');
+        this.tweens.add({
+            targets: this.scoreText,
+            scaleX: 1.2,
+            scaleY: 1.2,
+            yoyo: true,
+            duration: 400
+        })
+        this.lastScore = curScore;
+        this.tweens.addCounter({
+            from: lastScore,
+            to: curScore,
+            duration: 700,
+            onUpdate: (tween) => {
+                this.scoreText.setText('Score: ' + Math.floor(tween.getValue()));
+            }
+        })
+    }
+
+    private updateEnemies() {
         this.enemies.children.each((enemy: Enemy) => {
             if (!this.pauseClick) enemy.update();
             if (this.player.active && enemy.active) {
@@ -289,26 +313,6 @@ export class GameScene extends Phaser.Scene {
                     (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
             }
         }, this);
-    }
-
-    public tweenText(p: number) {
-        let c = this.curScore;
-        const scaTween = this.tweens.add({
-            targets: this.scoreText,
-            scaleX: 1.2,
-            scaleY: 1.2,
-            yoyo: true,
-            duration: 400
-        })
-        this.curScore = p;
-        this.tweens.addCounter({
-            from: c,
-            to: p,
-            duration: 700,
-            onUpdate: (tween) => {
-                this.scoreText.setText('Score: ' + Math.floor(tween.getValue()));
-            }
-        })
     }
 
     private convertObjects(): void {
@@ -346,20 +350,20 @@ export class GameScene extends Phaser.Scene {
     }
 
     private bulletHitLayer(bullet: Bullet): void {
-        bullet.explodeEmiiter(2);
+        bullet.explodeEmitter(2);
     }
 
     private bulletHitObstacles(bullet: Bullet, obstacle: Obstacle): void {
-        bullet.explodeEmiiter(2);
+        bullet.explodeEmitter(2);
     }
 
     private enemyBulletHitPlayer(bullet: Bullet, player: Player): void {
-        bullet.explodeEmiiter(5);
+        bullet.explodeEmitter(5);
         player.updateHealth();
     }
 
     private playerBulletHitEnemy(bullet: Bullet, enemy: Enemy): void {
-        bullet.explodeEmiiter(3);
+        bullet.explodeEmitter(3);
         enemy.updateHealth();
     }
 }
