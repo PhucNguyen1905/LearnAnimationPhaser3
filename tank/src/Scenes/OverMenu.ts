@@ -74,8 +74,10 @@ export class OverMenu extends Phaser.Scene {
 
     createScoreText() {
         let score = this.registry.get('score') || 0;
+        let highScore = this.registry.get('highScore') || 0;
+
         this.tweens.add({
-            targets: this.scoreText,
+            targets: [this.scoreText, this.highScoreText],
             scaleX: 1.2,
             scaleY: 1.2,
             yoyo: true,
@@ -88,15 +90,6 @@ export class OverMenu extends Phaser.Scene {
             onUpdate: (tween) => {
                 this.scoreText.setText(Math.floor(tween.getValue()).toString());
             }
-        })
-
-        let highScore = this.registry.get('highScore') || 0;
-        this.tweens.add({
-            targets: this.highScoreText,
-            scaleX: 1.2,
-            scaleY: 1.2,
-            yoyo: true,
-            duration: 500
         })
         this.tweens.addCounter({
             from: 0,

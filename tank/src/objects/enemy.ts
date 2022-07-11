@@ -140,12 +140,12 @@ export class Enemy extends Phaser.GameObjects.Image {
         this.lifeBar.setDepth(1);
     }
 
-    private tweenHealthText(dam: number) {
+    private tweenHealthText(damage: number) {
         // Tween health
         let healthText = this.scene.add.text(
             this.x - Phaser.Math.Between(30, 70),
             this.y - 50,
-            dam.toString(),
+            damage.toString(),
             { fontSize: '50px', fontFamily: 'Revalia', align: 'center', stroke: '#000000', strokeThickness: 2 }
         )
         healthText.setColor('#F32424')
@@ -192,9 +192,9 @@ export class Enemy extends Phaser.GameObjects.Image {
     public updateHealth(): void {
         if (this.health > 0) {
             this.scene.sound.play('hit_enemy')
-            let dam = Phaser.Math.Between(1, 3);
-            this.tweenHealthText(dam);
-            this.health -= 0.05 * dam;
+            let damage = Phaser.Math.Between(1, 3);
+            this.tweenHealthText(damage);
+            this.health -= 0.05 * damage;
             this.redrawLifebar();
 
         } else {
