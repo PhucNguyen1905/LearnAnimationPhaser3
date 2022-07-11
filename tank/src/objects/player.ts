@@ -19,8 +19,6 @@ export class Player extends Phaser.GameObjects.Image {
     // input
     private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
 
-    private hitEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
-
     public getBullets(): Phaser.GameObjects.Group {
         return this.bullets;
     }
@@ -65,22 +63,6 @@ export class Player extends Phaser.GameObjects.Image {
         // physics
         this.scene.physics.world.enable(this);
 
-        this.createEmitters();
-
-    }
-
-    createEmitters() {
-        this.hitEmitter = this.scene.add.particles('flares').createEmitter({
-            x: -100,
-            y: -100,
-            frame: 'red',
-            speed: { min: -200, max: 200 },
-            angle: { min: 0, max: 360 },
-            scale: { start: 0.4, end: 0 },
-            blendMode: 'ADD',
-            lifespan: 500,
-            gravityY: 800
-        });
     }
 
     update(): void {
@@ -187,25 +169,11 @@ export class Player extends Phaser.GameObjects.Image {
         this.scene.registry.set('highScore', highScore)
     }
 
-    // private tweenGetHit() {
-    //   this.scene.tweens.add({
-    //     targets: this,
-    //     props: {
-    //       x: { value: this.x + Phaser.Math.Between(-2, 1), duration: 300, ease: 'Power2' },
-    //       y: { value: this.y + Phaser.Math.Between(-2, 1), duration: 300, ease: 'Power2' }
-    //     }
-    //   })
-    // }
-
     public updateHealth(): void {
         if (this.health > 0) {
             this.scene.sound.play('hit')
             this.health -= 0.05;
             this.redrawLifebar();
-
-            // this.tweenGetHit();
-
-            this.hitEmitter.explode(5, this.x, this.y)
 
 
         } else {

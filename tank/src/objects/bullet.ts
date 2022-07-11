@@ -63,12 +63,8 @@ export class Bullet extends Phaser.GameObjects.Image {
         });
     }
 
-    public removeEmitter() {
-        this.fireEmitter.remove()
-    }
-
-    public explodeEmiiter() {
-        this.hitEmitter.explode(2, this.x, this.y)
+    public explodeEmiiter(num: number) {
+        this.hitEmitter.explode(num, this.x, this.y)
         this.fireEmitter.remove()
     }
 

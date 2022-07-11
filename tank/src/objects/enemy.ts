@@ -18,7 +18,6 @@ export class Enemy extends Phaser.GameObjects.Image {
     private bullets: Phaser.GameObjects.Group;
 
     private exploEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
-    private hitEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
 
     public getBarrel(): Phaser.GameObjects.Image {
@@ -93,18 +92,6 @@ export class Enemy extends Phaser.GameObjects.Image {
             blendMode: 'ADD',
             lifespan: 300
         });
-
-        this.hitEmitter = this.scene.add.particles('flares').createEmitter({
-            x: -100,
-            y: -100,
-            frame: 'red',
-            speed: { min: -200, max: 200 },
-            angle: { min: 0, max: 360 },
-            scale: { start: 0.4, end: 0 },
-            blendMode: 'ADD',
-            lifespan: 500,
-            gravityY: 800
-        });
     }
 
     update(): void {
@@ -153,13 +140,12 @@ export class Enemy extends Phaser.GameObjects.Image {
         this.lifeBar.setDepth(1);
     }
 
-    private tweenHealthText() {
+    private tweenHealthText(dam: number) {
         // Tween health
-        let h = Phaser.Math.Between(1, 3);
         let healthText = this.scene.add.text(
             this.x - Phaser.Math.Between(30, 70),
             this.y - 50,
-            h.toString(),
+            dam.toString(),
             { fontSize: '50px', fontFamily: 'Revalia', align: 'center', stroke: '#000000', strokeThickness: 2 }
         )
         healthText.setColor('#F32424')
@@ -203,17 +189,14 @@ export class Enemy extends Phaser.GameObjects.Image {
         )
     }
 
-
-
     public updateHealth(): void {
         if (this.health > 0) {
             this.scene.sound.play('hit_enemy')
-            this.tweenHealthText();
-            this.health -= 0.05;
+            let dam = Phaser.Math.Between(1, 3);
+            this.tweenHealthText(dam);
+            this.health -= 0.05 * dam;
             this.redrawLifebar();
 
-
-            this.hitEmitter.explode(3, this.x, this.y)
         } else {
             this.scene.sound.play('boom')
 
