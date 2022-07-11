@@ -1,4 +1,4 @@
-import { settings } from '../settings';
+import { settings } from '../Settings';
 
 export class GameScene extends Phaser.Scene {
   private player: Phaser.GameObjects.Rectangle;

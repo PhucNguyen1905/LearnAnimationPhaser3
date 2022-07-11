@@ -1,4 +1,4 @@
-import { IImageConstructor } from '../interfaces/image.interface';
+import { IImageConstructor } from '../Interfaces/ImageInterface';
 
 export class Player extends Phaser.GameObjects.Image {
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys;

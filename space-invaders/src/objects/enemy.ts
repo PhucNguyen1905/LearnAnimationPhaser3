@@ -1,5 +1,5 @@
-import { Bullet } from './bullet';
-import { ISpriteConstructor } from '../interfaces/sprite.interface';
+import { Bullet } from './Bullet';
+import { ISpriteConstructor } from '../Interfaces/SpriteInterface';
 
 export class Enemy extends Phaser.GameObjects.Sprite {
   body: Phaser.Physics.Arcade.Body;

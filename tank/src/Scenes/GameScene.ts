@@ -23,8 +23,6 @@ export class GameScene extends Phaser.Scene {
   private scoreText: Phaser.GameObjects.Text;
   private curScore: number;
 
-  private target: Phaser.Math.Vector2;
-
   private zone: Phaser.GameObjects.Zone;
 
   constructor() {

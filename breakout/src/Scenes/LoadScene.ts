@@ -1,10 +1,10 @@
-export class BootScene extends Phaser.Scene {
+export class LoadScene extends Phaser.Scene {
   private loadingBar: Phaser.GameObjects.Graphics;
   private progressBar: Phaser.GameObjects.Graphics;
 
   constructor() {
     super({
-      key: 'BootScene'
+      key: 'LoadScene'
     });
   }
 

@@ -1,6 +1,6 @@
-import { Enemy } from '../objects/enemy';
-import { Player } from '../objects/player';
-import { Bullet } from '../objects/bullet';
+import { Enemy } from '../Objects/Enemy';
+import { Player } from '../Objects/Player';
+import { Bullet } from '../Objects/Bullet';
 
 export class GameScene extends Phaser.Scene {
   private enemies: Phaser.GameObjects.Group;

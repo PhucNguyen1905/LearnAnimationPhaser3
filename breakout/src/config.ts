@@ -1,12 +1,12 @@
-import { BootScene } from './scenes/boot-scene';
-import { GameScene } from './scenes/game-scene';
+import { LoadScene } from './Scenes/LoadScene';
+import { GameScene } from './Scenes/GameScene';
 
 export const GameConfig: Phaser.Types.Core.GameConfig = {
   title: 'Breakout',
   url: 'https://github.com/digitsensitive/phaser3-typescript',
   version: '1.0',
   type: Phaser.AUTO,
-  scene: [BootScene, GameScene],
+  scene: [LoadScene, GameScene],
 
   input: {
     keyboard: true

@@ -1,5 +1,5 @@
-import { Coin } from '../objects/coin';
-import { Player } from '../objects/player';
+import { Coin } from '../Objects/Coin';
+import { Player } from '../Objects/Player';
 
 export class GameScene extends Phaser.Scene {
   private background: Phaser.GameObjects.Image;

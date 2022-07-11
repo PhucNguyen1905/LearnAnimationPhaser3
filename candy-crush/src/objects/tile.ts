@@ -1,4 +1,4 @@
-import { IImageConstructor } from '../interfaces/image.interface';
+import { IImageConstructor } from '../Interfaces/ImageInterface';
 
 export class Tile extends Phaser.GameObjects.Image {
   type: string;

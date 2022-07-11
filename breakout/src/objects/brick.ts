@@ -1,4 +1,4 @@
-import { IRectangleConstructor } from '../interfaces/interfaces';
+import { IRectangleConstructor } from '../Interfaces/interfaces';
 
 export class Brick extends Phaser.GameObjects.Rectangle {
   body: Phaser.Physics.Arcade.Body;

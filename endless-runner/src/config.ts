@@ -1,4 +1,4 @@
-import { GameScene } from './scenes/game-scene';
+import { GameScene } from './Scenes/GameScene';
 
 export const GameConfig: Phaser.Types.Core.GameConfig = {
   title: 'Endless Runner',
