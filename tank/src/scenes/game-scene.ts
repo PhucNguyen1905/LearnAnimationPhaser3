@@ -308,10 +308,7 @@ export class GameScene extends Phaser.Scene {
       duration: 700,
       onUpdate: (tween) => {
         this.scoreText.setText('Score: ' + Math.floor(tween.getValue()));
-      },
-      onComplete: () => [
-        scaTween.remove()
-      ]
+      }
     })
   }
 

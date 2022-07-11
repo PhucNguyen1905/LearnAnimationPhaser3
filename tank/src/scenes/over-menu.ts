@@ -35,13 +35,13 @@ export class OverMenu extends Phaser.Scene {
 
 
     createMenu() {
-        this.background = this.add.image(0, 0, 'back').setScale(2.2, 3.6);
+        this.background = this.add.image(0, 0, 'back').setScale(2.2, 3.8);
 
         this.scoreImg = this.add.image(-150, -65, 'score')
-        this.scoreText = this.add.text(-35, -90, this.registry.get('score') || 0).setFontSize(80);
+        this.scoreText = this.add.text(-35, -100, '', { fontSize: '50px', fontFamily: 'Revalia', align: 'center', stroke: '#000000', strokeThickness: 2 }).setFontSize(80);
 
         this.highScoreImg = this.add.image(-150, 80, 'high')
-        this.highScoreText = this.add.text(-35, 55, this.registry.get('highScore') || 0).setFontSize(80);
+        this.highScoreText = this.add.text(-35, 45, '', { fontSize: '50px', fontFamily: 'Revalia', align: 'center', stroke: '#000000', strokeThickness: 2 }).setFontSize(80);
 
         this.restartBtn = this.add.sprite(150, 15, 'newgame').setInteractive();
     }
@@ -59,8 +59,76 @@ export class OverMenu extends Phaser.Scene {
                 to: 1
             },
             duration: 300,
-            ease: 'Linear'
+            ease: 'Linear',
+            onComplete: () => {
+                this.createScoreText();
+            }
         })
+    }
+
+    createScoreText() {
+        // let score = this.registry.get('score') || 0;
+        let score = this.registry.get('score') || 0;
+        this.tweens.add({
+            targets: this.scoreText,
+            scaleX: 1.2,
+            scaleY: 1.2,
+            yoyo: true,
+            duration: 500
+        })
+        this.tweens.addCounter({
+            from: 0,
+            to: score,
+            duration: 1000,
+            onUpdate: (tween) => {
+                this.scoreText.setText(Math.floor(tween.getValue()).toString());
+            }
+        })
+
+        let highScore = this.registry.get('highScore') || 0;
+        this.tweens.add({
+            targets: this.highScoreText,
+            scaleX: 1.2,
+            scaleY: 1.2,
+            yoyo: true,
+            duration: 500
+        })
+        this.tweens.addCounter({
+            from: 0,
+            to: highScore,
+            duration: 1000,
+            onUpdate: (tween) => {
+                this.highScoreText.setText(Math.floor(tween.getValue()).toString());
+            }
+        })
+
+        this.time.delayedCall(1250, () => {
+            if (score == highScore) {
+                this.sound.play('yeah')
+                let logoSource = {
+                    getRandomPoint: (vec: any) => {
+                        let x = Phaser.Math.Between(0, this.sys.canvas.width);
+                        let y = Phaser.Math.Between(0, this.sys.canvas.height);
+
+                        return vec.setTo(x, y);
+                    }
+                };
+
+                this.add.particles('flares').createEmitter({
+                    x: 0,
+                    y: 0,
+                    lifespan: 1000,
+                    gravityY: 10,
+                    scale: { start: 0, end: 0.5, ease: 'Quad.easeOut' },
+                    alpha: { start: 1, end: 0, ease: 'Quad.easeIn' },
+                    blendMode: 'ADD',
+                    emitZone: { type: 'random', source: logoSource }
+                });
+            } else {
+                this.sound.play('over')
+            }
+        })
+
     }
 
     createInputHandler() {
