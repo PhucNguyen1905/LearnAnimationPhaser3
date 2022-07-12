@@ -48,10 +48,10 @@ export class OverMenu extends Phaser.Scene {
 
 
         this.scoreImg = this.add.image(-150, -65, 'score')
-        this.scoreText = this.add.text(-40, -100, '', { fontSize: '50px', fontFamily: 'Revalia', align: 'center', stroke: '#000000', strokeThickness: 2 }).setFontSize(80);
+        this.scoreText = this.add.text(0, -70, '', { fontSize: '80px', fontFamily: 'Revalia', align: 'center', stroke: '#000000', strokeThickness: 2 }).setAlign('center').setOrigin(0.5, 0.5);
 
         this.highScoreImg = this.add.image(-150, 80, 'high')
-        this.highScoreText = this.add.text(-40, 45, '', { fontSize: '50px', fontFamily: 'Revalia', align: 'center', stroke: '#000000', strokeThickness: 2 }).setFontSize(80);
+        this.highScoreText = this.add.text(0, 75, '', { fontSize: '80px', fontFamily: 'Revalia', align: 'center', stroke: '#000000', strokeThickness: 2 }).setAlign('center').setOrigin(0.5, 0.5);
 
         this.restartBtn = new Button({ scene: this, x: 150, y: -65, texture: 'newgame' });
         this.exitBtn = new Button({ scene: this, x: 150, y: 80, texture: 'exit' })
