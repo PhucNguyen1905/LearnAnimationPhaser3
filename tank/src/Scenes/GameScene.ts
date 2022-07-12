@@ -33,6 +33,7 @@ export class GameScene extends Phaser.Scene {
 
     init(): void {
         this.registry.set('score', 0);
+        this.registry.set('status', 'lose');
     }
 
     create(): void {
@@ -300,10 +301,20 @@ export class GameScene extends Phaser.Scene {
     }
 
     private updateEnemies() {
+        if (this.enemies.countActive() == 0) {
+            this.registry.set('status', 'win');
+            let highScore = this.registry.get('highScore');
+            let score = this.registry.get('score');
+            if (!highScore || score > highScore) {
+                this.registry.set('highScore', score)
+            }
+            this.scene.pause();
+            this.scene.launch('OverMenu')
+        }
         this.enemies.children.each((enemy: Enemy) => {
             if (!this.pauseClick) enemy.update();
             if (this.player.active && enemy.active) {
-                var angle = Phaser.Math.Angle.Between(
+                let angle = Phaser.Math.Angle.Between(
                     enemy.body.x,
                     enemy.body.y,
                     this.player.body.x,

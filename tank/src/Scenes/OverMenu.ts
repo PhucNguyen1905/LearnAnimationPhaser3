@@ -40,7 +40,12 @@ export class OverMenu extends Phaser.Scene {
 
     createMenu() {
         this.background = this.add.image(0, 0, 'back').setScale(2.2, 3.8);
-        this.over = this.add.image(0, -400, 'overimg');
+        if (this.registry.get('status') == 'win') {
+            this.over = this.add.image(0, -300, 'victory');
+        } else {
+            this.over = this.add.image(0, -400, 'overimg');
+        }
+
 
         this.scoreImg = this.add.image(-150, -65, 'score')
         this.scoreText = this.add.text(-40, -100, '', { fontSize: '50px', fontFamily: 'Revalia', align: 'center', stroke: '#000000', strokeThickness: 2 }).setFontSize(80);

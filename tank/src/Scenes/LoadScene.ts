@@ -44,6 +44,7 @@ export class LoadScene extends Phaser.Scene {
 
         this.load.image('bg', 'assets/images/tank.png');
         this.load.image('overimg', 'assets/images/over.png');
+        this.load.image('victory', 'assets/images/victory.png');
         this.load.image('pauseimg', 'assets/images/pauseimg.png');
         this.load.image('pauseBtn', 'assets/images/pause.png');
         this.load.image('exit', 'assets/images/exit.png');
