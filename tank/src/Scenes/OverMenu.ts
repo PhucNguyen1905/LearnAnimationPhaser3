@@ -40,14 +40,8 @@ export class OverMenu extends Phaser.Scene {
 
     createMenu() {
         this.background = this.add.image(0, 0, 'back').setScale(2.2, 3.8);
-        if (this.registry.get('status') == 'win') {
-            this.over = this.add.image(0, -300, 'victory');
-        } else if (this.registry.get('score') != 0 && this.registry.get('score') == (this.registry.get('highScore') || 0)) {
-            this.over = this.add.image(0, -350, 'congrat');
-        } else {
-            this.over = this.add.image(0, -400, 'overimg');
-        }
 
+        this.createMessage();
 
         this.scoreImg = this.add.image(-150, -65, 'score')
         this.scoreText = this.add.text(0, -70, '', { fontSize: '80px', fontFamily: 'Revalia', align: 'center', stroke: '#000000', strokeThickness: 2 }).setAlign('center').setOrigin(0.5, 0.5);
@@ -57,6 +51,16 @@ export class OverMenu extends Phaser.Scene {
 
         this.restartBtn = new Button({ scene: this, x: 150, y: -65, texture: 'newgame' });
         this.exitBtn = new Button({ scene: this, x: 150, y: 80, texture: 'exit' })
+    }
+
+    createMessage() {
+        if (this.registry.get('status') == 'win') {
+            this.over = this.add.image(0, -300, 'victory');
+        } else if (this.registry.get('score') != 0 && this.registry.get('score') == (this.registry.get('highScore') || 0)) {
+            this.over = this.add.image(0, -350, 'congrat');
+        } else {
+            this.over = this.add.image(0, -400, 'overimg');
+        }
     }
 
     createContainer() {

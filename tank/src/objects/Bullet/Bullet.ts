@@ -12,6 +12,7 @@ export class Bullet extends Phaser.GameObjects.Image {
         super(aParams.scene, aParams.x, aParams.y, aParams.texture);
 
         this.rotation = aParams.rotation;
+
         this.initImage();
         this.scene.add.existing(this);
     }
@@ -26,11 +27,9 @@ export class Bullet extends Phaser.GameObjects.Image {
 
         // physics
         this.scene.physics.world.enable(this);
-        this.scene.physics.velocityFromRotation(
-            this.rotation - Math.PI / 2,
-            this.bulletSpeed,
-            this.body.velocity
-        );
+
+        this.setActive(false);
+        this.setVisible(false);
 
         this.createEmitters();
     }
@@ -61,16 +60,28 @@ export class Bullet extends Phaser.GameObjects.Image {
             frequency: 15,
             follow: this
         });
+        this.fireEmitter.stop();
     }
 
     public explodeEmitter(num: number) {
         this.hitEmitter.explode(num, this.x, this.y)
-        this.fireEmitter.remove()
-        this.destroy();
+        this.fireEmitter.stop()
+        this.fireEmitter.setVisible(false);
+        this.setActive(false);
+        this.setVisible(false);
     }
 
     public fire(x: number, y: number, rotation: number) {
-
+        this.x = x;
+        this.y = y;
+        this.rotation = rotation;
+        this.fireEmitter.start();
+        this.fireEmitter.setVisible(true);
+        this.scene.physics.velocityFromRotation(
+            this.rotation - Math.PI / 2,
+            this.bulletSpeed,
+            this.body.velocity
+        );
     }
 
     update(): void { }
