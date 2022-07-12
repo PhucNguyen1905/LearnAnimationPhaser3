@@ -42,6 +42,8 @@ export class OverMenu extends Phaser.Scene {
         this.background = this.add.image(0, 0, 'back').setScale(2.2, 3.8);
         if (this.registry.get('status') == 'win') {
             this.over = this.add.image(0, -300, 'victory');
+        } else if (this.registry.get('score') != 0 && this.registry.get('score') == (this.registry.get('highScore') || 0)) {
+            this.over = this.add.image(0, -350, 'congrat');
         } else {
             this.over = this.add.image(0, -400, 'overimg');
         }
@@ -127,6 +129,29 @@ export class OverMenu extends Phaser.Scene {
                     blendMode: 'ADD',
                     emitZone: { type: 'random', source: logoSource }
                 });
+                const firework = this.add.particles('flares').createEmitter({
+                    alpha: { start: 1, end: 0, ease: 'Cubic.easeIn' },
+                    angle: { start: 0, end: 360, steps: 100 },
+                    blendMode: 'ADD',
+                    frame: { frames: ['red', 'yellow', 'green', 'blue'], cycle: true, quantity: 500 },
+                    frequency: 2000,
+                    gravityY: 300,
+                    lifespan: 1000,
+                    quantity: 500,
+                    reserve: 500,
+                    scale: { min: 0.05, max: 0.15 },
+                    speed: { min: 300, max: 600 },
+                    x: 300, y: 300,
+                });
+
+                this.time.addEvent({
+                    delay: 1000,
+                    repeat: -1,
+                    callback: () => {
+                        firework.setPosition(Phaser.Math.Between(50, this.sys.canvas.width), Phaser.Math.Between(50, this.sys.canvas.height))
+                    }
+                })
+
             } else {
                 this.sound.play('over')
             }

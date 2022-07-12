@@ -108,13 +108,12 @@ export class GameScene extends Phaser.Scene {
         })
 
         this.pauseBtn.on('pointerup', () => {
-            this.pauseBtn.setScale(1.1);
-            this.time.delayedCall(100, () => {
+            this.time.delayedCall(10, () => {
                 this.pauseBtn.setScale(1)
             })
             this.input.disable(this.pauseBtn);
             this.pauseClick = true;
-            this.time.delayedCall(200, () => {
+            this.time.delayedCall(10, () => {
                 this.sound.play('click')
                 this.physics.pause();
                 this.tweens.pauseAll();
