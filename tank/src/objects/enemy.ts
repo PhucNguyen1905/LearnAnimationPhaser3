@@ -195,6 +195,9 @@ export class Enemy extends Phaser.GameObjects.Image {
             let damage = Phaser.Math.Between(1, 3);
             this.tweenHealthText(damage);
             this.health -= 0.05 * damage;
+            if (this.health < 0) {
+                this.health = 0;
+            }
             this.redrawLifebar();
 
         } else {
