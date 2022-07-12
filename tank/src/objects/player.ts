@@ -1,5 +1,5 @@
-import { Bullet } from './Bullet';
 import { IImageConstructor } from '../Interfaces/ImageInterface';
+import { Bullets } from './Bullet/BulletController';
 
 export class Player extends Phaser.GameObjects.Image {
     body: Phaser.Physics.Arcade.Body;
@@ -14,13 +14,13 @@ export class Player extends Phaser.GameObjects.Image {
     private lifeBar: Phaser.GameObjects.Graphics;
 
     // game objects
-    private bullets: Phaser.GameObjects.Group;
+    private bullets: Bullets;
 
     // input
     private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
 
     public getBullets(): Phaser.GameObjects.Group {
-        return this.bullets;
+        return this.bullets.getBullets();
     }
 
     constructor(aParams: IImageConstructor) {
@@ -50,12 +50,7 @@ export class Player extends Phaser.GameObjects.Image {
         this.redrawLifebar();
 
         // game objects
-        this.bullets = this.scene.add.group({
-            /*classType: Bullet,*/
-            active: true,
-            maxSize: 10,
-            runChildUpdate: true
-        });
+        this.bullets = new Bullets(this.scene, 'bulletBlue', 10)
 
         // input
         this.cursors = this.scene.input.keyboard.createCursorKeys();
@@ -131,17 +126,18 @@ export class Player extends Phaser.GameObjects.Image {
                 paused: false
             });
 
-            if (this.bullets.getLength() < 10) {
+            if (this.bullets.getBullets().countActive() < 10) {
                 this.scene.sound.play('shoot')
-                this.bullets.add(
-                    new Bullet({
-                        scene: this.scene,
-                        rotation: this.barrel.rotation,
-                        x: this.barrel.x,
-                        y: this.barrel.y,
-                        texture: 'bulletBlue'
-                    })
-                );
+                this.bullets.fireBullet(this.barrel.x, this.barrel.y, this.barrel.rotation)
+                // this.bullets.add(
+                //     new Bullet({
+                //         scene: this.scene,
+                //         rotation: this.barrel.rotation,
+                //         x: this.barrel.x,
+                //         y: this.barrel.y,
+                //         texture: 'bulletBlue'
+                //     })
+                // );
 
                 this.lastShoot = this.scene.time.now + 80;
             }

@@ -1,7 +1,7 @@
 import { Player } from '../Objects/Player';
 import { Enemy } from '../Objects/Enemy';
 import { Obstacle } from '../Objects/Obstacles/Obstacle';
-import { Bullet } from '../Objects/Bullet';
+import { Bullet } from '../Objects/Bullet/Bullet';
 
 export class GameScene extends Phaser.Scene {
     private map: Phaser.Tilemaps.Tilemap;
