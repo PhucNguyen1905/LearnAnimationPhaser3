@@ -226,44 +226,47 @@ export class OverMenu extends Phaser.Scene {
     }
 
     private inputHandler() {
-        this.restartButton.on('pointerup', () => {
-            this.restartButton.setScale(1)
-            this.sound.play('click')
-            this.tweens.add({
-                targets: this.container,
-                scale: {
-                    from: 1,
-                    to: 0
-                },
-                duration: 250,
-                ease: 'Linear',
-                onComplete: () => {
-                    this.scene.start('GameScene');
-                    this.scene.stop();
-                }
-            })
+        this.restartButton.onClick(this.restartFunction)
 
+        this.exitButton.onClick(this.exitFunction)
+
+    }
+
+    private restartFunction = () => {
+        this.restartButton.setScale(1)
+        this.sound.play('click')
+        this.tweens.add({
+            targets: this.container,
+            scale: {
+                from: 1,
+                to: 0
+            },
+            duration: 250,
+            ease: 'Linear',
+            onComplete: () => {
+                this.scene.start('GameScene');
+                this.scene.stop();
+            }
         })
+    }
 
-        this.exitButton.on('pointerup', () => {
-            this.exitButton.setScale(1);
-            this.sound.play('click')
-            this.tweens.add({
-                targets: this.container,
-                scale: {
-                    from: 1,
-                    to: 0
-                },
-                duration: 250,
-                ease: 'Linear',
-                onComplete: () => {
-                    this.scene.get('GameScene').scene.stop()
-                    this.scene.start('MenuScene')
-                    this.scene.stop();
-                },
-                delay: 100
-            })
-
+    private exitFunction = () => {
+        this.exitButton.setScale(1);
+        this.sound.play('click')
+        this.tweens.add({
+            targets: this.container,
+            scale: {
+                from: 1,
+                to: 0
+            },
+            duration: 250,
+            ease: 'Linear',
+            onComplete: () => {
+                this.scene.get('GameScene').scene.stop()
+                this.scene.start('MenuScene')
+                this.scene.stop();
+            },
+            delay: 100
         })
 
     }

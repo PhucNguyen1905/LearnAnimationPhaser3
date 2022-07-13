@@ -90,77 +90,82 @@ export class PauseMenu extends Phaser.Scene {
     }
 
     private inputHandler() {
-        this.continueButton.on('pointerup', () => {
-            this.continueButton.setScale(1);
-            this.sound.play('click')
-            this.tweens.add({
-                targets: this.container,
-                scale: {
-                    from: 1,
-                    to: 0
-                },
-                duration: 250,
-                ease: 'Linear',
-                onComplete: () => {
-                    this.scene.stop();
-                    this.scene.resume('GameScene');
-                },
-                delay: 100
-            })
+        this.continueButton.onClick(this.continueFunction)
 
+        this.restartButton.onClick(this.restartFunction)
+
+        this.exitButton.onClick(this.exitFunction)
+
+        this.soundButton.onClick(this.soundFunction)
+    }
+
+    private continueFunction = () => {
+        this.continueButton.setScale(1);
+        this.sound.play('click')
+        this.tweens.add({
+            targets: this.container,
+            scale: {
+                from: 1,
+                to: 0
+            },
+            duration: 250,
+            ease: 'Linear',
+            onComplete: () => {
+                this.scene.stop();
+                this.scene.resume('GameScene');
+            },
+            delay: 100
         })
+    }
 
-        this.restartButton.on('pointerup', () => {
-            this.restartButton.setScale(1);
-            this.sound.play('click')
-            this.tweens.add({
-                targets: this.container,
-                scale: {
-                    from: 1,
-                    to: 0
-                },
-                duration: 250,
-                ease: 'Linear',
-                onComplete: () => {
-                    this.scene.start('GameScene')
-                    this.scene.stop();
-                },
-                delay: 100
-            })
-
+    private restartFunction = () => {
+        this.restartButton.setScale(1);
+        this.sound.play('click')
+        this.tweens.add({
+            targets: this.container,
+            scale: {
+                from: 1,
+                to: 0
+            },
+            duration: 250,
+            ease: 'Linear',
+            onComplete: () => {
+                this.scene.start('GameScene')
+                this.scene.stop();
+            },
+            delay: 100
         })
+    }
 
-        this.exitButton.on('pointerup', () => {
-            this.exitButton.setScale(1);
-            this.sound.play('click')
-            this.tweens.add({
-                targets: this.container,
-                scale: {
-                    from: 1,
-                    to: 0
-                },
-                duration: 250,
-                ease: 'Linear',
-                onComplete: () => {
-                    this.scene.get('GameScene').scene.stop()
-                    this.scene.start('MenuScene')
-                    this.scene.stop();
-                },
-                delay: 100
-            })
-
+    private exitFunction = () => {
+        this.exitButton.setScale(1);
+        this.sound.play('click')
+        this.tweens.add({
+            targets: this.container,
+            scale: {
+                from: 1,
+                to: 0
+            },
+            duration: 250,
+            ease: 'Linear',
+            onComplete: () => {
+                this.scene.get('GameScene').scene.stop()
+                this.scene.start('MenuScene')
+                this.scene.stop();
+            },
+            delay: 100
         })
+    }
 
-        this.soundButton.on('pointerup', () => {
-            this.soundButton.setScale(1)
-            this.sound.play('click')
-            if (this.sound.mute) {
-                this.sound.mute = false;
-                this.soundButton.setTexture('soundfalse');
-            } else {
-                this.sound.mute = true;
-                this.soundButton.setTexture('soundtrue');
-            }
-        })
+    private soundFunction = () => {
+        this.soundButton.setScale(1)
+        this.sound.play('click')
+        if (this.sound.mute) {
+            this.sound.mute = false;
+            this.soundButton.setTexture('soundfalse');
+        } else {
+            this.sound.mute = true;
+            this.soundButton.setTexture('soundtrue');
+        }
     }
 }

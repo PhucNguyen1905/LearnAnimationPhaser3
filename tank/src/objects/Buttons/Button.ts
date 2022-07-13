@@ -8,6 +8,8 @@ export class Button extends Phaser.GameObjects.Image {
         this.setInteractive();
 
         this.inputHandler();
+
+        this.scene.add.existing(this)
     }
 
     private inputHandler() {
@@ -26,9 +28,9 @@ export class Button extends Phaser.GameObjects.Image {
         })
     }
 
-    // onClick(callback: Function) {
-    //     this.on('')
-    // }
+    onClick(callback: Function) {
+        this.on('pointerup', callback)
+    }
 
 
 }

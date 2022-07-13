@@ -2,6 +2,7 @@ import { Player } from '../Objects/Player';
 import { Enemy } from '../Objects/Enemy';
 import { Obstacle } from '../Objects/Obstacles/Obstacle';
 import { Bullet } from '../Objects/Bullet/Bullet';
+import { Button } from '../Objects/Buttons/Button';
 
 export class GameScene extends Phaser.Scene {
     private map: Phaser.Tilemaps.Tilemap;
@@ -13,7 +14,7 @@ export class GameScene extends Phaser.Scene {
     private enemies: Phaser.GameObjects.Group;
     private obstacles: Phaser.GameObjects.Group;
 
-    private pauseBtn: Phaser.GameObjects.Image;
+    private pauseBtn: Button;
     private pauseClick: boolean = false;
     private fireAble: boolean = true;
     private countDownText: Phaser.GameObjects.Text;
@@ -106,45 +107,39 @@ export class GameScene extends Phaser.Scene {
     }
 
     private createButtons() {
-        this.pauseBtn = this.add.sprite(0, 0, 'pauseBtn').setInteractive();
+        this.pauseBtn = new Button({ scene: this, x: 0, y: 0, texture: 'pauseBtn' })
 
         Phaser.Display.Align.In.BottomRight(this.pauseBtn, this.zone)
 
         // Fixed to camera view
         this.pauseBtn.setScrollFactor(0);
 
-        this.pauseBtn.on('pointerover', () => {
-            this.sound.play('mouseover')
-            this.pauseBtn.setTint(0x76BA99);
-        });
         this.pauseBtn.on('pointerout', () => {
-            this.pauseBtn.clearTint();
             this.fireAble = true;
-            this.pauseBtn.setScale(1);
         });
 
         this.pauseBtn.on('pointerdown', () => {
-            this.pauseBtn.setScale(1.1);
             this.fireAble = false;
         })
 
-        this.pauseBtn.on('pointerup', () => {
-            this.time.delayedCall(10, () => {
-                this.pauseBtn.setScale(1)
-            })
-            this.input.disable(this.pauseBtn);
-            this.pauseClick = true;
-            this.time.delayedCall(10, () => {
-                this.sound.play('click');
-                this.playSound.pause();
-                this.physics.pause();
-                this.tweens.pauseAll();
-                this.scene.pause();
-                this.scene.launch('PauseMenu');
-            })
+        this.pauseBtn.onClick(this.pauseFunction);
 
+    }
+
+    private pauseFunction = () => {
+        this.time.delayedCall(10, () => {
+            this.pauseBtn.setScale(1)
         })
-
+        this.input.disable(this.pauseBtn);
+        this.pauseClick = true;
+        this.time.delayedCall(10, () => {
+            this.sound.play('click');
+            this.playSound.pause();
+            this.physics.pause();
+            this.tweens.pauseAll();
+            this.scene.pause();
+            this.scene.launch('PauseMenu');
+        })
     }
 
     private inputHandler() {
