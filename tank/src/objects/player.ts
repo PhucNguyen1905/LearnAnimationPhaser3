@@ -41,10 +41,7 @@ export class Player extends Phaser.GameObjects.Image {
         this.setDepth(0);
         this.angle = 180;
 
-        this.barrel = this.scene.add.image(this.x, this.y, 'barrelBlue');
-        this.barrel.setOrigin(0.5, 1);
-        this.barrel.setDepth(1);
-        this.barrel.angle = 180;
+        this.initBarrel();
 
         this.lifeBar = this.scene.add.graphics();
         this.redrawLifebar();
@@ -58,6 +55,13 @@ export class Player extends Phaser.GameObjects.Image {
         // physics
         this.scene.physics.world.enable(this);
 
+    }
+
+    private initBarrel() {
+        this.barrel = this.scene.add.image(this.x, this.y, 'barrelBlue');
+        this.barrel.setOrigin(0.5, 1);
+        this.barrel.setDepth(1);
+        this.barrel.angle = 180;
     }
 
     update(): void {
@@ -99,9 +103,14 @@ export class Player extends Phaser.GameObjects.Image {
         }
 
         // rotate barrel
-        this.scene.input.on('pointermove', (pointer: any) => {
+        this.scene.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
             if (this.active) {
-                let angle = Phaser.Math.Angle.Between(this.barrel.x, this.barrel.y, pointer.x + this.scene.cameras.main.scrollX, pointer.y + this.scene.cameras.main.scrollY);;
+                let angle = Phaser.Math.Angle.Between(
+                    this.barrel.x,
+                    this.barrel.y,
+                    pointer.x + this.scene.cameras.main.scrollX,
+                    pointer.y + this.scene.cameras.main.scrollY
+                );
                 this.barrel.rotation = angle + Math.PI / 2;
             }
         })

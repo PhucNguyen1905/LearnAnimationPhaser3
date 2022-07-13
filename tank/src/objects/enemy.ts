@@ -7,7 +7,6 @@ export class Enemy extends Phaser.GameObjects.Image {
     // variables
     private health: number;
     private nextShootTime: number;
-    private speed: number;
     private dyingValue: number;
 
     // children
@@ -31,15 +30,14 @@ export class Enemy extends Phaser.GameObjects.Image {
     constructor(aParams: IImageConstructor) {
         super(aParams.scene, aParams.x, aParams.y, aParams.texture, aParams.frame);
 
-        this.initContainer();
+        this.initEnemy();
         this.scene.add.existing(this);
     }
 
-    private initContainer() {
+    private initEnemy() {
         // variables
         this.health = 1;
         this.nextShootTime = 0;
-        this.speed = 100;
         this.dyingValue = Phaser.Math.Between(10, 20);
 
 
@@ -133,7 +131,13 @@ export class Enemy extends Phaser.GameObjects.Image {
             this.x - Phaser.Math.Between(30, 70),
             this.y - 50,
             damage.toString(),
-            { fontSize: '50px', fontFamily: 'Revalia', align: 'center', stroke: '#000000', strokeThickness: 2 }
+            {
+                fontSize: '50px',
+                fontFamily: 'Revalia',
+                align: 'center',
+                stroke: '#000000',
+                strokeThickness: 2
+            }
         )
         healthText.setColor('#F32424')
         this.scene.tweens.add(
@@ -156,7 +160,13 @@ export class Enemy extends Phaser.GameObjects.Image {
             this.x - 100,
             this.y - 50,
             this.dyingValue.toString(),
-            { fontSize: '50px', fontFamily: 'Revalia', align: 'center', stroke: '#000000', strokeThickness: 2 }
+            {
+                fontSize: '50px',
+                fontFamily: 'Revalia',
+                align: 'center',
+                stroke: '#000000',
+                strokeThickness: 2
+            }
         )
 
 
@@ -190,7 +200,9 @@ export class Enemy extends Phaser.GameObjects.Image {
             this.scene.sound.play('boom')
 
             // Update score
-            this.scene.registry.set('score', this.scene.registry.get('score') + this.dyingValue);
+            this.scene.registry.set(
+                'score',
+                this.scene.registry.get('score') + this.dyingValue);
 
             // Tween score
             this.tweenScoreText();

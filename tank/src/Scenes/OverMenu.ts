@@ -83,7 +83,8 @@ export class OverMenu extends Phaser.Scene {
 
     private createMessage() {
         const isWinning: boolean = this.registry.get('status') == 'win';
-        const isReachNewBest: boolean = this.registry.get('score') != 0 && this.registry.get('score') == (this.registry.get('highScore') || 0)
+        const isReachNewBest: boolean = this.registry.get('score') != 0
+            && this.registry.get('score') == (this.registry.get('highScore') || 0)
 
         if (isWinning) {
             this.over = this.add.image(0, -300, 'victory');
@@ -162,50 +163,64 @@ export class OverMenu extends Phaser.Scene {
         this.time.delayedCall(1250, () => {
             if (score == highScore && score != 0) {
                 this.sound.play('yeah')
-                let logoSource = {
-                    getRandomPoint: (vec: any) => {
-                        let x = Phaser.Math.Between(0, this.sys.canvas.width);
-                        let y = Phaser.Math.Between(0, this.sys.canvas.height);
-
-                        return vec.setTo(x, y);
-                    }
-                };
-
-                this.add.particles('flares').createEmitter({
-                    x: 0,
-                    y: 0,
-                    lifespan: 1000,
-                    gravityY: 10,
-                    scale: { start: 0, end: 0.5, ease: 'Quad.easeOut' },
-                    alpha: { start: 1, end: 0, ease: 'Quad.easeIn' },
-                    blendMode: 'ADD',
-                    emitZone: { type: 'random', source: logoSource }
-                });
-                const firework = this.add.particles('flares').createEmitter({
-                    alpha: { start: 1, end: 0, ease: 'Cubic.easeIn' },
-                    angle: { start: 0, end: 360, steps: 100 },
-                    blendMode: 'ADD',
-                    frame: { frames: ['red', 'yellow', 'green', 'blue'], cycle: true, quantity: 500 },
-                    frequency: 2000,
-                    gravityY: 300,
-                    lifespan: 1000,
-                    quantity: 500,
-                    reserve: 500,
-                    scale: { min: 0.05, max: 0.15 },
-                    speed: { min: 300, max: 600 },
-                    x: 300, y: 300,
-                });
-
-                this.time.addEvent({
-                    delay: 1000,
-                    repeat: -1,
-                    callback: () => {
-                        firework.setPosition(Phaser.Math.Between(50, this.sys.canvas.width), Phaser.Math.Between(50, this.sys.canvas.height))
-                    }
-                })
+                this.emitGlowEmitter();
+                this.emitFirework();
 
             } else {
                 this.sound.play('over')
+            }
+        })
+    }
+
+    private emitGlowEmitter() {
+        let logoSource = {
+            getRandomPoint: (vec: any) => {
+                let x = Phaser.Math.Between(0, this.sys.canvas.width);
+                let y = Phaser.Math.Between(0, this.sys.canvas.height);
+
+                return vec.setTo(x, y);
+            }
+        };
+
+        this.add.particles('flares').createEmitter({
+            x: 0,
+            y: 0,
+            lifespan: 1000,
+            gravityY: 10,
+            scale: { start: 0, end: 0.5, ease: 'Quad.easeOut' },
+            alpha: { start: 1, end: 0, ease: 'Quad.easeIn' },
+            blendMode: 'ADD',
+            emitZone: { type: 'random', source: logoSource }
+        });
+    }
+
+    private emitFirework() {
+        const firework = this.add.particles('flares').createEmitter({
+            alpha: { start: 1, end: 0, ease: 'Cubic.easeIn' },
+            angle: { start: 0, end: 360, steps: 100 },
+            blendMode: 'ADD',
+            frame: {
+                frames: ['red', 'yellow', 'green', 'blue'],
+                cycle: true,
+                quantity: 500
+            },
+            frequency: 2000,
+            gravityY: 300,
+            lifespan: 1000,
+            quantity: 500,
+            reserve: 500,
+            scale: { min: 0.05, max: 0.15 },
+            speed: { min: 300, max: 600 },
+            x: 300, y: 300,
+        });
+
+        this.time.addEvent({
+            delay: 1000,
+            repeat: -1,
+            callback: () => {
+                const x = Phaser.Math.Between(50, this.sys.canvas.width);
+                const y = Phaser.Math.Between(50, this.sys.canvas.height);
+                firework.setPosition(x, y)
             }
         })
     }
