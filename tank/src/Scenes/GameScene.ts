@@ -196,6 +196,7 @@ export class GameScene extends Phaser.Scene {
 
         })
     }
+
     private countDownTime() {
         this.countDown -= 1;
         this.countDownText.setText('Continue in ' + this.countDown);
@@ -351,33 +352,52 @@ export class GameScene extends Phaser.Scene {
         const objects = this.map.getObjectLayer('objects').objects as any[];
 
         objects.forEach((object) => {
-            if (object.type === 'player') {
-                this.player = new Player({
-                    scene: this,
-                    x: object.x,
-                    y: object.y,
-                    texture: 'tankBlue'
-                });
-            } else if (object.type === 'enemy') {
-                let enemy = new Enemy({
-                    scene: this,
-                    x: object.x,
-                    y: object.y,
-                    texture: 'tankRed'
-                });
-
-                this.enemies.add(enemy);
-            } else {
-                let obstacle = new Obstacle({
-                    scene: this,
-                    x: object.x,
-                    y: object.y - 40,
-                    texture: object.type
-                });
-
-                this.obstacles.add(obstacle);
+            switch (object.type) {
+                case 'player': {
+                    this.addPlayer(object.x, object.y)
+                    break;
+                }
+                case 'enemy': {
+                    this.addEnemy(object.x, object.y)
+                    break;
+                }
+                default: {
+                    this.addObstacle(object.x, object.y, object.type)
+                    break;
+                }
             }
         });
+    }
+
+    private addPlayer(x: number, y: number) {
+        this.player = new Player({
+            scene: this,
+            x: x,
+            y: y,
+            texture: 'tankBlue'
+        });
+    }
+
+    private addEnemy(x: number, y: number) {
+        let enemy = new Enemy({
+            scene: this,
+            x: x,
+            y: y,
+            texture: 'tankRed'
+        });
+
+        this.enemies.add(enemy);
+    }
+
+    private addObstacle(x: number, y: number, type: string) {
+        let obstacle = new Obstacle({
+            scene: this,
+            x: x,
+            y: y - 40,
+            texture: type
+        });
+
+        this.obstacles.add(obstacle);
     }
 
     private bulletHitLayer(bullet: Bullet): void {
