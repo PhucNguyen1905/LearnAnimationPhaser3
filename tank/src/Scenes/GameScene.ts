@@ -316,7 +316,8 @@ export class GameScene extends Phaser.Scene {
             this.scene.launch('OverMenu')
         }
         this.enemies.children.each((enemy: Enemy) => {
-            if (!this.pauseClick && this.player.active) enemy.update(this.player.body.x, this.player.body.y);
+            if (!this.pauseClick && this.player.active)
+                enemy.update(this.player.body.x, this.player.body.y);
         }, this);
     }
 
