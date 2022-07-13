@@ -124,9 +124,6 @@ export class OverMenu extends Phaser.Scene {
     }
 
     private createScoreAnimation() {
-        let score = this.registry.get('score') || 0;
-        let highScore = this.registry.get('highScore') || 0;
-
         this.tweens.add({
             targets: [this.scoreText, this.highScoreText],
             scaleX: 1.2,
@@ -134,6 +131,14 @@ export class OverMenu extends Phaser.Scene {
             yoyo: true,
             duration: 500
         })
+
+        let score = this.registry.get('score') || 0;
+        let highScore = this.registry.get('highScore') || 0;
+        this.tweenCountScore(score, highScore);
+        this.emitCongrats(score, highScore);
+    }
+
+    private tweenCountScore(score: number, highScore: number) {
         this.tweens.addCounter({
             from: 0,
             to: score,
@@ -151,6 +156,9 @@ export class OverMenu extends Phaser.Scene {
             }
         })
 
+    }
+
+    private emitCongrats(score: number, highScore: number) {
         this.time.delayedCall(1250, () => {
             if (score == highScore && score != 0) {
                 this.sound.play('yeah')
@@ -200,7 +208,6 @@ export class OverMenu extends Phaser.Scene {
                 this.sound.play('over')
             }
         })
-
     }
 
     private inputHandler() {
