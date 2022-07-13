@@ -75,8 +75,6 @@ export class GameScene extends Phaser.Scene {
     }
 
 
-
-
     private createTilemap() {
         // create tilemap from tiled JSON
         this.map = this.make.tilemap({ key: 'levelMap' });
@@ -145,16 +143,6 @@ export class GameScene extends Phaser.Scene {
     private inputHandler() {
         this.input.keyboard.on('keydown-SPACE', this.playerShoot, this);
         this.input.on('pointerdown', this.playerShoot, this);
-
-        this.input.keyboard.on('keyup-P', () => {
-            this.pauseClick = true;
-            this.sound.play('click')
-            this.playSound.pause();
-            this.physics.pause();
-            this.scene.pause();
-            this.tweens.pauseAll();
-            this.scene.launch('PauseMenu');
-        })
     }
 
     private playerShoot() {

@@ -24,6 +24,16 @@ export class MenuScene extends Phaser.Scene {
         this.introSound = this.sound.add('intro', { volume: 0.7 });
         this.introSound.play();
 
+        this.createTexts();
+
+    }
+
+    private createBackground() {
+        this.bg = this.add.sprite(this.sys.canvas.width / 2, this.sys.canvas.height / 2, 'bg').setOrigin(0.5, 0.5);
+        this.bg.setDisplaySize(this.sys.canvas.width, this.sys.canvas.height)
+    }
+
+    private createTexts() {
         this.intro = this.add.bitmapText(
             this.sys.canvas.width / 2,
             this.sys.canvas.height / 2,
@@ -41,12 +51,6 @@ export class MenuScene extends Phaser.Scene {
             yoyo: true,
             repeat: -1
         })
-
-    }
-
-    private createBackground() {
-        this.bg = this.add.sprite(this.sys.canvas.width / 2, this.sys.canvas.height / 2, 'bg').setOrigin(0.5, 0.5);
-        this.bg.setDisplaySize(this.sys.canvas.width, this.sys.canvas.height)
     }
 
     update(): void {
