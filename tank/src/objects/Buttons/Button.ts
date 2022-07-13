@@ -28,7 +28,7 @@ export class Button extends Phaser.GameObjects.Image {
         })
     }
 
-    onClick(callback: Function) {
+    public onClick(callback: Function) {
         this.on('pointerup', callback)
     }
 

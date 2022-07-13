@@ -44,9 +44,7 @@ export class Enemy extends Phaser.GameObjects.Image {
         // image
         this.setDepth(0);
 
-        this.barrel = this.scene.add.image(0, 0, 'barrelRed');
-        this.barrel.setOrigin(0.5, 1);
-        this.barrel.setDepth(1);
+        this.initBarrel();
 
         this.lifeBar = this.scene.add.graphics();
         this.redrawLifebar();
@@ -74,6 +72,12 @@ export class Enemy extends Phaser.GameObjects.Image {
         this.scene.physics.world.enable(this);
     }
 
+    private initBarrel() {
+        this.barrel = this.scene.add.image(0, 0, 'barrelRed');
+        this.barrel.setOrigin(0.5, 1);
+        this.barrel.setDepth(1);
+    }
+
 
     private createEmitters() {
         this.exploEmitter = this.scene.add.particles('flares').createEmitter({
@@ -87,18 +91,31 @@ export class Enemy extends Phaser.GameObjects.Image {
         });
     }
 
-    update(): void {
+    update(x: number, y: number): void {
         if (this.active) {
             this.barrel.x = this.x;
             this.barrel.y = this.y;
             this.lifeBar.x = this.x;
             this.lifeBar.y = this.y;
+            this.updateBarrelRotation(x, y)
             this.shoot();
         } else {
             this.destroy();
             this.barrel.destroy();
             this.lifeBar.destroy();
         }
+    }
+
+    private updateBarrelRotation(x: number, y: number) {
+        let angle = Phaser.Math.Angle.Between(
+            this.body.x,
+            this.body.y,
+            x,
+            y
+        );
+
+        this.barrel.angle =
+            (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
     }
 
     private shoot(): void {
