@@ -2,6 +2,7 @@ export class MenuScene extends Phaser.Scene {
     private startKey: Phaser.Input.Keyboard.Key;
     private bg: Phaser.GameObjects.Sprite;
     private intro: Phaser.GameObjects.BitmapText;
+    private introSound: Phaser.Sound.BaseSound;
     private bitmapTexts: Phaser.GameObjects.BitmapText[] = [];
 
     constructor() {
@@ -19,6 +20,9 @@ export class MenuScene extends Phaser.Scene {
 
     create(): void {
         this.createBackground();
+
+        this.introSound = this.sound.add('intro', { volume: 0.7 });
+        this.introSound.play();
 
         this.intro = this.add.bitmapText(
             this.sys.canvas.width / 2,
@@ -53,6 +57,7 @@ export class MenuScene extends Phaser.Scene {
                 alpha: { start: 1, end: 0.2 },
                 duration: 500,
                 onComplete: () => {
+                    this.introSound.stop();
                     this.scene.start('GameScene');
                 }
             })
