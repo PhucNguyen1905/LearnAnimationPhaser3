@@ -7,6 +7,7 @@ export class GameScene extends Phaser.Scene {
     private map: Phaser.Tilemaps.Tilemap;
     private tileset: Phaser.Tilemaps.Tileset;
     private layer: Phaser.Tilemaps.TilemapLayer;
+    private playSound: Phaser.Sound.BaseSound;
 
     private player: Player;
     private enemies: Phaser.GameObjects.Group;
@@ -41,9 +42,11 @@ export class GameScene extends Phaser.Scene {
 
         this.createZone();
 
+        this.createSounds();
+
         this.createGameObjects();
 
-        this.convertObjects();
+        this.loadObjectsTilemap();
 
         this.createColliders();
 
@@ -52,7 +55,7 @@ export class GameScene extends Phaser.Scene {
         this.createButtons();
 
 
-        this.createEvents();
+        this.listenEvents();
 
         this.createScoreText();
 
@@ -62,7 +65,18 @@ export class GameScene extends Phaser.Scene {
 
     }
 
-    createTilemap() {
+    update(): void {
+        this.player.update();
+
+        this.updateScore();
+
+        this.updateEnemies();
+    }
+
+
+
+
+    private createTilemap() {
         // create tilemap from tiled JSON
         this.map = this.make.tilemap({ key: 'levelMap' });
 
@@ -71,11 +85,18 @@ export class GameScene extends Phaser.Scene {
         this.layer.setCollisionByProperty({ collide: true });
     }
 
-    createZone() {
-        this.zone = this.add.zone(0, 0, this.sys.canvas.width, this.sys.canvas.height).setOrigin(0, 0);
+    private createZone() {
+        this.zone = this.add
+            .zone(0, 0, this.sys.canvas.width, this.sys.canvas.height)
+            .setOrigin(0, 0);
     }
 
-    createPauseVariables() {
+    private createSounds() {
+        this.playSound = this.sound.add('playsound', { volume: 0.4, loop: true });
+        this.playSound.play();
+    }
+
+    private createPauseVariables() {
         this.pauseClick = false;
         this.fireAble = true;
         this.countDownText = null;
@@ -84,7 +105,7 @@ export class GameScene extends Phaser.Scene {
 
     }
 
-    createButtons() {
+    private createButtons() {
         this.pauseBtn = this.add.sprite(0, 0, 'pauseBtn').setInteractive();
 
         Phaser.Display.Align.In.BottomRight(this.pauseBtn, this.zone)
@@ -114,7 +135,8 @@ export class GameScene extends Phaser.Scene {
             this.input.disable(this.pauseBtn);
             this.pauseClick = true;
             this.time.delayedCall(10, () => {
-                this.sound.play('click')
+                this.sound.play('click');
+                this.playSound.pause();
                 this.physics.pause();
                 this.tweens.pauseAll();
                 this.scene.pause();
@@ -125,13 +147,14 @@ export class GameScene extends Phaser.Scene {
 
     }
 
-    inputHandler() {
+    private inputHandler() {
         this.input.keyboard.on('keydown-SPACE', this.playerShoot, this);
         this.input.on('pointerdown', this.playerShoot, this);
 
         this.input.keyboard.on('keyup-P', () => {
             this.pauseClick = true;
             this.sound.play('click')
+            this.playSound.pause();
             this.physics.pause();
             this.scene.pause();
             this.tweens.pauseAll();
@@ -139,13 +162,17 @@ export class GameScene extends Phaser.Scene {
         })
     }
 
-    playerShoot() {
-        if (!this.pauseClick && this.fireAble) {
-            this.player.handleShooting();
+    private playerShoot() {
+        if (this.isFireable()) {
+            this.player.shoot();
         }
     }
 
-    createEvents() {
+    private isFireable() {
+        return !this.pauseClick && this.fireAble
+    }
+
+    private listenEvents() {
         if (this.eventPause) return;
         this.eventPause = this.events.on('resume', () => {
             // Disable pause menu
@@ -169,7 +196,7 @@ export class GameScene extends Phaser.Scene {
 
         })
     }
-    countDownTime() {
+    private countDownTime() {
         this.countDown -= 1;
         this.countDownText.setText('Continue in ' + this.countDown);
         if (this.countDown <= 0) {
@@ -178,6 +205,7 @@ export class GameScene extends Phaser.Scene {
             this.input.keyboard.enabled = true;
 
             this.countDownText.setText('');
+            this.playSound.resume();
             this.physics.resume();
             this.tweens.resumeAll();
             this.pauseClick = false;
@@ -185,7 +213,7 @@ export class GameScene extends Phaser.Scene {
         }
     }
 
-    createScoreText() {
+    private createScoreText() {
         this.lastScore = 0;
         this.scoreText = this.add.text(10, 10, 'Score: 0').setScrollFactor(0);
         this.scoreText.setFontSize(60);
@@ -195,7 +223,7 @@ export class GameScene extends Phaser.Scene {
         this.scoreText.setShadow(5, 5, 'rgba(0,0,0,0.5)', 5);
     }
 
-    createGameObjects() {
+    private createGameObjects() {
         this.obstacles = this.add.group({
             /*classType: Obstacle,*/
             runChildUpdate: true
@@ -206,7 +234,7 @@ export class GameScene extends Phaser.Scene {
         });
     }
 
-    createColliders() {
+    private createColliders() {
         // collider layer and obstacles
         this.physics.add.collider(this.player, this.layer);
         this.physics.add.collider(this.player, this.obstacles);
@@ -259,7 +287,7 @@ export class GameScene extends Phaser.Scene {
 
     }
 
-    createCamera() {
+    private createCamera() {
         this.cameras.main.setBounds(
             0,
             0,
@@ -267,14 +295,6 @@ export class GameScene extends Phaser.Scene {
             this.map.heightInPixels
         );
         this.cameras.main.startFollow(this.player);
-    }
-
-    update(): void {
-        this.player.update();
-
-        this.updateScore();
-
-        this.updateEnemies();
     }
 
     private updateScore() {
@@ -308,6 +328,7 @@ export class GameScene extends Phaser.Scene {
                 this.registry.set('highScore', score)
             }
             this.scene.pause();
+            this.playSound.stop();
             this.scene.launch('OverMenu')
         }
         this.enemies.children.each((enemy: Enemy) => {
@@ -326,8 +347,7 @@ export class GameScene extends Phaser.Scene {
         }, this);
     }
 
-    private convertObjects(): void {
-        // find the object layer in the tilemap named 'objects'
+    private loadObjectsTilemap(): void {
         const objects = this.map.getObjectLayer('objects').objects as any[];
 
         objects.forEach((object) => {
@@ -370,11 +390,11 @@ export class GameScene extends Phaser.Scene {
 
     private enemyBulletHitPlayer(bullet: Bullet, player: Player): void {
         bullet.explodeEmitter(5);
-        player.updateHealth();
+        player.updateHealth(bullet.getDamage());
     }
 
     private playerBulletHitEnemy(bullet: Bullet, enemy: Enemy): void {
         bullet.explodeEmitter(3);
-        enemy.updateHealth();
+        enemy.updateHealth(bullet.getDamage());
     }
 }

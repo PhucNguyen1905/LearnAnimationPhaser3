@@ -1,4 +1,4 @@
-import { IImageConstructor } from "../../Interfaces/ImageInterface";
+import { IImageConstructor } from "../../Interfaces/IImageConstructor";
 
 export class Button extends Phaser.GameObjects.Image {
 
@@ -7,10 +7,10 @@ export class Button extends Phaser.GameObjects.Image {
 
         this.setInteractive();
 
-        this.InputHandler();
+        this.inputHandler();
     }
 
-    InputHandler() {
+    private inputHandler() {
         this.on('pointerover', () => {
             this.setTint(0x76BA99);
             this.scene.sound.play('mouseover');
@@ -25,6 +25,10 @@ export class Button extends Phaser.GameObjects.Image {
             this.setScale(1.1);
         })
     }
+
+    // onClick(callback: Function) {
+    //     this.on('')
+    // }
 
 
 }

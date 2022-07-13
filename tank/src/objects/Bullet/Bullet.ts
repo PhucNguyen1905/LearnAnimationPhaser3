@@ -1,4 +1,4 @@
-import { IBulletConstructor } from "../../Interfaces/BulletInterface";
+import { IBulletConstructor } from "../../Interfaces/IBulletConstructor";
 
 export class Bullet extends Phaser.GameObjects.Image {
     body: Phaser.Physics.Arcade.Body;
@@ -31,7 +31,7 @@ export class Bullet extends Phaser.GameObjects.Image {
         this.createEmitters();
     }
 
-    createEmitters() {
+    private createEmitters() {
         this.hitEmitter = this.scene.add.particles('flares').createEmitter({
             x: -100,
             y: -100,
@@ -89,6 +89,10 @@ export class Bullet extends Phaser.GameObjects.Image {
             this.bulletSpeed,
             this.body.velocity
         );
+    }
+
+    public getDamage(): number {
+        return Phaser.Math.Between(1, 3);
     }
 
     update(): void { }

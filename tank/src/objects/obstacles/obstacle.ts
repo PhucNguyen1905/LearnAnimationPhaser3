@@ -1,4 +1,4 @@
-import { IImageConstructor } from '../../Interfaces/ImageInterface';
+import { IImageConstructor } from '../../Interfaces/IImageConstructor';
 
 export class Obstacle extends Phaser.GameObjects.Image {
     body: Phaser.Physics.Arcade.Body;

@@ -4,10 +4,10 @@ export class PauseMenu extends Phaser.Scene {
 
     private background: Phaser.GameObjects.Image;
     private pauseImg: Phaser.GameObjects.Image;
-    private contBtn: Button;
-    private restartBtn: Button;
-    private exitBtn: Button;
-    private soundBtn: Button;
+    private continueButton: Button;
+    private restartButton: Button;
+    private exitButton: Button;
+    private soundButton: Button;
 
     private container: Phaser.GameObjects.Container;
 
@@ -22,22 +22,32 @@ export class PauseMenu extends Phaser.Scene {
     create(): void {
         this.createZone();
 
+        this.createBackground();
+
         this.createButtons();
 
         this.createContainer();
 
-        this.createInputHandler();
+        this.inputHandler();
     }
 
-    createZone() {
-        const rec = this.add.rectangle(0, 0, this.sys.canvas.width, this.sys.canvas.height, 0x000000, 0.7).setOrigin(0, 0)
+    private createZone() {
+        const width = this.sys.canvas.width;
+        const height = this.sys.canvas.height;
 
-        this.zone = this.add.zone(0, 0, this.sys.canvas.width, this.sys.canvas.height).setOrigin(0, 0);
+        this.add.rectangle(0, 0, width, height, 0x000000, 0.7)
+            .setOrigin(0, 0)
+
+        this.zone = this.add.zone(0, 0, width, height)
+            .setOrigin(0, 0);
     }
 
-    createButtons() {
-        this.background = this.add.image(0, 0, 'back').setScale(2.6, 1.7);
-        this.pauseImg = this.add.image(0, -220, 'pauseimg').setScale(1.2);
+    private createBackground() {
+        this.background = this.add.image(0, 0, 'back')
+            .setScale(2.6, 1.7);
+        this.pauseImg = this.add.image(0, -220, 'pauseimg')
+            .setScale(1.2);
+
         this.tweens.add({
             targets: this.pauseImg,
             scaleX: 1.4,
@@ -46,16 +56,26 @@ export class PauseMenu extends Phaser.Scene {
             repeat: -1,
             duration: 1500
         })
-        this.contBtn = new Button({ scene: this, x: -220, y: 0, texture: 'continue' })
-        this.restartBtn = new Button({ scene: this, x: -70, y: 0, texture: 'restart' })
-        this.soundBtn = new Button({ scene: this, x: 80, y: 0, texture: 'sound' + this.sound.mute })
-        this.exitBtn = new Button({ scene: this, x: 230, y: 0, texture: 'exit' })
     }
 
-    createContainer() {
+    private createButtons() {
+        this.continueButton = new Button({ scene: this, x: -220, y: 0, texture: 'continue' })
+        this.restartButton = new Button({ scene: this, x: -70, y: 0, texture: 'restart' })
+        this.soundButton = new Button({ scene: this, x: 80, y: 0, texture: 'sound' + this.sound.mute })
+        this.exitButton = new Button({ scene: this, x: 230, y: 0, texture: 'exit' })
+    }
+
+    private createContainer() {
         this.container = this.add.container(
             0, 0,
-            [this.pauseImg, this.background, this.contBtn, this.restartBtn, this.soundBtn, this.exitBtn]);
+            [
+                this.pauseImg,
+                this.background,
+                this.continueButton,
+                this.restartButton,
+                this.soundButton,
+                this.exitButton
+            ]);
         Phaser.Display.Align.In.Center(this.container, this.zone);
 
         this.tweens.add({
@@ -69,10 +89,9 @@ export class PauseMenu extends Phaser.Scene {
         })
     }
 
-    createInputHandler() {
-
-        this.contBtn.on('pointerup', () => {
-            this.contBtn.setScale(1);
+    private inputHandler() {
+        this.continueButton.on('pointerup', () => {
+            this.continueButton.setScale(1);
             this.sound.play('click')
             this.tweens.add({
                 targets: this.container,
@@ -91,8 +110,8 @@ export class PauseMenu extends Phaser.Scene {
 
         })
 
-        this.restartBtn.on('pointerup', () => {
-            this.restartBtn.setScale(1);
+        this.restartButton.on('pointerup', () => {
+            this.restartButton.setScale(1);
             this.sound.play('click')
             this.tweens.add({
                 targets: this.container,
@@ -111,8 +130,8 @@ export class PauseMenu extends Phaser.Scene {
 
         })
 
-        this.exitBtn.on('pointerup', () => {
-            this.exitBtn.setScale(1);
+        this.exitButton.on('pointerup', () => {
+            this.exitButton.setScale(1);
             this.sound.play('click')
             this.tweens.add({
                 targets: this.container,
@@ -132,15 +151,15 @@ export class PauseMenu extends Phaser.Scene {
 
         })
 
-        this.soundBtn.on('pointerup', () => {
-            this.soundBtn.setScale(1)
+        this.soundButton.on('pointerup', () => {
+            this.soundButton.setScale(1)
             this.sound.play('click')
             if (this.sound.mute) {
                 this.sound.mute = false;
-                this.soundBtn.setTexture('soundfalse');
+                this.soundButton.setTexture('soundfalse');
             } else {
                 this.sound.mute = true;
-                this.soundBtn.setTexture('soundtrue');
+                this.soundButton.setTexture('soundtrue');
             }
         })
     }

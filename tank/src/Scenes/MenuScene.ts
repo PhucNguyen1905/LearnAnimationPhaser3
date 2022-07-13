@@ -43,7 +43,8 @@ export class MenuScene extends Phaser.Scene {
         })
 
     }
-    createBackground() {
+
+    private createBackground() {
         this.bg = this.add.sprite(this.sys.canvas.width / 2, this.sys.canvas.height / 2, 'bg').setOrigin(0.5, 0.5);
         this.bg.setDisplaySize(this.sys.canvas.width, this.sys.canvas.height)
     }

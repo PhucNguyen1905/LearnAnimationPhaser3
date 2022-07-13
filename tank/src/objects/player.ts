@@ -1,12 +1,12 @@
-import { IImageConstructor } from '../Interfaces/ImageInterface';
-import { Bullets } from './Bullet/BulletController';
+import { IImageConstructor } from '../Interfaces/IImageConstructor';
+import { BulletManager } from './Bullet/BulletManager';
 
 export class Player extends Phaser.GameObjects.Image {
     body: Phaser.Physics.Arcade.Body;
 
     // variables
     private health: number;
-    private lastShoot: number;
+    private nextShootTime: number;
     private speed: number;
 
     // children
@@ -14,7 +14,7 @@ export class Player extends Phaser.GameObjects.Image {
     private lifeBar: Phaser.GameObjects.Graphics;
 
     // game objects
-    private bullets: Bullets;
+    private bullets: BulletManager;
 
     // input
     private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -33,7 +33,7 @@ export class Player extends Phaser.GameObjects.Image {
     private initImage() {
         // variables
         this.health = 1;
-        this.lastShoot = 0;
+        this.nextShootTime = 0;
         this.speed = 100;
 
         // image
@@ -50,7 +50,7 @@ export class Player extends Phaser.GameObjects.Image {
         this.redrawLifebar();
 
         // game objects
-        this.bullets = new Bullets(this.scene, 'bulletBlue', 10)
+        this.bullets = new BulletManager(this.scene, 'bulletBlue', 10)
 
         // input
         this.cursors = this.scene.input.keyboard.createCursorKeys();
@@ -75,8 +75,6 @@ export class Player extends Phaser.GameObjects.Image {
     }
 
     private handleInput() {
-        // move tank forward
-        // small corrections with (- MATH.PI / 2) to align tank correctly
         if (this.cursors.up.isDown) {
             this.scene.physics.velocityFromRotation(
                 this.rotation - Math.PI / 2,
@@ -109,8 +107,8 @@ export class Player extends Phaser.GameObjects.Image {
         })
     }
 
-    public handleShooting(): void {
-        if (this.active && this.scene.time.now > this.lastShoot) {
+    public shoot(): void {
+        if (this.active && this.scene.time.now > this.nextShootTime) {
             this.scene.cameras.main.shake(20, 0.005);
             this.scene.tweens.add({
                 targets: this,
@@ -129,17 +127,8 @@ export class Player extends Phaser.GameObjects.Image {
             if (this.bullets.getBullets().countActive() < 10) {
                 this.scene.sound.play('shoot')
                 this.bullets.fireBullet(this.barrel.x, this.barrel.y, this.barrel.rotation)
-                // this.bullets.add(
-                //     new Bullet({
-                //         scene: this.scene,
-                //         rotation: this.barrel.rotation,
-                //         x: this.barrel.x,
-                //         y: this.barrel.y,
-                //         texture: 'bulletBlue'
-                //     })
-                // );
 
-                this.lastShoot = this.scene.time.now + 80;
+                this.nextShootTime = this.scene.time.now + 80;
             }
         }
     }
@@ -167,12 +156,11 @@ export class Player extends Phaser.GameObjects.Image {
         this.scene.registry.set('highScore', highScore)
     }
 
-    public updateHealth(): void {
+    public updateHealth(damage: number): void {
         if (this.health > 0) {
             this.scene.sound.play('hit')
-            this.health -= 0.05;
+            this.health -= 0.025 * damage;
             this.redrawLifebar();
-
 
         } else {
             this.scene.sound.play('boom')
@@ -181,6 +169,7 @@ export class Player extends Phaser.GameObjects.Image {
             this.health = 0;
             this.active = false;
             this.scene.scene.pause();
+            this.scene.sound.stopByKey('playsound');
             this.scene.scene.launch('OverMenu');
         }
     }

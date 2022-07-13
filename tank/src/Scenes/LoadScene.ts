@@ -68,6 +68,7 @@ export class LoadScene extends Phaser.Scene {
         this.load.audio('over', 'assets/sounds/over.mp3');
         this.load.audio('yeah', 'assets/sounds/yeah.mp3');
         this.load.audio('intro', 'assets/sounds/intro.mp3');
+        this.load.audio('playsound', 'assets/sounds/playsound.mp3');
 
 
         this.load.atlas('flares', 'assets/particles/flares.png', 'assets/particles/flares.json');

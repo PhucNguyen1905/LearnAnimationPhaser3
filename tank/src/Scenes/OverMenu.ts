@@ -4,8 +4,8 @@ export class OverMenu extends Phaser.Scene {
 
     private background: Phaser.GameObjects.Image;
     private over: Phaser.GameObjects.Image;
-    private restartBtn: Button;
-    private exitBtn: Button;
+    private restartButton: Button;
+    private exitButton: Button;
     private scoreImg: Phaser.GameObjects.Image;
     private scoreText: Phaser.GameObjects.Text;
     private highScoreImg: Phaser.GameObjects.Image;
@@ -28,45 +28,85 @@ export class OverMenu extends Phaser.Scene {
 
         this.createContainer();
 
-        this.createInputHandler();
+        this.inputHandler();
     }
 
-    createZone() {
-        const rec = this.add.rectangle(0, 0, this.sys.canvas.width, this.sys.canvas.height, 0x000000, 0.7).setOrigin(0, 0)
+    private createZone() {
+        const width = this.sys.canvas.width;
+        const height = this.sys.canvas.height;
 
-        this.zone = this.add.zone(0, 0, this.sys.canvas.width, this.sys.canvas.height).setOrigin(0, 0);
+        this.add.rectangle(0, 0, width, height, 0x000000, 0.7)
+            .setOrigin(0, 0);
+
+        this.zone = this.add.zone(0, 0, width, height)
+            .setOrigin(0, 0);
     }
 
-
-    createMenu() {
+    private createMenu() {
         this.background = this.add.image(0, 0, 'back').setScale(2.2, 3.8);
 
         this.createMessage();
 
         this.scoreImg = this.add.image(-150, -65, 'score')
-        this.scoreText = this.add.text(0, -70, '', { fontSize: '80px', fontFamily: 'Revalia', align: 'center', stroke: '#000000', strokeThickness: 2 }).setAlign('center').setOrigin(0.5, 0.5);
+        this.scoreText = this.add.text(
+            0,
+            -70,
+            '',
+            {
+                fontSize: '80px',
+                fontFamily: 'Revalia',
+                align: 'center',
+                stroke: '#000000',
+                strokeThickness: 2
+            })
+            .setAlign('center')
+            .setOrigin(0.5, 0.5);
 
         this.highScoreImg = this.add.image(-150, 80, 'high')
-        this.highScoreText = this.add.text(0, 75, '', { fontSize: '80px', fontFamily: 'Revalia', align: 'center', stroke: '#000000', strokeThickness: 2 }).setAlign('center').setOrigin(0.5, 0.5);
+        this.highScoreText = this.add.text(
+            0,
+            75,
+            '',
+            {
+                fontSize: '80px',
+                fontFamily: 'Revalia',
+                align: 'center',
+                stroke: '#000000',
+                strokeThickness: 2
+            })
+            .setAlign('center')
+            .setOrigin(0.5, 0.5);
 
-        this.restartBtn = new Button({ scene: this, x: 150, y: -65, texture: 'newgame' });
-        this.exitBtn = new Button({ scene: this, x: 150, y: 80, texture: 'exit' })
+        this.restartButton = new Button({ scene: this, x: 150, y: -65, texture: 'newgame' });
+        this.exitButton = new Button({ scene: this, x: 150, y: 80, texture: 'exit' })
     }
 
-    createMessage() {
-        if (this.registry.get('status') == 'win') {
+    private createMessage() {
+        const isWinning: boolean = this.registry.get('status') == 'win';
+        const isReachNewBest: boolean = this.registry.get('score') != 0 && this.registry.get('score') == (this.registry.get('highScore') || 0)
+
+        if (isWinning) {
             this.over = this.add.image(0, -300, 'victory');
-        } else if (this.registry.get('score') != 0 && this.registry.get('score') == (this.registry.get('highScore') || 0)) {
+        } else if (isReachNewBest) {
             this.over = this.add.image(0, -350, 'congrat');
         } else {
             this.over = this.add.image(0, -400, 'overimg');
         }
     }
 
-    createContainer() {
+    private createContainer() {
         this.container = this.add.container(
             0, 0,
-            [this.over, this.background, this.scoreImg, this.scoreText, this.highScoreImg, this.highScoreText, this.restartBtn, this.exitBtn]);
+            [
+                this.over,
+                this.background,
+                this.scoreImg,
+                this.scoreText,
+                this.highScoreImg,
+                this.highScoreText,
+                this.restartButton,
+                this.exitButton
+            ]);
         Phaser.Display.Align.In.Center(this.container, this.zone);
 
         this.tweens.add({
@@ -78,12 +118,12 @@ export class OverMenu extends Phaser.Scene {
             duration: 300,
             ease: 'Linear',
             onComplete: () => {
-                this.createScoreText();
+                this.createScoreAnimation();
             }
         })
     }
 
-    createScoreText() {
+    private createScoreAnimation() {
         let score = this.registry.get('score') || 0;
         let highScore = this.registry.get('highScore') || 0;
 
@@ -163,10 +203,9 @@ export class OverMenu extends Phaser.Scene {
 
     }
 
-    createInputHandler() {
-
-        this.restartBtn.on('pointerup', () => {
-            this.restartBtn.setScale(1)
+    private inputHandler() {
+        this.restartButton.on('pointerup', () => {
+            this.restartButton.setScale(1)
             this.sound.play('click')
             this.tweens.add({
                 targets: this.container,
@@ -184,8 +223,8 @@ export class OverMenu extends Phaser.Scene {
 
         })
 
-        this.exitBtn.on('pointerup', () => {
-            this.exitBtn.setScale(1);
+        this.exitButton.on('pointerup', () => {
+            this.exitButton.setScale(1);
             this.sound.play('click')
             this.tweens.add({
                 targets: this.container,
