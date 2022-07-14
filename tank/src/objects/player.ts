@@ -259,6 +259,7 @@ export class Player extends Phaser.GameObjects.Image {
     }
 
     public handleGetPowerup(type: string) {
+        this.scene.sound.play('powerup')
         switch (type) {
             case 'incDamage': {
                 let color = '#3EC70B';
