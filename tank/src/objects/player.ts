@@ -49,7 +49,7 @@ export class Player extends Phaser.GameObjects.Image {
         this.redrawLifebar();
 
         // game objects
-        this.bullets = new BulletManager(this.scene, 'bulletBlue', 10)
+        this.bullets = new BulletManager(this.scene, 'bulletBlue', 10, 2)
 
         // input
         this.cursors = this.scene.input.keyboard.createCursorKeys();
@@ -263,6 +263,7 @@ export class Player extends Phaser.GameObjects.Image {
             case 'incDamage': {
                 let color = '#3EC70B';
                 this.damage += 1;
+                this.bullets.updateBulletDamage(this.damage);
                 this.tweenPowerUp(color, 1);
                 break;
             }

@@ -164,7 +164,12 @@ export class GameScene extends Phaser.Scene {
     }
 
     private handleEnemyDying = (x: number, y: number) => {
-        const collec = new Collectible({ scene: this, x: x, y: y, texture: 'powerup' });
+        const collec = new Collectible({
+            scene: this,
+            x: x,
+            y: y,
+            texture: 'powerup'
+        });
         this.collectibles.add(collec)
     }
 

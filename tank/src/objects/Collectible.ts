@@ -67,7 +67,7 @@ export class Collectible extends Phaser.GameObjects.Sprite {
             targets: this,
             scale: { from: 1.2, to: 0.2 },
             alpha: { from: 1, to: 0.2 },
-            duration: 400,
+            duration: 500,
             onComplete: () => {
                 this.destroy();
             }

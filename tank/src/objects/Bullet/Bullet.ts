@@ -8,10 +8,13 @@ export class Bullet extends Phaser.GameObjects.Image {
 
     private bulletSpeed: number;
 
+    public damage: number;
+
     constructor(aParams: IBulletConstructor) {
         super(aParams.scene, aParams.x, aParams.y, aParams.texture);
 
         this.rotation = aParams.rotation;
+        this.damage = aParams.damage;
 
         this.initImage();
         this.scene.add.existing(this);
@@ -94,7 +97,11 @@ export class Bullet extends Phaser.GameObjects.Image {
     }
 
     public getDamage(): number {
-        return Phaser.Math.Between(1, 3);
+        if (this.damage == 0) {
+            return Phaser.Math.Between(1, 3);
+        } else {
+            return Phaser.Math.Between(1, this.damage);
+        }
     }
 
     update(): void { }
