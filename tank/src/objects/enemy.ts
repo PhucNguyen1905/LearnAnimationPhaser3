@@ -78,17 +78,17 @@ export class Enemy extends Phaser.GameObjects.Image {
         this.barrel.setDepth(1);
     }
 
-
     private createEmitters() {
-        this.exploEmitter = this.scene.add.particles('flares').createEmitter({
-            frame: 'yellow',
-            x: -100,
-            y: -100,
-            speed: 200,
-            scale: { min: 0, max: 1 },
-            blendMode: 'ADD',
-            lifespan: 300
-        });
+        this.exploEmitter = this.scene.add.particles('flares')
+            .createEmitter({
+                frame: 'yellow',
+                x: -100,
+                y: -100,
+                speed: 200,
+                scale: { min: 0, max: 1 },
+                blendMode: 'ADD',
+                lifespan: 300
+            });
     }
 
     update(x: number, y: number): void {
@@ -121,7 +121,11 @@ export class Enemy extends Phaser.GameObjects.Image {
     private shoot(): void {
         if (this.scene.time.now > this.nextShootTime) {
             if (this.bullets.getBullets().countActive() < 5) {
-                this.bullets.fireBullet(this.barrel.x, this.barrel.y, this.barrel.rotation)
+                this.bullets.fireBullet(
+                    this.barrel.x,
+                    this.barrel.y,
+                    this.barrel.rotation
+                )
 
                 this.nextShootTime = this.scene.time.now + 400;
             }
@@ -138,12 +142,16 @@ export class Enemy extends Phaser.GameObjects.Image {
             15
         );
         this.lifeBar.lineStyle(2, 0xffffff);
-        this.lifeBar.strokeRect(-this.width / 2, this.height / 2, this.width, 15);
+        this.lifeBar.strokeRect(
+            -this.width / 2,
+            this.height / 2,
+            this.width,
+            15
+        );
         this.lifeBar.setDepth(1);
     }
 
     private tweenHealthText(damage: number) {
-        // Tween health
         let healthText = this.scene.add.text(
             this.x - Phaser.Math.Between(30, 70),
             this.y - 50,
@@ -172,7 +180,6 @@ export class Enemy extends Phaser.GameObjects.Image {
     }
 
     private tweenScoreText() {
-        // Tween score
         let scoreText = this.scene.add.text(
             this.x - 100,
             this.y - 50,
@@ -219,9 +226,9 @@ export class Enemy extends Phaser.GameObjects.Image {
             // Update score
             this.scene.registry.set(
                 'score',
-                this.scene.registry.get('score') + this.dyingValue);
+                this.scene.registry.get('score') + this.dyingValue
+            );
 
-            // Tween score
             this.tweenScoreText();
 
             this.health = 0;

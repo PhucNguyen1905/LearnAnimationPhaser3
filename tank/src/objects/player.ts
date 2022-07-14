@@ -135,7 +135,12 @@ export class Player extends Phaser.GameObjects.Image {
 
             if (this.bullets.getBullets().countActive() < 10) {
                 this.scene.sound.play('shoot')
-                this.bullets.fireBullet(this.barrel.x, this.barrel.y, this.barrel.rotation)
+
+                this.bullets.fireBullet(
+                    this.barrel.x,
+                    this.barrel.y,
+                    this.barrel.rotation
+                )
 
                 this.nextShootTime = this.scene.time.now + 80;
             }
@@ -152,7 +157,12 @@ export class Player extends Phaser.GameObjects.Image {
             15
         );
         this.lifeBar.lineStyle(2, 0xffffff);
-        this.lifeBar.strokeRect(-this.width / 2, this.height / 2, this.width, 15);
+        this.lifeBar.strokeRect(
+            -this.width / 2,
+            this.height / 2,
+            this.width,
+            15
+        );
         this.lifeBar.setDepth(1);
     }
 
@@ -165,9 +175,38 @@ export class Player extends Phaser.GameObjects.Image {
         this.scene.registry.set('highScore', highScore)
     }
 
+    private tweenHealthText(damage: number) {
+        let healthText = this.scene.add.text(
+            this.x - Phaser.Math.Between(30, 70),
+            this.y - 50,
+            damage.toString(),
+            {
+                fontSize: '50px',
+                fontFamily: 'Revalia',
+                align: 'center',
+                stroke: '#000000',
+                strokeThickness: 2
+            }
+        )
+        healthText.setColor('#0078AA')
+        this.scene.tweens.add(
+            {
+                targets: healthText,
+                props: { y: healthText.y - 150 },
+                duration: 500,
+                ease: 'Power0',
+                yoyo: false,
+                onComplete: () => {
+                    healthText.destroy();
+                }
+            }
+        )
+    }
+
     public updateHealth(damage: number): void {
         if (this.health > 0) {
             this.scene.sound.play('hit')
+            this.tweenHealthText(damage);
             this.health -= 0.025 * damage;
             this.redrawLifebar();
 
@@ -177,6 +216,7 @@ export class Player extends Phaser.GameObjects.Image {
 
             this.health = 0;
             this.active = false;
+
             this.scene.scene.pause();
             this.scene.sound.stopByKey('playsound');
             this.scene.scene.launch('OverMenu');

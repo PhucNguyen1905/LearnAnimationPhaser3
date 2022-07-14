@@ -32,30 +32,32 @@ export class Bullet extends Phaser.GameObjects.Image {
     }
 
     private createEmitters() {
-        this.hitEmitter = this.scene.add.particles('flares').createEmitter({
-            x: -100,
-            y: -100,
-            frame: 'red',
-            speed: { min: -200, max: 200 },
-            angle: { min: 0, max: 360 },
-            scale: { start: 0.2, end: 0 },
-            blendMode: 'ADD',
-            lifespan: 400,
-            gravityY: 600
-        });
+        this.hitEmitter = this.scene.add.particles('flares')
+            .createEmitter({
+                x: -100,
+                y: -100,
+                frame: 'red',
+                speed: { min: -200, max: 200 },
+                angle: { min: 0, max: 360 },
+                scale: { start: 0.2, end: 0 },
+                blendMode: 'ADD',
+                lifespan: 400,
+                gravityY: 600
+            });
 
-        this.fireEmitter = this.scene.add.particles('flares').createEmitter({
-            quantity: 10,
-            speedX: { min: -10, max: 10 },
-            speedY: { min: 50, max: 50 },
-            alpha: { start: 0.5, end: 0, ease: 'Sine.easeIn' },
-            scale: { start: 0.065, end: 0.02 },
-            angle: { min: 30, max: 110 },
-            rotate: { min: -180, max: 180 },
-            lifespan: { min: 100, max: 200 },
-            blendMode: 'ADD',
-            follow: this
-        });
+        this.fireEmitter = this.scene.add.particles('flares')
+            .createEmitter({
+                quantity: 10,
+                speedX: { min: -10, max: 10 },
+                speedY: { min: 50, max: 50 },
+                alpha: { start: 0.5, end: 0, ease: 'Sine.easeIn' },
+                scale: { start: 0.065, end: 0.02 },
+                angle: { min: 30, max: 110 },
+                rotate: { min: -180, max: 180 },
+                lifespan: { min: 100, max: 200 },
+                blendMode: 'ADD',
+                follow: this
+            });
         this.fireEmitter.stop();
     }
 
