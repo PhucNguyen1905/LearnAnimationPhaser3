@@ -1,4 +1,4 @@
-import { Button } from "../Objects/Buttons/Button";
+import { Button } from "../objects/buttons/Button";
 
 export class PauseMenu extends Phaser.Scene {
 

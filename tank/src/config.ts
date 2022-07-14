@@ -1,8 +1,8 @@
-import { LoadScene } from './Scenes/LoadScene';
-import { GameScene } from './Scenes/GameScene';
-import { MenuScene } from './Scenes/MenuScene';
-import { OverMenu } from './Scenes/OverMenu';
-import { PauseMenu } from './Scenes/PauseMenu';
+import { LoadScene } from './scenes/LoadScene';
+import { GameScene } from './scenes/GameScene';
+import { MenuScene } from './scenes/MenuScene';
+import { OverMenu } from './scenes/OverMenu';
+import { PauseMenu } from './scenes/PauseMenu';
 
 export const GameConfig: Phaser.Types.Core.GameConfig = {
     title: 'Tank',

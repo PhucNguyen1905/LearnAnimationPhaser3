@@ -1,4 +1,4 @@
-import { IImageConstructor } from "../Interfaces/IImageConstructor";
+import { IImageConstructor } from "../interfaces/IImageConstructor";
 
 export class Collectible extends Phaser.GameObjects.Sprite {
     body: Phaser.Physics.Arcade.Body;
