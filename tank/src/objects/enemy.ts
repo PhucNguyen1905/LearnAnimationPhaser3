@@ -183,7 +183,7 @@ export class Enemy extends Phaser.GameObjects.Image {
         let scoreText = this.scene.add.text(
             this.x - 100,
             this.y - 50,
-            this.dyingValue.toString(),
+            this.dyingValue + ' Points',
             {
                 fontSize: '50px',
                 fontFamily: 'Revalia',

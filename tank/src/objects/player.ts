@@ -230,13 +230,13 @@ export class Player extends Phaser.GameObjects.Image {
         }
     }
 
-    private tweenPowerUp(color: string, num: number) {
+    private tweenPowerUp(color: string, text: string) {
         let healthText = this.scene.add.text(
             this.x - Phaser.Math.Between(30, 70),
             this.y - 50,
-            num.toString(),
+            text,
             {
-                fontSize: '60px',
+                fontSize: '50px',
                 fontFamily: 'Revalia',
                 align: 'center',
                 stroke: '#000000',
@@ -265,20 +265,20 @@ export class Player extends Phaser.GameObjects.Image {
                 let color = '#3EC70B';
                 this.damage += 2;
                 this.bullets.updateBulletDamage(this.damage);
-                this.tweenPowerUp(color, 2);
+                this.tweenPowerUp(color, '+2 Damage');
                 break;
             }
             case 'incHealth': {
                 let color = '#e66a28';
                 this.health = (this.health + 0.25) % 1;
                 this.redrawLifebar();
-                this.tweenPowerUp(color, 25);
+                this.tweenPowerUp(color, '+25% Health');
                 break;
             }
             case 'incSpeed': {
                 let color = '#FAC213';
                 this.speed += 20;
-                this.tweenPowerUp(color, 20);
+                this.tweenPowerUp(color, '+20 Speed');
                 break;
             }
         }
