@@ -244,6 +244,7 @@ export class Player extends Phaser.GameObjects.Image {
             }
         )
         healthText.setColor(color)
+
         this.scene.tweens.add(
             {
                 targets: healthText,

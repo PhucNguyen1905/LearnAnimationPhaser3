@@ -83,7 +83,6 @@ export class GameScene extends Phaser.Scene {
 
 
     private createTilemap() {
-        // create tilemap from tiled JSON
         this.map = this.make.tilemap({ key: 'levelMap' });
 
         this.tileset = this.map.addTilesetImage('tiles');
