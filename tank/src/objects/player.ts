@@ -34,7 +34,7 @@ export class Player extends Phaser.GameObjects.Image {
     private initImage() {
         // variables
         this.health = 1;
-        this.damage = 1;
+        this.damage = 2;
         this.nextShootTime = 0;
         this.speed = 100;
 
@@ -49,7 +49,7 @@ export class Player extends Phaser.GameObjects.Image {
         this.redrawLifebar();
 
         // game objects
-        this.bullets = new BulletManager(this.scene, 'bulletBlue', 10, 2)
+        this.bullets = new BulletManager(this.scene, 'bulletBlue', 10, this.damage)
 
         // input
         this.cursors = this.scene.input.keyboard.createCursorKeys();
@@ -236,7 +236,7 @@ export class Player extends Phaser.GameObjects.Image {
             this.y - 50,
             num.toString(),
             {
-                fontSize: '50px',
+                fontSize: '60px',
                 fontFamily: 'Revalia',
                 align: 'center',
                 stroke: '#000000',
@@ -262,22 +262,22 @@ export class Player extends Phaser.GameObjects.Image {
         switch (type) {
             case 'incDamage': {
                 let color = '#3EC70B';
-                this.damage += 1;
+                this.damage += 2;
                 this.bullets.updateBulletDamage(this.damage);
-                this.tweenPowerUp(color, 1);
+                this.tweenPowerUp(color, 2);
                 break;
             }
             case 'incHealth': {
-                let color = '#FF7396';
+                let color = '#e66a28';
                 this.health = (this.health + 0.25) % 1;
                 this.redrawLifebar();
-                this.tweenPowerUp(color, 10);
+                this.tweenPowerUp(color, 25);
                 break;
             }
             case 'incSpeed': {
-                let color = '#FF9F29';
-                this.speed += 10;
-                this.tweenPowerUp(color, 10);
+                let color = '#FAC213';
+                this.speed += 20;
+                this.tweenPowerUp(color, 20);
                 break;
             }
         }
