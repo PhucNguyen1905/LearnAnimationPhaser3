@@ -6,6 +6,7 @@ export class Player extends Phaser.GameObjects.Image {
 
     // variables
     private health: number;
+    private damage: number;
     private nextShootTime: number;
     private speed: number;
 
@@ -33,6 +34,7 @@ export class Player extends Phaser.GameObjects.Image {
     private initImage() {
         // variables
         this.health = 1;
+        this.damage = 1;
         this.nextShootTime = 0;
         this.speed = 100;
 
@@ -208,6 +210,10 @@ export class Player extends Phaser.GameObjects.Image {
             this.scene.sound.play('hit')
             this.tweenHealthText(damage);
             this.health -= 0.025 * damage;
+            if (this.health < 0) {
+                this.health = 0;
+            }
+
             this.redrawLifebar();
 
         } else {
@@ -218,8 +224,61 @@ export class Player extends Phaser.GameObjects.Image {
             this.active = false;
 
             this.scene.scene.pause();
+            this.scene.events.off('enemyDying')
             this.scene.sound.stopByKey('playsound');
             this.scene.scene.launch('OverMenu');
+        }
+    }
+
+    private tweenPowerUp(color: string, num: number) {
+        let healthText = this.scene.add.text(
+            this.x - Phaser.Math.Between(30, 70),
+            this.y - 50,
+            num.toString(),
+            {
+                fontSize: '50px',
+                fontFamily: 'Revalia',
+                align: 'center',
+                stroke: '#000000',
+                strokeThickness: 2
+            }
+        )
+        healthText.setColor(color)
+        this.scene.tweens.add(
+            {
+                targets: healthText,
+                props: { y: healthText.y - 150 },
+                duration: 700,
+                ease: 'Power0',
+                yoyo: false,
+                onComplete: () => {
+                    healthText.destroy();
+                }
+            }
+        )
+    }
+
+    public handleGetPowerup(type: string) {
+        switch (type) {
+            case 'incDamage': {
+                let color = '#3EC70B';
+                this.damage += 1;
+                this.tweenPowerUp(color, 1);
+                break;
+            }
+            case 'incHealth': {
+                let color = '#FF7396';
+                this.health = (this.health + 0.25) % 1;
+                this.redrawLifebar();
+                this.tweenPowerUp(color, 10);
+                break;
+            }
+            case 'incSpeed': {
+                let color = '#FF9F29';
+                this.speed += 10;
+                this.tweenPowerUp(color, 10);
+                break;
+            }
         }
     }
 }

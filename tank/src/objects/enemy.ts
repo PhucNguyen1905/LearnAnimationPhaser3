@@ -210,6 +210,12 @@ export class Enemy extends Phaser.GameObjects.Image {
         )
     }
 
+    private emitEnemyDyingEvent(scene: Phaser.Scene, x: number, y: number) {
+        scene.time.delayedCall(850, () => {
+            scene.events.emit('enemyDying', x, y);
+        })
+    }
+
     public updateHealth(damage: number): void {
         if (this.health > 0) {
             this.scene.sound.play('hit_enemy')
@@ -222,6 +228,8 @@ export class Enemy extends Phaser.GameObjects.Image {
 
         } else {
             this.scene.sound.play('boom')
+
+            this.emitEnemyDyingEvent(this.scene, this.x, this.y);
 
             // Update score
             this.scene.registry.set(

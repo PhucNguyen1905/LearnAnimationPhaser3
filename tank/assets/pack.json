@@ -87,7 +87,7 @@
         "key": "powerup",
         "url": "./assets/sprites/powerup.png",
         "frameConfig": {
-          "frameWidth": 76,
+          "frameWidth": 77.5,
           "frameHeight": 78
         }
       }

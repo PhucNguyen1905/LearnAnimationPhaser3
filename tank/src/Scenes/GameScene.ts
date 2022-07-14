@@ -3,6 +3,7 @@ import { Enemy } from '../Objects/Enemy';
 import { Obstacle } from '../Objects/Obstacles/Obstacle';
 import { Bullet } from '../Objects/Bullet/Bullet';
 import { Button } from '../Objects/Buttons/Button';
+import { Collectible } from '../Objects/Collectible';
 
 export class GameScene extends Phaser.Scene {
     private map: Phaser.Tilemaps.Tilemap;
@@ -14,6 +15,7 @@ export class GameScene extends Phaser.Scene {
     private player: Player;
     private enemies: Phaser.GameObjects.Group;
     private obstacles: Phaser.GameObjects.Group;
+    private collectibles: Phaser.GameObjects.Group;
 
     private pauseButton: Button;
     private pauseClick: boolean = false;
@@ -57,7 +59,9 @@ export class GameScene extends Phaser.Scene {
         this.createButtons();
 
 
-        this.listenEvents();
+        this.listenResumeEvents();
+
+        this.eventListener();
 
         this.createScoreText();
 
@@ -65,7 +69,7 @@ export class GameScene extends Phaser.Scene {
 
         this.inputHandler();
 
-        this.createMiniMap();
+        this.createMinimap();
 
     }
 
@@ -155,7 +159,16 @@ export class GameScene extends Phaser.Scene {
         return !this.pauseClick && this.fireAble
     }
 
-    private listenEvents() {
+    private eventListener() {
+        this.events.on('enemyDying', this.handleEnemyDying)
+    }
+
+    private handleEnemyDying = (x: number, y: number) => {
+        const collec = new Collectible({ scene: this, x: x, y: y, texture: 'powerup' });
+        this.collectibles.add(collec)
+    }
+
+    private listenResumeEvents() {
         if (this.eventPause) return;
         this.eventPause = this.events.on('resume', () => {
             // Disable pause menu
@@ -222,12 +235,25 @@ export class GameScene extends Phaser.Scene {
         this.enemies = this.add.group({
             /*classType: Enemy*/
         });
+
+        this.collectibles = this.add.group({
+            /*classType: Collectible*/
+        });
     }
 
     private createColliders() {
         // collider layer and obstacles
         this.physics.add.collider(this.player, this.layer);
         this.physics.add.collider(this.player, this.obstacles);
+
+        // collider player and collectible
+        this.physics.add.collider(
+            this.player,
+            this.collectibles,
+            this.playerHitCollectible,
+            null,
+            this
+        );
 
         // collider for player bullets
         this.physics.add.collider(
@@ -288,8 +314,12 @@ export class GameScene extends Phaser.Scene {
         this.cameras.main.startFollow(this.player);
     }
 
-    private createMiniMap() {
-        this.minimap = this.cameras.add(1300, 0, 300, 300).setZoom(0.15).setName('mini');
+    private createMinimap() {
+        this.minimap = this.cameras
+            .add(this.cameras.main.width - 250, 0, 250, 250)
+            .setZoom(0.15)
+            .setName('mini');
+
         this.minimap.setBounds(
             0,
             0,
@@ -335,6 +365,7 @@ export class GameScene extends Phaser.Scene {
             }
             this.scene.pause();
             this.playSound.stop();
+            this.events.off('enemyDying')
             this.scene.launch('OverMenu')
         }
         this.enemies.children.each((enemy: Enemy) => {
@@ -411,5 +442,10 @@ export class GameScene extends Phaser.Scene {
     private playerBulletHitEnemy(bullet: Bullet, enemy: Enemy): void {
         bullet.explodeEmitter(3);
         enemy.updateHealth(bullet.getDamage());
+    }
+
+    private playerHitCollectible(player: Player, collectible: Collectible) {
+        collectible.collected();
+        player.handleGetPowerup(collectible.typePowerUp);
     }
 }

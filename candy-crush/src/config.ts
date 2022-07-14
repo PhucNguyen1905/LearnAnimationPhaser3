@@ -1,5 +1,5 @@
 import { LoadScene } from './Scenes/LoadScene';
-import { GameScene } from './Scenes/game-scene';
+import { GameScene } from './Scenes/GameScene';
 
 export const GameConfig: Phaser.Types.Core.GameConfig = {
   title: 'Candy crush',

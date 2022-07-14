@@ -4,7 +4,8 @@ export class Collectible extends Phaser.GameObjects.Sprite {
     body: Phaser.Physics.Arcade.Body;
 
     // variables
-    private typePowerUp: string;
+    public typePowerUp: string;
+    private scaleTween: Phaser.Tweens.Tween;
 
     constructor(aParams: IImageConstructor) {
         super(aParams.scene, aParams.x, aParams.y, aParams.texture, aParams.frame);
@@ -16,7 +17,7 @@ export class Collectible extends Phaser.GameObjects.Sprite {
 
     private initSprite() {
         // sprite
-        this.setOrigin(0, 0);
+        this.setOrigin(0.5, 0.5);
         this.genTypePowerUp();
 
         this.initTween();
@@ -46,11 +47,11 @@ export class Collectible extends Phaser.GameObjects.Sprite {
     }
 
     private initTween() {
-        this.scene.tweens.add({
+        this.scaleTween = this.scene.tweens.add({
             targets: this,
             scaleX: 1.2,
             scaleY: 1.2,
-            duration: 1000,
+            duration: 800,
             yoyo: true,
             repeat: -1
         })
@@ -59,11 +60,17 @@ export class Collectible extends Phaser.GameObjects.Sprite {
     update(): void { }
 
     public collected(): void {
-        // if (this.key == 'coin2') {
-        //     this.currentScene.sound.play('coin');
-        // }
-        // this.destroy();
-        // this.currentScene.registry.values.score += this.points;
-        // this.currentScene.events.emit('scoreChanged');
+        this.scaleTween.stop();
+        this.scene.physics.world.disable(this);
+
+        this.scene.tweens.add({
+            targets: this,
+            scale: { from: 1.2, to: 0.2 },
+            alpha: { from: 1, to: 0.2 },
+            duration: 400,
+            onComplete: () => {
+                this.destroy();
+            }
+        })
     }
 }
