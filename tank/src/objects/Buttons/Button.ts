@@ -7,6 +7,8 @@ export class Button extends Phaser.GameObjects.Image {
 
         this.setInteractive();
 
+        this.setScrollFactor(0);
+
         this.inputHandler();
 
         this.scene.add.existing(this)

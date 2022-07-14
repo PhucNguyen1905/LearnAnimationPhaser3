@@ -9,12 +9,13 @@ export class GameScene extends Phaser.Scene {
     private tileset: Phaser.Tilemaps.Tileset;
     private layer: Phaser.Tilemaps.TilemapLayer;
     private playSound: Phaser.Sound.BaseSound;
+    private minimap: Phaser.Cameras.Scene2D.Camera;
 
     private player: Player;
     private enemies: Phaser.GameObjects.Group;
     private obstacles: Phaser.GameObjects.Group;
 
-    private pauseBtn: Button;
+    private pauseButton: Button;
     private pauseClick: boolean = false;
     private fireAble: boolean = true;
     private countDownText: Phaser.GameObjects.Text;
@@ -64,6 +65,8 @@ export class GameScene extends Phaser.Scene {
 
         this.inputHandler();
 
+        this.createMiniMap();
+
     }
 
     update(): void {
@@ -105,30 +108,27 @@ export class GameScene extends Phaser.Scene {
     }
 
     private createButtons() {
-        this.pauseBtn = new Button({ scene: this, x: 0, y: 0, texture: 'pauseBtn' })
+        this.pauseButton = new Button({ scene: this, x: 0, y: 0, texture: 'pauseBtn' })
 
-        Phaser.Display.Align.In.BottomRight(this.pauseBtn, this.zone)
+        Phaser.Display.Align.In.BottomRight(this.pauseButton, this.zone)
 
-        // Fixed to camera view
-        this.pauseBtn.setScrollFactor(0);
-
-        this.pauseBtn.on('pointerout', () => {
+        this.pauseButton.on('pointerout', () => {
             this.fireAble = true;
         });
 
-        this.pauseBtn.on('pointerdown', () => {
+        this.pauseButton.on('pointerdown', () => {
             this.fireAble = false;
         })
 
-        this.pauseBtn.onClick(this.pauseFunction);
+        this.pauseButton.onClick(this.pauseFunction);
 
     }
 
     private pauseFunction = () => {
         this.time.delayedCall(10, () => {
-            this.pauseBtn.setScale(1)
+            this.pauseButton.setScale(1)
         })
-        this.input.disable(this.pauseBtn);
+        this.input.disable(this.pauseButton);
         this.pauseClick = true;
         this.time.delayedCall(10, () => {
             this.sound.play('click');
@@ -159,7 +159,7 @@ export class GameScene extends Phaser.Scene {
         if (this.eventPause) return;
         this.eventPause = this.events.on('resume', () => {
             // Disable pause menu
-            this.input.disable(this.pauseBtn);
+            this.input.disable(this.pauseButton);
             this.input.keyboard.enabled = false;
 
             this.countDown = 3;
@@ -167,7 +167,13 @@ export class GameScene extends Phaser.Scene {
                 this.cameras.main.width / 2,
                 this.cameras.main.height / 2,
                 'Continue in ' + this.countDown,
-                { fontSize: '60px', fontFamily: 'Revalia', align: 'center', stroke: '#000000', strokeThickness: 2 })
+                {
+                    fontSize: '60px',
+                    fontFamily: 'Revalia',
+                    align: 'center',
+                    stroke: '#000000',
+                    strokeThickness: 2
+                })
                 .setOrigin(0.5)
                 .setDepth(5)
             this.countTimeEvent = this.time.addEvent({
@@ -185,7 +191,7 @@ export class GameScene extends Phaser.Scene {
         this.countDownText.setText('Continue in ' + this.countDown);
         if (this.countDown <= 0) {
             // Enable pause menu
-            this.input.enable(this.pauseBtn)
+            this.input.enable(this.pauseButton)
             this.input.keyboard.enabled = true;
 
             this.countDownText.setText('');
@@ -280,6 +286,21 @@ export class GameScene extends Phaser.Scene {
             this.map.heightInPixels
         );
         this.cameras.main.startFollow(this.player);
+    }
+
+    private createMiniMap() {
+        this.minimap = this.cameras.add(1300, 0, 300, 300).setZoom(0.15).setName('mini');
+        this.minimap.setBounds(
+            0,
+            0,
+            this.map.widthInPixels,
+            this.map.heightInPixels
+        );
+
+        this.minimap.setBackgroundColor(0x000000)
+
+        this.minimap.startFollow(this.player);
+        this.minimap.ignore(this.scoreText);
     }
 
     private updateScore() {

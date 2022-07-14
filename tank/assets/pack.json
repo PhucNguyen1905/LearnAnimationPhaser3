@@ -81,6 +81,15 @@
         "type": "image",
         "key": "treeLarge",
         "url": "./assets/obstacles/tree-large.png"
+      },
+      {
+        "type": "spritesheet",
+        "key": "powerup",
+        "url": "./assets/sprites/powerup.png",
+        "frameConfig": {
+          "frameWidth": 76,
+          "frameHeight": 78
+        }
       }
     ]
   }
