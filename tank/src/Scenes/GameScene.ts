@@ -223,7 +223,7 @@ export class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.player, this.layer);
         this.physics.add.collider(this.player, this.obstacles);
 
-        // collider for bullets
+        // collider for player bullets
         this.physics.add.collider(
             this.player.getBullets(),
             this.layer,
@@ -240,21 +240,22 @@ export class GameScene extends Phaser.Scene {
             this
         );
 
+        // Player bullets hit enemies
+        this.physics.add.overlap(
+            this.player.getBullets(),
+            this.enemies.getChildren(),
+            this.playerBulletHitEnemy,
+            null,
+            this
+        );
+
         this.enemies.children.each((enemy: Enemy) => {
-            this.physics.add.overlap(
-                this.player.getBullets(),
-                enemy,
-                this.playerBulletHitEnemy,
-                null,
-                this
-            );
             this.physics.add.overlap(
                 enemy.getBullets(),
                 this.player,
                 this.enemyBulletHitPlayer,
                 null
             );
-
             this.physics.add.collider(
                 enemy.getBullets(),
                 this.obstacles,
